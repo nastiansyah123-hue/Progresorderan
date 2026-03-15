@@ -1,304 +1,245 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>CS Order Progress Tracker</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>CS Order Tracker</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  :root {
-    --bg:#0f1117;--bg2:#181b24;--bg3:#1e2230;--bg4:#252a3a;
-    --border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.13);
-    --text:#e8eaf0;--text2:#8b91a8;--text3:#555c72;
-    --pu-bg:#0d2035;--pu-t:#60b4f8;--pu-d:#378add;
-    --op-bg:#221800;--op-t:#f5b942;--op-d:#ef9f27;
-    --ud-bg:#1f0d0d;--ud-t:#f07676;--ud-d:#e24b4a;
-    --dl-bg:#0d1f0d;--dl-t:#7ec95a;--dl-d:#639922;
-    --rt-bg:#220d18;--rt-t:#e87eb0;--rt-d:#d4537e;
-    --accent:#378add;--green:#1D9E75;--r:10px;--rl:14px;
-  }
-  html{font-size:14px;}
-  body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#0f1117;--bg2:#181b24;--bg3:#1e2230;--bg4:#252a3a;
+  --b:rgba(255,255,255,0.07);--b2:rgba(255,255,255,0.13);
+  --t:#e8eaf0;--t2:#8b91a8;--t3:#555c72;
+  --pu-bg:#0d2035;--pu-t:#60b4f8;--pu-d:#378add;
+  --op-bg:#221800;--op-t:#f5b942;--op-d:#ef9f27;
+  --ud-bg:#1f0d0d;--ud-t:#f07676;--ud-d:#e24b4a;
+  --dl-bg:#0d1f0d;--dl-t:#7ec95a;--dl-d:#639922;
+  --rt-bg:#220d18;--rt-t:#e87eb0;--rt-d:#d4537e;
+  --ac:#378add;--r:10px;--rl:14px;
+}
+html{font-size:14px;}
+body{background:var(--bg);color:var(--t);font-family:'DM Sans',sans-serif;min-height:100vh;}
 
-  /* LOGIN */
-  .lscreen{min-height:100vh;display:flex;align-items:center;justify-content:center;position:relative;}
-  .lscreen::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 600px 400px at 50% 40%,rgba(55,138,221,0.07) 0%,transparent 70%);pointer-events:none;}
-  .lbox{width:380px;max-width:95vw;background:var(--bg2);border:1px solid var(--border2);border-radius:20px;padding:36px 32px;}
-  .llogo{text-align:center;margin-bottom:28px;}
-  .llogo .brand{font-size:22px;font-weight:700;color:var(--text);letter-spacing:-0.5px;}
-  .llogo .brand span{color:var(--accent);}
-  .llogo .tag{font-size:12px;color:var(--text3);margin-top:4px;}
-  .rtabs{display:grid;grid-template-columns:1fr 1fr;gap:6px;background:var(--bg3);border-radius:var(--r);padding:4px;margin-bottom:20px;}
-  .rtab{padding:9px;text-align:center;border-radius:7px;font-size:13px;color:var(--text3);cursor:pointer;transition:all 0.2s;border:none;background:transparent;font-family:'DM Sans',sans-serif;display:flex;align-items:center;justify-content:center;gap:6px;}
-  .rtab svg{width:14px;height:14px;}
-  .rtab.active{background:var(--bg2);color:var(--text);font-weight:500;border:1px solid var(--border2);}
-  .lhint{font-size:11px;color:var(--text3);text-align:center;margin-bottom:16px;}
-  .lhint b{color:var(--text2);font-weight:500;}
-  .lf{margin-bottom:14px;}
-  .lf label{display:block;font-size:11px;color:var(--text3);margin-bottom:6px;letter-spacing:0.3px;}
-  .lf input{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:10px 13px;font-size:13px;color:var(--text);font-family:'DM Sans',sans-serif;outline:none;transition:border 0.15s;}
-  .lf input:focus{border-color:var(--border2);}
-  .lf input::placeholder{color:var(--text3);}
-  .btnlogin{width:100%;padding:11px;background:var(--accent);color:#fff;border:none;border-radius:var(--r);font-size:14px;font-weight:500;font-family:'DM Sans',sans-serif;cursor:pointer;transition:opacity 0.15s;}
-  .btnlogin:hover{opacity:0.88;}
-  .lerr{font-size:12px;color:var(--ud-t);text-align:center;margin-top:10px;min-height:18px;}
+.ls{min-height:100vh;display:flex;align-items:center;justify-content:center;position:relative;}
+.ls::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 600px 400px at 50% 40%,rgba(55,138,221,0.07),transparent 70%);pointer-events:none;}
+.lbox{width:400px;max-width:95vw;background:var(--bg2);border:1px solid var(--b2);border-radius:20px;padding:36px 32px;position:relative;z-index:1;}
+.llogo{text-align:center;margin-bottom:28px;}
+.llogo .brand{font-size:22px;font-weight:700;letter-spacing:-0.5px;}
+.llogo .brand span{color:var(--ac);}
+.llogo .tag{font-size:12px;color:var(--t3);margin-top:4px;}
+.rtabs{display:grid;grid-template-columns:1fr 1fr;gap:5px;background:var(--bg3);border-radius:var(--r);padding:4px;margin-bottom:20px;}
+.rtab{padding:9px;border-radius:7px;font-size:13px;color:var(--t3);cursor:pointer;border:none;background:transparent;font-family:'DM Sans',sans-serif;display:flex;align-items:center;justify-content:center;gap:6px;transition:all 0.15s;}
+.rtab svg{width:14px;height:14px;}
+.rtab.active{background:var(--bg2);color:var(--t);font-weight:500;border:1px solid var(--b2);}
+.lhint{font-size:11px;color:var(--t3);text-align:center;margin-bottom:16px;}
+.lhint b{color:var(--t2);}
+.lf{margin-bottom:14px;}
+.lf label{display:block;font-size:11px;color:var(--t3);margin-bottom:6px;}
+.lf input{width:100%;background:var(--bg3);border:1px solid var(--b);border-radius:var(--r);padding:10px 13px;font-size:13px;color:var(--t);font-family:'DM Sans',sans-serif;outline:none;transition:border 0.15s;}
+.lf input:focus{border-color:var(--b2);}
+.lf input::placeholder{color:var(--t3);}
+.btnlogin{width:100%;padding:11px;background:var(--ac);color:#fff;border:none;border-radius:var(--r);font-size:14px;font-weight:500;font-family:'DM Sans',sans-serif;cursor:pointer;transition:opacity 0.15s;}
+.btnlogin:hover{opacity:0.88;}
+.lerr{font-size:12px;color:var(--ud-t);text-align:center;margin-top:10px;min-height:18px;}
+.cs-pwd-info{background:var(--bg3);border:1px solid var(--b);border-radius:8px;padding:10px 13px;font-size:11px;color:var(--t3);margin-top:10px;line-height:1.7;}
+.cs-pwd-info b{color:var(--t2);}
 
-  /* APP */
-  .app{display:none;}
-  .app.on{display:block;}
+.app{display:none;}.app.on{display:block;}
+.sb{position:fixed;left:0;top:0;bottom:0;width:220px;background:var(--bg2);border-right:1px solid var(--b);display:flex;flex-direction:column;z-index:50;}
+.sblogo{padding:24px 20px 20px;border-bottom:1px solid var(--b);}
+.sblogo .brand{font-size:15px;font-weight:600;letter-spacing:-0.3px;}
+.sblogo .brand span{color:var(--ac);}
+.sblogo .tag{font-size:11px;color:var(--t3);margin-top:2px;}
+.sbnav{padding:16px 12px;flex:1;}
+.nlbl{font-size:10px;color:var(--t3);letter-spacing:0.8px;text-transform:uppercase;padding:0 8px;margin-bottom:6px;margin-top:10px;}
+.ni{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:8px;color:var(--t2);font-size:13px;cursor:pointer;transition:all 0.15s;margin-bottom:2px;}
+.ni:hover{background:var(--bg3);color:var(--t);}
+.ni.active{background:var(--bg4);color:var(--t);font-weight:500;}
+.ni svg{width:15px;height:15px;flex-shrink:0;opacity:0.7;}
+.ni.active svg{opacity:1;}
+.nbadge{margin-left:auto;background:var(--bg4);color:var(--t2);font-size:10px;font-weight:500;padding:1px 7px;border-radius:20px;min-width:22px;text-align:center;}
+.ni.active .nbadge{background:var(--ac);color:#fff;}
+.sbfoot{padding:16px 12px;border-top:1px solid var(--b);}
+.ucard{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:8px;}
+.uav{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:#fff;flex-shrink:0;}
+.aav{background:linear-gradient(135deg,#378add,#185FA5);}
+.cav{background:linear-gradient(135deg,#1D9E75,#0F6E56);}
+.uinfo .un{font-size:12px;font-weight:500;color:var(--t);}
+.uinfo .ur{font-size:10px;color:var(--t3);}
+.btnout{margin-left:auto;background:none;border:none;color:var(--t3);cursor:pointer;padding:4px;border-radius:5px;transition:color 0.15s;}
+.btnout:hover{color:var(--ud-t);}
+.btnout svg{width:14px;height:14px;display:block;}
 
-  /* SIDEBAR */
-  .sb{position:fixed;left:0;top:0;bottom:0;width:220px;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;z-index:50;}
-  .sblogo{padding:24px 20px 20px;border-bottom:1px solid var(--border);}
-  .sblogo .brand{font-size:15px;font-weight:600;color:var(--text);letter-spacing:-0.3px;}
-  .sblogo .brand span{color:var(--accent);}
-  .sblogo .tag{font-size:11px;color:var(--text3);margin-top:2px;}
-  .sbnav{padding:16px 12px;flex:1;}
-  .nlabel{font-size:10px;color:var(--text3);letter-spacing:0.8px;text-transform:uppercase;padding:0 8px;margin-bottom:6px;margin-top:10px;}
-  .ni{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:8px;color:var(--text2);font-size:13px;cursor:pointer;transition:all 0.15s;margin-bottom:2px;}
-  .ni:hover{background:var(--bg3);color:var(--text);}
-  .ni.active{background:var(--bg4);color:var(--text);font-weight:500;}
-  .ni svg{width:15px;height:15px;flex-shrink:0;opacity:0.7;}
-  .ni.active svg{opacity:1;}
-  .nbadge{margin-left:auto;background:var(--bg4);color:var(--text2);font-size:10px;font-weight:500;padding:1px 7px;border-radius:20px;min-width:22px;text-align:center;}
-  .ni.active .nbadge{background:var(--accent);color:#fff;}
-  .rpillw{padding:0 12px 10px;}
-  .rpill{display:inline-flex;align-items:center;gap:7px;padding:5px 10px;border-radius:8px;font-size:12px;font-weight:500;width:100%;}
-  .rpill.admin{background:rgba(55,138,221,0.1);color:var(--pu-t);border:1px solid rgba(55,138,221,0.18);}
-  .rpill.cs{background:rgba(29,158,117,0.1);color:#4ecda4;border:1px solid rgba(29,158,117,0.18);}
-  .rdot{width:6px;height:6px;border-radius:50%;flex-shrink:0;}
-  .rpill.admin .rdot{background:var(--pu-d);}
-  .rpill.cs .rdot{background:var(--green);}
-  .sbfoot{padding:16px 12px;border-top:1px solid var(--border);}
-  .ucard{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:8px;}
-  .uav{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:#fff;flex-shrink:0;}
-  .aav{background:linear-gradient(135deg,#378add,#185FA5);}
-  .cav{background:linear-gradient(135deg,#1D9E75,#0F6E56);}
-  .uinfo .un{font-size:12px;font-weight:500;color:var(--text);}
-  .uinfo .ur{font-size:10px;color:var(--text3);}
-  .btnout{margin-left:auto;background:none;border:none;color:var(--text3);cursor:pointer;padding:4px;border-radius:5px;transition:color 0.15s;}
-  .btnout:hover{color:var(--ud-t);}
-  .btnout svg{width:14px;height:14px;display:block;}
+.main{margin-left:220px;padding:28px 28px 48px;min-height:100vh;}
+.topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:12px;}
+.ptitle{font-size:20px;font-weight:600;letter-spacing:-0.3px;}
+.psub{font-size:12px;color:var(--t3);margin-top:2px;}
+.dchip{font-size:12px;color:var(--t2);background:var(--bg2);border:1px solid var(--b);padding:6px 12px;border-radius:8px;white-space:nowrap;}
 
-  /* MAIN */
-  .main{margin-left:220px;padding:28px 28px 48px;min-height:100vh;}
-  .topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:28px;}
-  .ptitle{font-size:20px;font-weight:600;color:var(--text);letter-spacing:-0.3px;}
-  .psub{font-size:12px;color:var(--text3);margin-top:2px;}
-  .dchip{font-size:12px;color:var(--text2);background:var(--bg2);border:1px solid var(--border);padding:6px 12px;border-radius:8px;}
+.csbanner{display:flex;background:rgba(29,158,117,0.07);border:1px solid rgba(29,158,117,0.18);border-radius:var(--r);padding:11px 16px;margin-bottom:20px;font-size:12px;color:#4ecda4;align-items:center;gap:10px;}
+.csbanner svg{width:14px;height:14px;flex-shrink:0;}
+.csbanner strong{color:#6edcb9;}
 
-  /* CS BANNER */
-  .csbanner{display:none;background:rgba(29,158,117,0.07);border:1px solid rgba(29,158,117,0.18);border-radius:var(--r);padding:10px 16px;margin-bottom:20px;font-size:12px;color:#4ecda4;align-items:center;gap:10px;}
-  .csbanner svg{width:14px;height:14px;flex-shrink:0;}
-  .csbanner strong{color:#6edcb9;}
-  body.ics .csbanner{display:flex;}
+.sgrid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:20px;}
+.sc{background:var(--bg2);border:1px solid var(--b);border-radius:var(--rl);padding:16px 18px;cursor:pointer;transition:all 0.2s;position:relative;overflow:hidden;}
+.sc:hover{border-color:var(--b2);transform:translateY(-1px);}
+.sc.af{border-color:var(--ac)!important;}
+.sc::before{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;opacity:0;transition:opacity 0.2s;}
+.sc:hover::before,.sc.af::before{opacity:1;}
+.spu::before{background:var(--pu-d);}.sop::before{background:var(--op-d);}.sud::before{background:var(--ud-d);}.sdl::before{background:var(--dl-d);}.srt::before{background:var(--rt-d);}
+.sico{width:28px;height:28px;border-radius:7px;margin-bottom:10px;display:flex;align-items:center;justify-content:center;}
+.sico svg{width:14px;height:14px;}
+.spu .sico{background:var(--pu-bg);color:var(--pu-d);}.sop .sico{background:var(--op-bg);color:var(--op-d);}
+.sud .sico{background:var(--ud-bg);color:var(--ud-d);}.sdl .sico{background:var(--dl-bg);color:var(--dl-d);}.srt .sico{background:var(--rt-bg);color:var(--rt-d);}
+.snum{font-size:26px;font-weight:600;letter-spacing:-1px;line-height:1;margin-bottom:4px;}
+.spu .snum{color:var(--pu-t);}.sop .snum{color:var(--op-t);}.sud .snum{color:var(--ud-t);}.sdl .snum{color:var(--dl-t);}.srt .snum{color:var(--rt-t);}
+.slbl{font-size:11px;color:var(--t3);}
 
-  /* STATS */
-  .sgrid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:24px;}
-  .sc{background:var(--bg2);border:1px solid var(--border);border-radius:var(--rl);padding:16px 18px;cursor:pointer;transition:all 0.2s;position:relative;overflow:hidden;}
-  .sc:hover{border-color:var(--border2);transform:translateY(-1px);}
-  .sc.af{border-color:var(--accent)!important;}
-  .sc::before{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;opacity:0;transition:opacity 0.2s;}
-  .sc:hover::before,.sc.af::before{opacity:1;}
-  .spu::before{background:var(--pu-d);}.sop::before{background:var(--op-d);}.sud::before{background:var(--ud-d);}.sdl::before{background:var(--dl-d);}.srt::before{background:var(--rt-d);}
-  .sico{width:28px;height:28px;border-radius:7px;margin-bottom:10px;display:flex;align-items:center;justify-content:center;}
-  .sico svg{width:14px;height:14px;}
-  .spu .sico{background:var(--pu-bg);color:var(--pu-d);}.sop .sico{background:var(--op-bg);color:var(--op-d);}
-  .sud .sico{background:var(--ud-bg);color:var(--ud-d);}.sdl .sico{background:var(--dl-bg);color:var(--dl-d);}
-  .srt .sico{background:var(--rt-bg);color:var(--rt-d);}
-  .snum{font-size:26px;font-weight:600;letter-spacing:-1px;line-height:1;margin-bottom:4px;}
-  .spu .snum{color:var(--pu-t);}.sop .snum{color:var(--op-t);}.sud .snum{color:var(--ud-t);}.sdl .snum{color:var(--dl-t);}.srt .snum{color:var(--rt-t);}
-  .slbl{font-size:11px;color:var(--text3);}
+.tbar{background:var(--bg2);border:1px solid var(--b);border-radius:var(--rl);padding:14px 20px;margin-bottom:20px;display:flex;align-items:center;gap:20px;}
+.tlbl{font-size:12px;color:var(--t3);}.tnum{font-size:18px;font-weight:600;color:var(--t);}
+.pbw{flex:1;height:6px;background:var(--bg4);border-radius:99px;overflow:hidden;display:flex;}
+.pbs{height:100%;transition:width 0.4s;}
+.pbpu{background:var(--pu-d);}.pbop{background:var(--op-d);}.pbud{background:var(--ud-d);}.pbdl{background:var(--dl-d);}.pbrt{background:var(--rt-d);}
 
-  /* TOTAL BAR */
-  .tbar{background:var(--bg2);border:1px solid var(--border);border-radius:var(--rl);padding:14px 20px;margin-bottom:20px;display:flex;align-items:center;gap:20px;}
-  .tlbl{font-size:12px;color:var(--text3);}
-  .tnum{font-size:18px;font-weight:600;color:var(--text);}
-  .pbw{flex:1;height:6px;background:var(--bg4);border-radius:99px;overflow:hidden;display:flex;}
-  .pbs{height:100%;transition:width 0.4s;}
-  .pbpu{background:var(--pu-d);}.pbop{background:var(--op-d);}.pbud{background:var(--ud-d);}.pbdl{background:var(--dl-d);}.pbrt{background:var(--rt-d);}
+.toolbar{display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap;}
+.sw{position:relative;flex:1;min-width:180px;}
+.sw input{width:100%;background:var(--bg2);border:1px solid var(--b);border-radius:var(--r);padding:8px 12px 8px 36px;font-size:13px;color:var(--t);font-family:'DM Sans',sans-serif;outline:none;transition:border 0.15s;}
+.sw input::placeholder{color:var(--t3);}
+.sw input:focus{border-color:var(--b2);}
+.sico2{position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--t3);}
+.sico2 svg{width:14px;height:14px;display:block;}
+.selk{background:var(--bg2);border:1px solid var(--b);border-radius:var(--r);padding:8px 12px;font-size:13px;color:var(--t);font-family:'DM Sans',sans-serif;outline:none;cursor:pointer;}
+.selk option{background:var(--bg2);}
+.btnprimary{background:var(--ac);color:#fff;border:none;border-radius:var(--r);padding:8px 16px;font-size:13px;font-weight:500;font-family:'DM Sans',sans-serif;cursor:pointer;display:flex;align-items:center;gap:6px;transition:opacity 0.15s;white-space:nowrap;}
+.btnprimary:hover{opacity:0.88;}
+.btnprimary svg{width:13px;height:13px;}
+.btngreen{background:var(--bg2);color:var(--dl-t);border:1px solid rgba(99,153,34,0.3);border-radius:var(--r);padding:8px 14px;font-size:13px;font-weight:500;font-family:'DM Sans',sans-serif;cursor:pointer;display:flex;align-items:center;gap:6px;transition:all 0.15s;white-space:nowrap;}
+.btngreen:hover{background:rgba(99,153,34,0.08);border-color:var(--dl-d);}
+.btngreen svg{width:13px;height:13px;}
+.btnghost{padding:8px 12px;font-size:13px;background:transparent;color:var(--t2);border:1px solid var(--b);border-radius:var(--r);font-family:'DM Sans',sans-serif;cursor:pointer;white-space:nowrap;}
+.btnghost:hover{border-color:var(--b2);color:var(--t);}
 
-  /* TOOLBAR */
-  .toolbar{display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap;}
-  .sw{position:relative;flex:1;min-width:200px;}
-  .sw input{width:100%;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:8px 12px 8px 36px;font-size:13px;color:var(--text);font-family:'DM Sans',sans-serif;outline:none;transition:border 0.15s;}
-  .sw input::placeholder{color:var(--text3);}
-  .sw input:focus{border-color:var(--border2);}
-  .sico2{position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--text3);}
-  .sico2 svg{width:14px;height:14px;display:block;}
-  .selk{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:8px 12px;font-size:13px;color:var(--text);font-family:'DM Sans',sans-serif;outline:none;cursor:pointer;}
-  .selk option{background:var(--bg2);}
-  .btnadd{background:var(--accent);color:#fff;border:none;border-radius:var(--r);padding:8px 16px;font-size:13px;font-weight:500;font-family:'DM Sans',sans-serif;cursor:pointer;display:flex;align-items:center;gap:6px;transition:opacity 0.15s;white-space:nowrap;}
-  .btnadd:hover{opacity:0.88;}
-  .btnadd svg{width:13px;height:13px;}
-  .btnrst{padding:8px 12px;font-size:13px;background:transparent;color:var(--text2);border:1px solid var(--border);border-radius:var(--r);font-family:'DM Sans',sans-serif;cursor:pointer;}
-  .btnrst:hover{border-color:var(--border2);color:var(--text);}
-  .btnbulk{background:var(--bg2);color:var(--dl-t);border:1px solid rgba(99,153,34,0.3);border-radius:var(--r);padding:8px 14px;font-size:13px;font-weight:500;font-family:'DM Sans',sans-serif;cursor:pointer;display:flex;align-items:center;gap:6px;transition:all 0.15s;white-space:nowrap;}
-  .btnbulk:hover{background:rgba(99,153,34,0.1);border-color:var(--dl-d);}
-  .btnbulk svg{width:13px;height:13px;}
-  .modal-wide{width:680px;max-width:97vw;}
-  .btabs{display:flex;gap:0;background:var(--bg3);border-radius:8px;padding:3px;margin-bottom:18px;}
-  .btab{flex:1;padding:7px;text-align:center;border-radius:6px;font-size:12px;font-weight:400;color:var(--text3);cursor:pointer;border:none;background:transparent;font-family:'DM Sans',sans-serif;transition:all 0.15s;}
-  .btab.active{background:var(--bg2);color:var(--text);font-weight:500;border:1px solid var(--border2);}
-  .bpane{display:none;}.bpane.active{display:block;}
-  .bulk-ta{width:100%;min-height:160px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:10px 13px;font-size:12px;font-family:'DM Mono',monospace;color:var(--text);outline:none;resize:vertical;line-height:1.7;}
-  .bulk-ta:focus{border-color:var(--border2);}
-  .hint-box{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:12px 14px;font-size:12px;color:var(--text3);margin-bottom:14px;line-height:1.7;}
-  .hint-box b{color:var(--text2);font-weight:500;}
-  .hint-box code{font-family:'DM Mono',monospace;font-size:11px;color:var(--pu-t);background:rgba(55,138,221,0.08);padding:1px 5px;border-radius:4px;}
-  .drop-zone{border:1.5px dashed var(--border2);border-radius:var(--r);padding:32px 20px;text-align:center;cursor:pointer;transition:all 0.2s;margin-bottom:14px;}
-  .drop-zone:hover,.drop-zone.drag{border-color:var(--dl-d);background:rgba(99,153,34,0.04);}
-  .drop-zone svg{width:32px;height:32px;color:var(--text3);margin:0 auto 10px;display:block;}
-  .drop-zone .dzlbl{font-size:13px;color:var(--text2);margin-bottom:4px;}
-  .drop-zone .dzsub{font-size:11px;color:var(--text3);}
-  .preview-wrap{max-height:200px;overflow-y:auto;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);margin-top:12px;}
-  .ptbl{width:100%;border-collapse:collapse;font-size:12px;}
-  .ptbl th{padding:7px 10px;background:var(--bg3);color:var(--text3);font-size:10px;letter-spacing:0.5px;text-transform:uppercase;border-bottom:1px solid var(--border);text-align:left;position:sticky;top:0;}
-  .ptbl td{padding:7px 10px;border-bottom:1px solid var(--border);color:var(--text);vertical-align:middle;}
-  .ptbl tr:last-child td{border-bottom:none;}
-  .ptbl .perr td{color:var(--ud-t)!important;}
-  .ptbl .pdup td{color:var(--op-t)!important;}
-  .bulk-sum{display:flex;align-items:center;gap:8px;font-size:12px;margin:12px 0;flex-wrap:wrap;}
-  .bs-pill{padding:3px 10px;border-radius:20px;font-size:11px;font-weight:500;}
-  .bs-ok{background:var(--dl-bg);color:var(--dl-t);}
-  .bs-err{background:var(--ud-bg);color:var(--ud-t);}
-  .bs-dup{background:var(--op-bg);color:var(--op-t);}
-  .mrow{display:grid;grid-template-columns:130px 1fr 100px 100px 100px 80px;gap:6px;margin-bottom:8px;align-items:center;}
-  .mrow input,.mrow select{background:var(--bg3);border:1px solid var(--border);border-radius:7px;padding:7px 9px;font-size:12px;color:var(--text);font-family:'DM Sans',sans-serif;outline:none;width:100%;}
-  .mrow input:focus,.mrow select:focus{border-color:var(--border2);}
-  .mrow select option{background:var(--bg3);}
-  .mrow-del{background:none;border:none;color:var(--text3);cursor:pointer;padding:4px;border-radius:5px;}
-  .mrow-del:hover{color:var(--ud-t);}
-  .mrow-del svg{width:14px;height:14px;display:block;}
-  .mhdr{display:grid;grid-template-columns:130px 1fr 100px 100px 100px 80px;gap:6px;margin-bottom:6px;}
-  .mhdr span{font-size:10px;color:var(--text3);letter-spacing:0.4px;text-transform:uppercase;padding:0 2px;}
-  .btnassign{background:var(--bg2);color:var(--op-t);border:1px solid rgba(239,159,39,0.3);border-radius:var(--r);padding:8px 14px;font-size:13px;font-weight:500;font-family:'DM Sans',sans-serif;cursor:pointer;display:flex;align-items:center;gap:6px;transition:all 0.15s;white-space:nowrap;}
-  .btnassign:hover{background:rgba(239,159,39,0.08);border-color:var(--op-d);}
-  .btnassign svg{width:13px;height:13px;}
-  /* ASSIGN MODAL */
-  .modal-assign{width:720px;max-width:98vw;}
-  .assign-layout{display:grid;grid-template-columns:1fr 220px;gap:16px;min-height:340px;}
-  .assign-left{min-width:0;}
-  .assign-right{border-left:1px solid var(--border);padding-left:16px;display:flex;flex-direction:column;gap:10px;}
-  .cs-list{display:flex;flex-direction:column;gap:6px;}
-  .cs-card{background:var(--bg3);border:1px solid var(--border);border-radius:9px;padding:10px 13px;cursor:pointer;transition:all 0.15s;display:flex;align-items:center;gap:10px;}
-  .cs-card:hover{border-color:var(--border2);}
-  .cs-card.selected{border-color:var(--op-d);background:rgba(239,159,39,0.06);}
-  .cs-card .cav2{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#1D9E75,#0F6E56);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;color:#fff;flex-shrink:0;}
-  .cs-card .cname{font-size:13px;font-weight:500;color:var(--text);}
-  .cs-card .ccount{font-size:11px;color:var(--text3);margin-top:1px;}
-  .cs-card .ccheck{margin-left:auto;width:16px;height:16px;border-radius:50%;border:1.5px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:9px;color:transparent;flex-shrink:0;}
-  .cs-card.selected .ccheck{background:var(--op-d);border-color:var(--op-d);color:#fff;}
-  .assign-mode{display:flex;gap:4px;background:var(--bg3);border-radius:8px;padding:3px;margin-bottom:12px;}
-  .amode-btn{flex:1;padding:6px;text-align:center;border-radius:6px;font-size:11px;color:var(--text3);cursor:pointer;border:none;background:transparent;font-family:'DM Sans',sans-serif;transition:all 0.15s;}
-  .amode-btn.active{background:var(--bg2);color:var(--text);font-weight:500;border:1px solid var(--border2);}
-  .order-pick-wrap{max-height:280px;overflow-y:auto;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);}
-  .oprow{display:flex;align-items:center;gap:10px;padding:9px 14px;border-bottom:1px solid var(--border);cursor:pointer;transition:background 0.1s;}
-  .oprow:last-child{border-bottom:none;}
-  .oprow:hover{background:var(--bg3);}
-  .oprow input[type=checkbox]{accent-color:var(--op-d);width:14px;height:14px;flex-shrink:0;}
-  .oprow .oresi{font-family:'DM Mono',monospace;font-size:11px;color:var(--text2);min-width:110px;}
-  .oprow .oname{font-size:12px;color:var(--text);flex:1;}
-  .oprow .oassigned{font-size:10px;color:var(--text3);}
-  .assign-summary{font-size:12px;color:var(--text3);padding:8px 0;}
-  .split-info{background:var(--bg3);border-radius:8px;padding:10px 13px;font-size:12px;color:var(--text3);}
-  .split-info b{color:var(--text2);}
-  .split-row{display:flex;justify-content:space-between;padding:3px 0;border-bottom:1px solid var(--border);}
-  .split-row:last-child{border-bottom:none;}
-  .assigned-dot{width:7px;height:7px;border-radius:50%;background:var(--op-d);display:inline-block;margin-right:4px;}
-  /* assigned badge in table */
-  .achip{font-size:10px;background:rgba(239,159,39,0.12);color:var(--op-t);padding:1px 7px;border-radius:20px;display:inline-block;max-width:80px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.tw{background:var(--bg2);border:1px solid var(--b);border-radius:var(--rl);overflow:hidden;}
+.tw-scroll{overflow-x:auto;}
+table{width:100%;border-collapse:collapse;font-size:12.5px;}
+thead tr{background:var(--bg3);}
+th{padding:10px 14px;text-align:left;font-size:10px;font-weight:500;color:var(--t3);letter-spacing:0.6px;text-transform:uppercase;border-bottom:1px solid var(--b);white-space:nowrap;}
+td{padding:11px 14px;border-bottom:1px solid var(--b);color:var(--t);vertical-align:middle;}
+tbody tr:last-child td{border-bottom:none;}
+tbody tr{transition:background 0.1s;}
+tbody tr:hover td{background:var(--bg3);}
+.rcode{font-family:'DM Mono',monospace;font-size:11px;color:var(--t2);letter-spacing:0.3px;}
+.badge{display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:500;white-space:nowrap;}
+.bdot{width:5px;height:5px;border-radius:50%;flex-shrink:0;}
+.bpu{background:var(--pu-bg);color:var(--pu-t);}.bpu .bdot{background:var(--pu-d);}
+.bop{background:var(--op-bg);color:var(--op-t);}.bop .bdot{background:var(--op-d);}
+.bud{background:var(--ud-bg);color:var(--ud-t);}.bud .bdot{background:var(--ud-d);}
+.bdl{background:var(--dl-bg);color:var(--dl-t);}.bdl .bdot{background:var(--dl-d);}
+.brt{background:var(--rt-bg);color:var(--rt-t);}.brt .bdot{background:var(--rt-d);}
+.kchip{font-size:10px;color:var(--t3);background:var(--bg4);padding:2px 7px;border-radius:5px;display:inline-block;}
+.cschip{font-size:11px;background:rgba(55,138,221,0.12);color:var(--pu-t);padding:2px 9px;border-radius:20px;display:inline-block;white-space:nowrap;}
+.ba{padding:3px 9px;font-size:11px;border-radius:6px;border:1px solid var(--b);font-family:'DM Sans',sans-serif;cursor:pointer;transition:all 0.15s;margin-right:3px;background:transparent;}
+.bedit{color:var(--t2);}.bedit:hover{background:var(--bg4);color:var(--t);border-color:var(--b2);}
+.bdelbtn{color:var(--ud-t);border-color:var(--ud-bg);}.bdelbtn:hover{background:var(--ud-bg);}
+.bview{color:var(--pu-t);border-color:var(--pu-bg);}.bview:hover{background:var(--pu-bg);}
+.erow td{padding:40px 16px;text-align:center;color:var(--t3);font-size:13px;}
 
-  /* TABLE */
-  .tw{background:var(--bg2);border:1px solid var(--border);border-radius:var(--rl);overflow:hidden;}
-  table{width:100%;border-collapse:collapse;font-size:13px;}
-  thead tr{background:var(--bg3);}
-  th{padding:11px 16px;text-align:left;font-size:10.5px;font-weight:500;color:var(--text3);letter-spacing:0.6px;text-transform:uppercase;border-bottom:1px solid var(--border);white-space:nowrap;}
-  td{padding:13px 16px;border-bottom:1px solid var(--border);color:var(--text);vertical-align:middle;}
-  tbody tr:last-child td{border-bottom:none;}
-  tbody tr{transition:background 0.1s;}
-  tbody tr:hover td{background:var(--bg3);}
-  .rcode{font-family:'DM Mono',monospace;font-size:12px;color:var(--text2);letter-spacing:0.3px;}
-  .badge{display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:500;white-space:nowrap;}
-  .bdot{width:5px;height:5px;border-radius:50%;flex-shrink:0;}
-  .bpu{background:var(--pu-bg);color:var(--pu-t);}.bpu .bdot{background:var(--pu-d);}
-  .bop{background:var(--op-bg);color:var(--op-t);}.bop .bdot{background:var(--op-d);}
-  .bud{background:var(--ud-bg);color:var(--ud-t);}.bud .bdot{background:var(--ud-d);}
-  .bdl{background:var(--dl-bg);color:var(--dl-t);}.bdl .bdot{background:var(--dl-d);}
-  .brt{background:var(--rt-bg);color:var(--rt-t);}.brt .bdot{background:var(--rt-d);}
-  .kchip{font-size:11px;color:var(--text3);background:var(--bg4);padding:2px 8px;border-radius:5px;display:inline-block;}
-  .ba{padding:4px 10px;font-size:11px;border-radius:6px;border:1px solid var(--border);font-family:'DM Sans',sans-serif;cursor:pointer;transition:all 0.15s;margin-right:4px;background:transparent;}
-  .bedit{color:var(--text2);}.bedit:hover{background:var(--bg4);color:var(--text);border-color:var(--border2);}
-  .bdel{color:var(--ud-t);border-color:var(--ud-bg);}.bdel:hover{background:var(--ud-bg);}
-  .bview{color:var(--pu-t);border-color:var(--pu-bg);}.bview:hover{background:var(--pu-bg);}
-  .erow td{padding:48px 16px;text-align:center;color:var(--text3);font-size:13px;}
+.mover{position:fixed;inset:0;background:rgba(0,0,0,0.72);display:flex;align-items:center;justify-content:center;z-index:200;backdrop-filter:blur(2px);opacity:0;pointer-events:none;transition:opacity 0.2s;}
+.mover.open{opacity:1;pointer-events:all;}
+.modal{background:var(--bg2);border:1px solid var(--b2);border-radius:var(--rl);padding:24px;width:440px;max-width:96vw;transform:translateY(12px);transition:transform 0.2s;max-height:92vh;overflow-y:auto;}
+.mover.open .modal{transform:translateY(0);}
+.modal-xl{width:880px;max-width:98vw;}
+.mhd{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;}
+.mtitle{font-size:15px;font-weight:600;color:var(--t);}
+.mclose{width:26px;height:26px;background:var(--bg4);border:none;border-radius:6px;color:var(--t3);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;}
+.mclose:hover{color:var(--t);}
+.fr{margin-bottom:14px;}
+.fr label{display:block;font-size:11px;color:var(--t3);margin-bottom:6px;}
+.fr input,.fr select,.fr textarea{width:100%;background:var(--bg3);border:1px solid var(--b);border-radius:var(--r);padding:9px 12px;font-size:13px;color:var(--t);font-family:'DM Sans',sans-serif;outline:none;transition:border 0.15s;}
+.fr input:focus,.fr select:focus,.fr textarea:focus{border-color:var(--b2);}
+.fr input::placeholder{color:var(--t3);}
+.fr select option{background:var(--bg3);}
+.fr textarea{resize:vertical;min-height:54px;}
+.fg{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.mfooter{display:flex;gap:8px;justify-content:flex-end;margin-top:18px;}
+.bcancel{padding:8px 16px;font-size:13px;background:transparent;color:var(--t2);border:1px solid var(--b);border-radius:var(--r);font-family:'DM Sans',sans-serif;cursor:pointer;}
+.bcancel:hover{border-color:var(--b2);color:var(--t);}
+.bsave{padding:8px 20px;font-size:13px;background:var(--ac);color:#fff;border:none;border-radius:var(--r);font-family:'DM Sans',sans-serif;cursor:pointer;font-weight:500;}
+.bsave:hover{opacity:0.88;}
 
-  /* MODAL */
-  .mover{position:fixed;inset:0;background:rgba(0,0,0,0.72);display:flex;align-items:center;justify-content:center;z-index:200;backdrop-filter:blur(2px);opacity:0;pointer-events:none;transition:opacity 0.2s;}
-  .mover.open{opacity:1;pointer-events:all;}
-  .modal{background:var(--bg2);border:1px solid var(--border2);border-radius:var(--rl);padding:24px;width:400px;max-width:95vw;transform:translateY(12px);transition:transform 0.2s;}
-  .mover.open .modal{transform:translateY(0);}
-  .mhd{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;}
-  .mtitle{font-size:15px;font-weight:600;color:var(--text);}
-  .mclose{width:26px;height:26px;background:var(--bg4);border:none;border-radius:6px;color:var(--text3);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;}
-  .mclose:hover{color:var(--text);}
-  .fr{margin-bottom:14px;}
-  .fr label{display:block;font-size:11px;color:var(--text3);margin-bottom:6px;letter-spacing:0.3px;}
-  .fr input,.fr select,.fr textarea{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:9px 12px;font-size:13px;color:var(--text);font-family:'DM Sans',sans-serif;outline:none;transition:border 0.15s;}
-  .fr input:focus,.fr select:focus,.fr textarea:focus{border-color:var(--border2);}
-  .fr input::placeholder{color:var(--text3);}
-  .fr select option{background:var(--bg3);}
-  .fr textarea{resize:vertical;min-height:58px;}
-  .fg{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
-  .mfooter{display:flex;gap:8px;justify-content:flex-end;margin-top:20px;}
-  .bcancel{padding:8px 16px;font-size:13px;background:transparent;color:var(--text2);border:1px solid var(--border);border-radius:var(--r);font-family:'DM Sans',sans-serif;cursor:pointer;}
-  .bcancel:hover{border-color:var(--border2);color:var(--text);}
-  .bsave{padding:8px 20px;font-size:13px;background:var(--accent);color:#fff;border:none;border-radius:var(--r);font-family:'DM Sans',sans-serif;cursor:pointer;font-weight:500;}
-  .bsave:hover{opacity:0.88;}
+.btabs{display:flex;gap:0;background:var(--bg3);border-radius:8px;padding:3px;margin-bottom:16px;}
+.btab{flex:1;padding:7px;text-align:center;border-radius:6px;font-size:12px;color:var(--t3);cursor:pointer;border:none;background:transparent;font-family:'DM Sans',sans-serif;transition:all 0.15s;}
+.btab.active{background:var(--bg2);color:var(--t);font-weight:500;border:1px solid var(--b2);}
+.bpane{display:none;}.bpane.active{display:block;}
+.hint-box{background:var(--bg3);border:1px solid var(--b);border-radius:var(--r);padding:11px 14px;font-size:12px;color:var(--t3);margin-bottom:14px;line-height:1.75;}
+.hint-box b{color:var(--t2);}
+.hint-box code{font-family:'DM Mono',monospace;font-size:11px;color:var(--pu-t);background:rgba(55,138,221,0.1);padding:1px 5px;border-radius:4px;}
+.drop-zone{border:1.5px dashed var(--b2);border-radius:var(--r);padding:28px 20px;text-align:center;cursor:pointer;transition:all 0.2s;margin-bottom:12px;}
+.drop-zone:hover,.drop-zone.drag{border-color:var(--dl-d);background:rgba(99,153,34,0.04);}
+.drop-zone svg{width:30px;height:30px;color:var(--t3);margin:0 auto 8px;display:block;}
+.drop-zone .dzlbl{font-size:13px;color:var(--t2);margin-bottom:3px;}
+.drop-zone .dzsub{font-size:11px;color:var(--t3);}
+.drop-zone input[type=file]{display:none;}
+.bulk-ta{width:100%;min-height:150px;background:var(--bg3);border:1px solid var(--b);border-radius:var(--r);padding:10px 13px;font-size:12px;font-family:'DM Mono',monospace;color:var(--t);outline:none;resize:vertical;line-height:1.7;}
+.bulk-ta:focus{border-color:var(--b2);}
+.preview-wrap{max-height:220px;overflow-y:auto;background:var(--bg2);border:1px solid var(--b);border-radius:var(--r);margin-top:10px;}
+.ptbl{width:100%;border-collapse:collapse;font-size:11.5px;}
+.ptbl th{padding:6px 10px;background:var(--bg3);color:var(--t3);font-size:10px;letter-spacing:0.5px;text-transform:uppercase;border-bottom:1px solid var(--b);text-align:left;position:sticky;top:0;}
+.ptbl td{padding:6px 10px;border-bottom:1px solid var(--b);color:var(--t);}
+.ptbl tr:last-child td{border-bottom:none;}
+.ptbl .perr td{color:var(--ud-t)!important;}
+.ptbl .pdup td{color:var(--op-t)!important;}
+.bulk-sum{display:flex;align-items:center;gap:8px;font-size:12px;margin:10px 0;flex-wrap:wrap;}
+.bspill{padding:3px 10px;border-radius:20px;font-size:11px;font-weight:500;}
+.bs-ok{background:var(--dl-bg);color:var(--dl-t);}
+.bs-err{background:var(--ud-bg);color:var(--ud-t);}
+.bs-dup{background:var(--op-bg);color:var(--op-t);}
+.cs-dist{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px;margin-top:10px;}
+.cs-dist-card{background:var(--bg3);border:1px solid var(--b);border-radius:9px;padding:12px 14px;}
+.cs-dist-name{font-size:12px;font-weight:500;color:var(--t);margin-bottom:4px;}
+.cs-dist-cnt{font-size:24px;font-weight:600;color:var(--pu-t);letter-spacing:-0.5px;line-height:1;}
+.cs-dist-lbl{font-size:10px;color:var(--t3);margin-top:2px;}
 
-  /* DETAIL */
-  .tlwrap{margin:8px 0 16px;}
-  .tlrow{display:flex;align-items:center;}
-  .tlnode{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;border:2px solid transparent;flex-shrink:0;}
-  .tldone{background:var(--dl-bg);color:var(--dl-t);border-color:var(--dl-d);}
-  .tlnow{background:var(--pu-bg);color:var(--pu-t);border-color:var(--pu-d);}
-  .tlnoww{background:var(--op-bg);color:var(--op-t);border-color:var(--op-d);}
-  .tlnowd{background:var(--ud-bg);color:var(--ud-t);border-color:var(--ud-d);}
-  .tlnowr{background:var(--rt-bg);color:var(--rt-t);border-color:var(--rt-d);}
-  .tlpend{background:var(--bg4);color:var(--text3);border-color:var(--border);}
-  .tlline{flex:1;height:2px;background:var(--border);}
-  .tlline.done{background:var(--dl-d);}
-  .tllbls{display:flex;margin-top:5px;}
-  .tllbl{flex:1;font-size:9.5px;color:var(--text3);text-align:center;}
-  .tllbl.f{text-align:left;}.tllbl.l{text-align:right;}
-  .drows{margin-top:12px;}
-  .dr{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;padding:9px 0;border-bottom:1px solid var(--border);}
-  .dr:last-child{border-bottom:none;}
-  .dk{font-size:12px;color:var(--text3);flex-shrink:0;}
-  .dv{font-size:13px;color:var(--text);text-align:right;}
-  .snote{padding:9px 13px;border-radius:8px;font-size:12px;margin-bottom:12px;}
-  .snote-ud{background:var(--ud-bg);color:var(--ud-t);}
-  .snote-rt{background:var(--rt-bg);color:var(--rt-t);}
+.tlwrap{margin:6px 0 14px;}
+.tlrow{display:flex;align-items:center;}
+.tlnode{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;border:2px solid transparent;flex-shrink:0;}
+.tldone{background:var(--dl-bg);color:var(--dl-t);border-color:var(--dl-d);}
+.tlnow{background:var(--pu-bg);color:var(--pu-t);border-color:var(--pu-d);}
+.tlnowd{background:var(--ud-bg);color:var(--ud-t);border-color:var(--ud-d);}
+.tlnowr{background:var(--rt-bg);color:var(--rt-t);border-color:var(--rt-d);}
+.tlpend{background:var(--bg4);color:var(--t3);border-color:var(--b);}
+.tlline{flex:1;height:2px;background:var(--b);}
+.tlline.done{background:var(--dl-d);}
+.tllbls{display:flex;margin-top:4px;}
+.tllbl{flex:1;font-size:9px;color:var(--t3);text-align:center;}
+.tllbl.f{text-align:left;}.tllbl.l{text-align:right;}
+.drows{margin-top:10px;}
+.dr{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;padding:8px 0;border-bottom:1px solid var(--b);}
+.dr:last-child{border-bottom:none;}
+.dk{font-size:12px;color:var(--t3);flex-shrink:0;}
+.dv{font-size:12px;color:var(--t);text-align:right;max-width:260px;word-break:break-word;}
+.snote{padding:8px 12px;border-radius:8px;font-size:12px;margin-bottom:10px;}
+.snote-ud{background:var(--ud-bg);color:var(--ud-t);}
+.snote-rt{background:var(--rt-bg);color:var(--rt-t);}
 
-  /* TOAST */
-  .toast{position:fixed;bottom:24px;right:24px;background:var(--bg2);border:1px solid var(--border2);border-radius:var(--r);padding:10px 16px;font-size:13px;color:var(--text);z-index:999;opacity:0;transform:translateY(8px);transition:all 0.25s;display:flex;align-items:center;gap:8px;}
-  .toast.on{opacity:1;transform:translateY(0);}
-  .tdot{width:6px;height:6px;border-radius:50%;background:var(--dl-d);}
-  .toast.del .tdot{background:var(--ud-d);}
+.toast{position:fixed;bottom:24px;right:24px;background:var(--bg2);border:1px solid var(--b2);border-radius:var(--r);padding:10px 16px;font-size:13px;color:var(--t);z-index:999;opacity:0;transform:translateY(8px);transition:all 0.25s;display:flex;align-items:center;gap:8px;pointer-events:none;}
+.toast.on{opacity:1;transform:translateY(0);}
+.tdot{width:6px;height:6px;border-radius:50%;background:var(--dl-d);}
+.toast.del .tdot{background:var(--ud-d);}
 
-  @keyframes fi{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
-  .sc{animation:fi 0.3s ease both;}
-  .sc:nth-child(1){animation-delay:0.03s}.sc:nth-child(2){animation-delay:0.07s}
-  .sc:nth-child(3){animation-delay:0.11s}.sc:nth-child(4){animation-delay:0.15s}
-  .sc:nth-child(5){animation-delay:0.19s}
-  @media(max-width:768px){.sb{display:none;}.main{margin-left:0;padding:16px;}.sgrid{grid-template-columns:repeat(3,1fr);}}
-  ::-webkit-scrollbar{width:6px;}::-webkit-scrollbar-track{background:transparent;}::-webkit-scrollbar-thumb{background:var(--bg4);border-radius:3px;}
+@keyframes fi{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+.sc{animation:fi 0.3s ease both;}
+.sc:nth-child(1){animation-delay:.03s}.sc:nth-child(2){animation-delay:.07s}
+.sc:nth-child(3){animation-delay:.11s}.sc:nth-child(4){animation-delay:.15s}.sc:nth-child(5){animation-delay:.19s}
+@media(max-width:768px){.sb{display:none;}.main{margin-left:0;padding:16px;}.sgrid{grid-template-columns:repeat(3,1fr);}}
+::-webkit-scrollbar{width:6px;}::-webkit-scrollbar-track{background:transparent;}::-webkit-scrollbar-thumb{background:var(--bg4);border-radius:3px;}
 </style>
 </head>
 <body>
 
-<div class="lscreen" id="LS">
+<!-- LOGIN -->
+<div class="ls" id="LS">
   <div class="lbox">
     <div class="llogo"><div class="brand">Order<span>Track</span></div><div class="tag">CS Management System</div></div>
     <div class="rtabs">
@@ -314,23 +255,27 @@
     <div class="lf"><label>Password</label><input type="password" id="LP" placeholder="Password" onkeydown="if(event.key==='Enter')DL()"/></div>
     <button class="btnlogin" onclick="DL()">Masuk</button>
     <div class="lerr" id="LE"></div>
+    <div class="cs-pwd-info" id="CPINFO" style="display:none">
+      Password CS = nama CS lowercase + "123"<br>
+      Contoh: CS bernama <b>Sinta</b> → username: <b>sinta</b>, password: <b>sinta123</b><br>
+      CS bernama <b>Andini</b> → username: <b>andini</b>, password: <b>andini123</b>
+    </div>
   </div>
 </div>
 
+<!-- APP -->
 <div class="app" id="APP">
   <aside class="sb">
     <div class="sblogo"><div class="brand">Order<span>Track</span></div><div class="tag">CS Management System</div></div>
     <nav class="sbnav">
-      <div class="nlabel">Menu</div>
+      <div class="nlbl">Menu</div>
       <div class="ni active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>Dashboard<span class="nbadge" id="NT">0</span></div>
-      <div class="ni"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 17H7A5 5 0 0 1 7 7h2"/><path d="M15 7h2a5 5 0 0 1 0 10h-2"/><line x1="8" y1="12" x2="16" y2="12"/></svg>Lacak Resi</div>
       <div id="adminNav" style="display:none">
-        <div class="nlabel">Admin</div>
-        <div class="ni"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>Kelola Pesanan</div>
-        <div class="ni"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Export Data</div>
+        <div class="nlbl">Admin</div>
+        <div class="ni" onclick="OB()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 15v4c0 1.1.9 2 2 2h14a2 2 0 0 0 2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>Upload CSV / Paste</div>
+        <div class="ni" onclick="OE()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Tambah Manual</div>
       </div>
     </nav>
-    <div class="rpillw"><div class="rpill" id="RP"><div class="rdot"></div><span id="RPT">—</span></div></div>
     <div class="sbfoot">
       <div class="ucard">
         <div class="uav" id="SAV"></div>
@@ -342,13 +287,21 @@
 
   <main class="main">
     <div class="topbar">
-      <div><div class="ptitle">Order Progress Tracker</div><div class="psub" id="PS">—</div></div>
-      <div class="dchip" id="DC"></div>
+      <div><div class="ptitle" id="PTITLE">Order Progress Tracker</div><div class="psub" id="PS">—</div></div>
+      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+        <div id="adminBtns" style="display:none;gap:8px;flex-wrap:wrap">
+          <button class="btnprimary" onclick="OE()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Tambah</button>
+          <button class="btngreen" onclick="OB()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 15v4c0 1.1.9 2 2 2h14a2 2 0 0 0 2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>Upload CSV / Paste</button>
+        </div>
+        <div class="dchip" id="DC"></div>
+      </div>
     </div>
-    <div class="csbanner" id="CSB">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-      Anda login sebagai <strong>Customer Service</strong> — hanya bisa memantau progres pesanan. Perubahan data hanya bisa dilakukan oleh <strong>Admin</strong>.
+
+    <div class="csbanner" id="CSB" style="display:none">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      Halo <strong id="CSNAME">—</strong>! Berikut pesanan yang ditugaskan ke kamu. Hubungi Admin untuk perubahan data.
     </div>
+
     <div class="sgrid">
       <div class="sc spu" onclick="FB('pickup')"><div class="sico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 8h14M5 8a2 2 0 1 0-4 0 2 2 0 0 0 4 0zm14 0a2 2 0 1 0 4 0 2 2 0 0 0-4 0zM5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8"/></svg></div><div class="snum" id="spu">0</div><div class="slbl">Pick Up</div></div>
       <div class="sc sop" onclick="FB('onproses')"><div class="sico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div><div class="snum" id="sop">0</div><div class="slbl">On Proses</div></div>
@@ -356,158 +309,175 @@
       <div class="sc sdl" onclick="FB('delivered')"><div class="sico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg></div><div class="snum" id="sdl">0</div><div class="slbl">Delivered</div></div>
       <div class="sc srt" onclick="FB('rts')"><div class="sico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-4.45"/></svg></div><div class="snum" id="srt">0</div><div class="slbl">RTS</div></div>
     </div>
+
     <div class="tbar">
       <div><div class="tlbl">Total Pesanan</div><div class="tnum" id="TN">0</div></div>
       <div class="pbw" id="PB"></div>
-      <div style="font-size:11px;color:var(--text3);white-space:nowrap"><span id="DR">0%</span> delivered</div>
+      <div style="font-size:11px;color:var(--t3);white-space:nowrap"><span id="DR">0%</span> delivered</div>
     </div>
+
     <div class="toolbar">
-      <div class="sw"><div class="sico2"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div><input type="text" id="QS" placeholder="Cari resi, nama, kota..." oninput="RT()"/></div>
-      <select class="selk" id="QK" onchange="RT()"><option value="">Semua Kurir</option><option>JNE</option><option>J&T</option><option>SiCepat</option><option>Anteraja</option><option>Pos Indonesia</option><option>Ninja Express</option></select>
-      <button class="btnadd" id="BA" style="display:none" onclick="OE()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Tambah Pesanan</button>
-      <button class="btnassign" id="BASSIGN" style="display:none" onclick="OA()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Tugaskan CS</button>
-      <button class="btnbulk" id="BB" style="display:none" onclick="OB()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 15v4c0 1.1.9 2 2 2h14a2 2 0 0 0 2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>Input Massal</button>
-      <button class="btnrst" id="BR" style="display:none" onclick="CF()">&#x2715; Reset</button>
+      <div class="sw"><div class="sico2"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div>
+        <input type="text" id="QS" placeholder="Cari resi, nama customer, order ID, produk..." oninput="RT()"/>
+      </div>
+      <select class="selk" id="QK" onchange="RT()">
+        <option value="">Semua Ekspedisi</option>
+        <option>JNE</option><option>JT</option><option>SiCepat</option>
+        <option>Anteraja</option><option>Pos Indonesia</option><option>Ninja Express</option>
+      </select>
+      <select class="selk" id="QCS" onchange="RT()" style="display:none">
+        <option value="">Semua CS</option>
+      </select>
+      <button class="btnghost" id="BR" style="display:none" onclick="CF()">&#x2715; Reset</button>
     </div>
-    <div class="tw"><table><thead><tr><th>#</th><th>No. Resi</th><th>Nama Penerima</th><th>Kota</th><th>Kurir</th><th>Status</th><th>CS Assigned</th><th>Tgl Update</th><th>Keterangan</th><th id="THA">Aksi</th></tr></thead><tbody id="TB"></tbody></table></div>
+
+    <div class="tw"><div class="tw-scroll">
+      <table><thead><tr id="TH"></tr></thead><tbody id="TB"></tbody></table>
+    </div></div>
   </main>
 </div>
 
-<!-- ADMIN EDIT MODAL -->
+<!-- EDIT MODAL -->
 <div class="mover" id="EM" onclick="if(event.target===this)CE()">
   <div class="modal">
     <div class="mhd"><div class="mtitle" id="ET">Tambah Pesanan</div><button class="mclose" onclick="CE()">&#x2715;</button></div>
     <div class="fg">
       <div class="fr"><label>No. Resi *</label><input type="text" id="FR" placeholder="cth: JNE123456789"/></div>
-      <div class="fr"><label>Kurir *</label><select id="FK"><option>JNE</option><option>J&T</option><option>SiCepat</option><option>Anteraja</option><option>Pos Indonesia</option><option>Ninja Express</option></select></div>
+      <div class="fr"><label>Ekspedisi</label><select id="FK"><option>JNE</option><option>JT</option><option>SiCepat</option><option>Anteraja</option><option>Pos Indonesia</option><option>Ninja Express</option></select></div>
     </div>
-    <div class="fr"><label>Nama Penerima *</label><input type="text" id="FN" placeholder="Nama lengkap"/></div>
     <div class="fg">
-      <div class="fr"><label>Kota Tujuan</label><input type="text" id="FKT" placeholder="cth: Jakarta"/></div>
-      <div class="fr"><label>Status *</label><select id="FS"><option value="pickup">Pick Up</option><option value="onproses">On Proses</option><option value="undel">Undelivered</option><option value="delivered">Delivered</option><option value="rts">RTS</option></select></div>
+      <div class="fr"><label>Nama Customer *</label><input type="text" id="FN" placeholder="Nama penerima"/></div>
+      <div class="fr"><label>No. HP</label><input type="text" id="FHP" placeholder="628xxx"/></div>
     </div>
-    <div class="fr"><label>Keterangan</label><textarea id="FKE" placeholder="Catatan tambahan..."></textarea></div>
+    <div class="fg">
+      <div class="fr"><label>Order ID</label><input type="text" id="FOID" placeholder="cth: 2603035TF9IH"/></div>
+      <div class="fr"><label>Produk</label><input type="text" id="FPR" placeholder="Nama produk"/></div>
+    </div>
+    <div class="fg">
+      <div class="fr"><label>CS (nama sesuai data)</label><input type="text" id="FCS" placeholder="cth: Sinta"/></div>
+      <div class="fr"><label>Status</label>
+        <select id="FS"><option value="pickup">Pick Up</option><option value="onproses">On Proses</option><option value="undel">Undelivered</option><option value="delivered">Delivered</option><option value="rts">RTS</option></select>
+      </div>
+    </div>
+    <div class="fr"><label>Alamat Penerima</label><textarea id="FAL" placeholder="Alamat lengkap"></textarea></div>
+    <div class="fg">
+      <div class="fr"><label>Status Finance</label><input type="text" id="FFIN" placeholder="cth: BELUM CAIR"/></div>
+      <div class="fr"><label>Keterangan</label><input type="text" id="FKE" placeholder="Catatan opsional"/></div>
+    </div>
     <div class="mfooter"><button class="bcancel" onclick="CE()">Batal</button><button class="bsave" onclick="SO()">Simpan</button></div>
   </div>
 </div>
 
-<!-- CS VIEW MODAL -->
-<div class="mover" id="VM" onclick="if(event.target===this)CV()">
-  <div class="modal"><div class="mhd"><div class="mtitle">Detail Pesanan</div><button class="mclose" onclick="CV()">&#x2715;</button></div><div id="VC"></div></div>
-</div>
+<!-- BULK UPLOAD MODAL -->
+<div class="mover" id="BM" onclick="if(event.target===this)CB()">
+  <div class="modal modal-xl">
+    <div class="mhd"><div class="mtitle">&#128196; Upload / Import Data Pesanan</div><button class="mclose" onclick="CB()">&#x2715;</button></div>
+    <div class="btabs">
+      <button class="btab active" id="btp" onclick="SBT('csv')">&#128196; Upload File CSV</button>
+      <button class="btab" id="btc" onclick="SBT('paste')">&#128203; Paste dari Google Sheets</button>
+    </div>
 
-<!-- ASSIGN MODAL -->
-<div class="mover" id="AM" onclick="if(event.target===this)CAM()">
-  <div class="modal modal-assign">
-    <div class="mhd"><div class="mtitle">&#128101; Tugaskan Pesanan ke CS</div><button class="mclose" onclick="CAM()">&#x2715;</button></div>
-    <div class="assign-mode">
-      <button class="amode-btn active" id="amAuto" onclick="setAssignMode('auto')">&#9889; Otomatis (rata)</button>
-      <button class="amode-btn" id="amManual" onclick="setAssignMode('manual')">&#9998; Pilih Manual</button>
-    </div>
-    <div class="assign-layout">
-      <div class="assign-left">
-        <div style="font-size:11px;color:var(--text3);margin-bottom:8px;letter-spacing:0.4px;text-transform:uppercase">Pilih Pesanan</div>
-        <div style="display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap">
-          <button class="btnrst" style="font-size:11px;padding:5px 10px" onclick="selAllOrders(true)">Pilih Semua</button>
-          <button class="btnrst" style="font-size:11px;padding:5px 10px" onclick="selAllOrders(false)">Batal Semua</button>
-          <select class="selk" style="font-size:11px;padding:5px 10px" id="AFiltStat" onchange="renderOrderPick()">
-            <option value="">Semua Status</option>
-            <option value="pickup">Pick Up</option>
-            <option value="onproses">On Proses</option>
-            <option value="undel">Undelivered</option>
-            <option value="delivered">Delivered</option>
-            <option value="rts">RTS</option>
-          </select>
-        </div>
-        <div class="order-pick-wrap" id="OPW"></div>
-        <div class="assign-summary" id="ASUM"></div>
+    <div class="bpane active" id="pcsv">
+      <div class="hint-box">
+        Export sheet dari Google Sheets: <b>File → Download → CSV</b>, lalu upload di sini.<br>
+        Kolom yang otomatis dikenali: <code>Nomer Resi</code> <code>Ekspedisi</code> <code>Customer</code> <code>No HP</code> <code>Alamat Penerima</code> <code>CS</code> <code>Orders</code> <code>Produk I</code> <code>Status CRM</code> <code>Status Finance</code><br>
+        <b>Nama CS di kolom "CS"</b> otomatis jadi akun login — CS cukup login dengan nama lowercase + "123".
+        &nbsp;<a href="#" onclick="DLT(event)" style="color:var(--pu-t);text-decoration:underline">&#11015; Download template CSV</a>
       </div>
-      <div class="assign-right">
-        <div style="font-size:11px;color:var(--text3);letter-spacing:0.4px;text-transform:uppercase;margin-bottom:4px">Pilih CS</div>
-        <div class="cs-list" id="CSL"></div>
-        <div class="split-info" id="SPLIT" style="margin-top:auto"></div>
+      <div class="drop-zone" id="DZ" onclick="document.getElementById('FI').click()" ondragover="DGG(event)" ondrop="DPP(event)" ondragleave="DLL(event)">
+        <input type="file" id="FI" accept=".csv,.tsv,.txt" onchange="HCC(event)"/>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        <div class="dzlbl">Klik atau drag &amp; drop file CSV</div>
+        <div class="dzsub" id="DZFN">File .csv hasil export Google Sheets / Excel</div>
       </div>
+      <div id="BCSUM"></div><div id="BCPRV"></div><div id="CSDIST"></div>
     </div>
+
+    <div class="bpane" id="ppaste">
+      <div class="hint-box">
+        Di Google Sheets: <b>Ctrl+A</b> untuk pilih semua, lalu <b>Ctrl+C</b> copy, kemudian paste di sini.<br>
+        Baris pertama harus berisi header kolom. Sistem akan otomatis mendeteksi kolom <code>CS</code>, <code>Nomer Resi</code>, <code>Status CRM</code>, dll.
+      </div>
+      <textarea class="bulk-ta" id="BPTA" oninput="PP()" placeholder="Paste data dari Google Sheets di sini...&#10;&#10;Tanggal	Ekspedisi	Nomer Resi	Orders	Produk I	Customer	No HP	Alamat Penerima	 CS 	Status CRM	Status Finance&#10;03/03/2026	JNE	JNE123456	ORD001	NTS	BUDI SANTOSO	628123	JL. MERDEKA	Sinta	ON PROCESS	BELUM CAIR"></textarea>
+      <div id="BPSUM"></div><div id="BPPRV"></div><div id="PSDIST"></div>
+    </div>
+
     <div class="mfooter">
-      <div style="margin-right:auto;font-size:12px;color:var(--text3)" id="AFTHINT"></div>
-      <button class="bcancel" onclick="CAM()">Batal</button>
-      <button class="bsave" onclick="doAssign()">&#10003; Simpan Penugasan</button>
+      <div style="margin-right:auto;font-size:12px;color:var(--t3)" id="BFHINT"></div>
+      <button class="bcancel" onclick="CB()">Batal</button>
+      <button class="bsave" onclick="SBU()">&#10003; Import Semua</button>
     </div>
   </div>
 </div>
 
-<!-- BULK MODAL -->
-<div class="mover" id="BM" onclick="if(event.target===this)CB()">
-  <div class="modal modal-wide">
-    <div class="mhd"><div class="mtitle">&#128220; Input Massal Pesanan</div><button class="mclose" onclick="CB()">&#x2715;</button></div>
-    <div class="btabs">
-      <button class="btab active" id="btp" onclick="SBT('paste')">&#128203; Paste Teks</button>
-      <button class="btab" id="btc" onclick="SBT('csv')">&#128196; Upload CSV</button>
-      <button class="btab" id="btm" onclick="SBT('manual')">&#9998; Input Baris</button>
-    </div>
-    <div class="bpane active" id="ppaste">
-      <div class="hint-box">Format tiap baris: <code>Resi | Nama | Kota | Kurir | Status | Keterangan</code><br>
-      Status valid: <code>pickup</code> <code>onproses</code> <code>undel</code> <code>delivered</code> <code>rts</code> &nbsp;|&nbsp;
-      Kurir: <b>JNE, J&amp;T, SiCepat, Anteraja, Pos Indonesia, Ninja Express</b><br>
-      Kota &amp; Keterangan boleh kosong. Pisah kolom dengan <code>|</code> atau <b>TAB</b>.</div>
-      <textarea class="bulk-ta" id="BPTA" oninput="PP()" placeholder="JNE123456 | Budi Santoso | Jakarta | JNE | delivered | Diterima penerima
-JT987654 | Sari Dewi | Bandung | J&T | onproses |
-SCP001122 | Hendra | Surabaya | SiCepat | pickup |"></textarea>
-      <div id="BPSUM"></div><div id="BPPRV"></div>
-    </div>
-    <div class="bpane" id="pcsv">
-      <div class="hint-box">Upload file <b>.csv</b> dengan kolom header: <code>resi,nama,kota,kurir,status,keterangan</code><br>
-      Klik <a href="#" onclick="DLT(event)" style="color:var(--pu-t);text-decoration:underline">&#11015; Download template CSV</a> sebagai panduan.</div>
-      <div class="drop-zone" id="DZ" onclick="document.getElementById('FI').click()" ondragover="DG(event)" ondrop="DP(event)" ondragleave="DL2(event)">
-        <input type="file" id="FI" accept=".csv" onchange="HC(event)"/>
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-        <div class="dzlbl">Klik atau drag &amp; drop file CSV di sini</div>
-        <div class="dzsub" id="DZFN">Format: .csv, maks 5MB</div>
-      </div>
-      <div id="BCSUM"></div><div id="BCPRV"></div>
-    </div>
-    <div class="bpane" id="pmanual">
-      <div class="hint-box">Isi setiap baris pesanan. Kolom <b>Resi</b> dan <b>Nama</b> wajib diisi.</div>
-      <div class="mhdr"><span>No. Resi *</span><span>Nama Penerima *</span><span>Kota</span><span>Kurir</span><span>Status</span><span></span></div>
-      <div id="MROWS"></div>
-      <button class="btnbulk" style="margin-top:10px;font-size:12px" onclick="AMR()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>+ Tambah Baris</button>
-    </div>
-    <div class="mfooter">
-      <div style="margin-right:auto;font-size:12px;color:var(--text3)" id="BFHINT"></div>
-      <button class="bcancel" onclick="CB()">Batal</button>
-      <button class="bsave" onclick="SBU()">&#10003; Simpan Semua</button>
-    </div>
+<!-- CS DETAIL MODAL -->
+<div class="mover" id="VM" onclick="if(event.target===this)CV()">
+  <div class="modal">
+    <div class="mhd"><div class="mtitle">Detail Pesanan</div><button class="mclose" onclick="CV()">&#x2715;</button></div>
+    <div id="VC"></div>
+    <div class="mfooter"><button class="bcancel" onclick="CV()">Tutup</button></div>
   </div>
 </div>
 
 <div class="toast" id="TOAST"><div class="tdot"></div><span id="TM"></span></div>
 
 <script>
-const U={admin:{pass:'admin123',role:'admin',name:'Administrator',init:'AD'},admin2:{pass:'admin123',role:'admin',name:'Admin Kedua',init:'A2'},cs1:{pass:'cs123',role:'cs',name:'CS Andini',init:'CA'},cs2:{pass:'cs123',role:'cs',name:'CS Bintang',init:'CB'},cs3:{pass:'cs123',role:'cs',name:'CS Citra',init:'CC'}};
+/* ══ USERS ══
+   CS accounts auto-created from uploaded data.
+   Username = nama lowercase (spasi → underscore)
+   Password = username + "123"
+*/
+const ADMINS={admin:{pass:'admin123',role:'admin',name:'Administrator',init:'AD'}};
+let CS_ACCTS={
+  sinta:   {pass:'sinta123',  role:'cs',name:'Sinta',  init:'SI'},
+  andini:  {pass:'andini123', role:'cs',name:'Andini', init:'AN'},
+  bintang: {pass:'bintang123',role:'cs',name:'Bintang',init:'BI'},
+  citra:   {pass:'citra123',  role:'cs',name:'Citra',  init:'CI'},
+};
+const getUsers=()=>({...ADMINS,...CS_ACCTS});
+
+/* ══ STATUS ══ */
 const SM={pickup:{l:'Pick Up',c:'bpu',o:0},onproses:{l:'On Proses',c:'bop',o:1},undel:{l:'Undelivered',c:'bud',o:2},delivered:{l:'Delivered',c:'bdl',o:3},rts:{l:'RTS',c:'brt',o:4}};
-let me=null,sf=null,eid=null;
+
+function normStatus(raw){
+  const s=(raw||'').toLowerCase();
+  if(s.includes('pick'))return'pickup';
+  if(s.includes('on pro')||s.includes('onpro')||s.includes('process'))return'onproses';
+  if(s.includes('undel')||s.includes('gagal'))return'undel';
+  if(s.includes('deliver')||s.includes('terkirim'))return'delivered';
+  if(s.includes('rts')||s.includes('return'))return'rts';
+  return'onproses';
+}
+
+/* ══ DATA ══ */
 let orders=[
-  {id:1,assigned:'cs1',resi:'JNE9812344001',nama:'Budi Santoso',kota:'Jakarta Selatan',kurir:'JNE',status:'delivered',tgl:'2025-03-14',ket:'Diterima langsung oleh penerima'},
-  {id:2,assigned:'cs1',resi:'JT2024038821',nama:'Sari Dewi',kota:'Bandung',kurir:'J&T',status:'onproses',tgl:'2025-03-14',ket:'Sedang dalam perjalanan'},
-  {id:3,assigned:'cs2',resi:'SCP88721001',nama:'Hendra Wijaya',kota:'Surabaya',kurir:'SiCepat',status:'pickup',tgl:'2025-03-15',ket:'Baru dijemput dari gudang'},
-  {id:4,assigned:'cs2',resi:'ANT445812',nama:'Maya Putri',kota:'Medan',kurir:'Anteraja',status:'undel',tgl:'2025-03-13',ket:'Penerima tidak ada di tempat'},
-  {id:5,assigned:'cs3',resi:'JNE7700129',nama:'Rizky Pratama',kota:'Yogyakarta',kurir:'JNE',status:'rts',tgl:'2025-03-12',ket:'Alamat tidak ditemukan'},
-  {id:6,assigned:'cs3',resi:'JT2024041102',nama:'Fitriani Nur',kota:'Semarang',kurir:'J&T',status:'delivered',tgl:'2025-03-15',ket:''},
-  {id:7,assigned:'cs1',resi:'NJX900214',nama:'Dimas Arfan',kota:'Makassar',kurir:'Ninja Express',status:'pickup',tgl:'2025-03-15',ket:''},
-  {id:8,assigned:'',resi:'SCP002349',nama:'Laila Hasanah',kota:'Depok',kurir:'SiCepat',status:'onproses',tgl:'2025-03-14',ket:'Transit hub Bekasi'},
-  {id:9,assigned:'',resi:'POS998112',nama:'Agus Setiawan',kota:'Solo',kurir:'Pos Indonesia',status:'undel',tgl:'2025-03-13',ket:'Rumah terkunci'},
-  {id:10,assigned:'cs2',resi:'JNE4400982',nama:'Dewi Anggraini',kota:'Malang',kurir:'JNE',status:'delivered',tgl:'2025-03-15',ket:'Diterima satpam'},
+  {id:1,cs:'Sinta',tgl:'03/03/2026',ekspedisi:'JNE',resi:'1219572600142122',orderId:'2603035TF9IH',produk:'NTS',customer:'TRISNA PANEO',hp:'6282292475122',alamat:'JL. PANGERAN HIDAYAT NO. 165, KEL. DEMBE JAYA',status:'onproses',statusFinance:'BELUM CAIR',ket:''},
+  {id:2,cs:'Sinta',tgl:'03/03/2026',ekspedisi:'JNE',resi:'1270302600246848',orderId:'2603030X6FVY',produk:'NTS',customer:'TASAN WIYAH',hp:'6282113496061',alamat:'PT ESI, RT 02 RW 04 NO. 21, KEL. CICADAS',status:'onproses',statusFinance:'BELUM CAIR',ket:''},
+  {id:3,cs:'Sinta',tgl:'03/03/2026',ekspedisi:'JNE',resi:'1219572600142114',orderId:'260303XLYARJ',produk:'NTS',customer:'LISMAWATY MOKODENSEHO',hp:'6281340266070',alamat:'JL. PANCURAN 9, KEL. WINANGUN SATU',status:'undel',statusFinance:'BELUM CAIR',ket:''},
+  {id:4,cs:'Andini',tgl:'03/03/2026',ekspedisi:'JNE',resi:'1219572600142080',orderId:'260303DW0WVV',produk:'NTS',customer:'YAARNI',hp:'6282311409541',alamat:'RUMAH KEPALA DESA KARANG CAYO',status:'onproses',statusFinance:'BELUM CAIR',ket:''},
+  {id:5,cs:'Andini',tgl:'03/03/2026',ekspedisi:'JT',resi:'JO0321592938',orderId:'260303JU0O7H',produk:'NTS',customer:'H. SYARIFUDDIN',hp:'6282165026706',alamat:'JL. KITA BUKIT, GG. H. II BANTAMAT, KEL. PORANG',status:'pickup',statusFinance:'BELUM CAIR',ket:''},
+  {id:6,cs:'Bintang',tgl:'03/03/2026',ekspedisi:'JNE',resi:'1219572600142155',orderId:'2603031WPB2J',produk:'NTS',customer:'HARTINI',hp:'6282299395731',alamat:'DESA BUSAK 2, KEL. BUSAK II',status:'delivered',statusFinance:'SUDAH CAIR',ket:''},
+  {id:7,cs:'Bintang',tgl:'03/03/2026',ekspedisi:'JNE',resi:'1219572600142148',orderId:'260303ZP7OY5',produk:'NTS',customer:'DRS. DEDY ACHDIAT',hp:'6282186068089',alamat:'JL. RATU DIBALAU, PERUMDAM TANJUNG RAYA PERMAI BLOK AA NO. 19',status:'rts',statusFinance:'BELUM CAIR',ket:''},
+  {id:8,cs:'Citra',tgl:'03/03/2026',ekspedisi:'JNE',resi:'1270302600246830',orderId:'260303P2D8VH',produk:'NTS',customer:'M. KODRAT',hp:'6281331525666',alamat:'PERUM GRAND CIKARANG CITY BLOK G. 54/36, KEL. KARANGRAHARJA',status:'delivered',statusFinance:'SUDAH CAIR',ket:''},
+  {id:9,cs:'Citra',tgl:'03/03/2026',ekspedisi:'JNE',resi:'1270302600246806',orderId:'260303X1112M',produk:'NTS',customer:'DENI SURYO',hp:'628121962562',alamat:'JL. PISANGAN LAMA III, GANG AA NO. 32A, KEL. PISANGAN TIMUR',status:'onproses',statusFinance:'BELUM CAIR',ket:''},
 ];
-let nid=11;
+let nid=10;
+let me=null,sf=null,eid=null,rc='admin';
 
-function fd(d){const m=['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agt','Sep','Okt','Nov','Des'],p=d.split('-');return p[2]+' '+m[+p[1]-1]+' '+p[0];}
-
-let rc='admin';
-function PR(r){rc=r;document.getElementById('tAdmin').classList.toggle('active',r==='admin');document.getElementById('tCS').classList.toggle('active',r==='cs');document.getElementById('LH').innerHTML=r==='admin'?'Demo — <b>admin</b> / <b>admin123</b>':'Demo — <b>cs1</b> / <b>cs123</b>';document.getElementById('LE').textContent='';}
+/* ══ LOGIN ══ */
+function PR(r){
+  rc=r;
+  document.getElementById('tAdmin').classList.toggle('active',r==='admin');
+  document.getElementById('tCS').classList.toggle('active',r==='cs');
+  document.getElementById('LH').innerHTML=r==='admin'?'Demo — <b>admin</b> / <b>admin123</b>':'Nama CS lowercase + "123" — cth: <b>sinta</b> / <b>sinta123</b>';
+  document.getElementById('CPINFO').style.display=r==='cs'?'block':'none';
+  document.getElementById('LE').textContent='';
+}
 function DL(){
-  const u=document.getElementById('LU').value.trim().toLowerCase(),p=document.getElementById('LP').value,rec=U[u];
+  const u=document.getElementById('LU').value.trim().toLowerCase(),p=document.getElementById('LP').value;
+  const rec=getUsers()[u];
   if(!rec||rec.pass!==p){document.getElementById('LE').textContent='Username atau password salah.';return;}
-  if(rec.role!==rc){document.getElementById('LE').textContent=`Akun ini terdaftar sebagai ${rec.role==='admin'?'Admin':'Customer Service'}.`;return;}
+  if(rec.role!==rc){document.getElementById('LE').textContent='Akun ini terdaftar sebagai '+(rec.role==='admin'?'Admin':'CS')+'.';return;}
   me={...rec,username:u};
   document.getElementById('LS').style.display='none';
   document.getElementById('APP').classList.add('on');
@@ -515,78 +485,181 @@ function DL(){
 }
 function DO(){
   me=null;sf=null;
-  document.getElementById('QS').value='';document.getElementById('QK').value='';
-  document.getElementById('LU').value='';document.getElementById('LP').value='';document.getElementById('LE').textContent='';
-  document.getElementById('APP').classList.remove('on');document.getElementById('LS').style.display='flex';
-  document.body.classList.remove('ics');
+  ['QS','QK','QCS','LU','LP'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});
+  document.getElementById('LE').textContent='';
+  document.getElementById('APP').classList.remove('on');
+  document.getElementById('LS').style.display='flex';
 }
 function SUI(){
   const a=me.role==='admin';
   document.getElementById('SN').textContent=me.name;
   document.getElementById('SR').textContent=a?'Administrator':'Customer Service';
   const av=document.getElementById('SAV');av.textContent=me.init;av.className='uav '+(a?'aav':'cav');
-  const rp=document.getElementById('RP');rp.className='rpill '+(a?'admin':'cs');
-  document.getElementById('RPT').textContent=a?'Administrator':'Customer Service';
   document.getElementById('adminNav').style.display=a?'block':'none';
-  document.getElementById('PS').textContent=a?'Kelola & update status pengiriman pesanan':'Pantau progres pengiriman pesanan (read-only)';
-  document.getElementById('BA').style.display=a?'flex':'none';document.getElementById('BB').style.display=a?'flex':'none';document.getElementById('BASSIGN').style.display=a?'flex':'none';
-  document.getElementById('THA').textContent=a?'Aksi':'Detail';
+  document.getElementById('adminBtns').style.display=a?'flex':'none';
+  document.getElementById('PS').textContent=a?'Kelola & monitor semua pesanan':'Pesanan yang ditugaskan ke kamu';
   document.getElementById('CSB').style.display=a?'none':'flex';
-  if(!a)document.body.classList.add('ics');
+  document.getElementById('CSNAME').textContent=me.name;
+  // CS filter dropdown (admin only)
+  const csFilter=document.getElementById('QCS');
+  csFilter.style.display=a?'inline-block':'none';
+  if(a) buildCSFilter();
+  buildHeader(a);
+}
+function buildCSFilter(){
+  const csNames=[...new Set(orders.map(o=>o.cs).filter(Boolean))].sort();
+  const sel=document.getElementById('QCS');
+  sel.innerHTML='<option value="">Semua CS</option>'+csNames.map(n=>`<option value="${n}">${n}</option>`).join('');
+}
+function buildHeader(a){
+  const cols=a
+    ?['#','Tanggal','Ekspedisi','No. Resi','Order ID','Produk','Customer','No. HP','CS','Status','Status Finance','Aksi']
+    :['#','Tanggal','Ekspedisi','No. Resi','Order ID','Produk','Customer','Alamat','Status','Status Finance','Detail'];
+  document.getElementById('TH').innerHTML=cols.map(c=>`<th>${c}</th>`).join('');
+}
+
+/* ══ STATS ══ */
+function myOrders(){
+  if(!me)return[];
+  return me.role==='admin'?orders:orders.filter(o=>(o.cs||'').toLowerCase()===me.name.toLowerCase());
 }
 function US(){
+  const list=myOrders();
   const c={pickup:0,onproses:0,undel:0,delivered:0,rts:0};
-  orders.forEach(o=>c[o.status]++);
-  ['pickup','onproses','undel','delivered','rts'].forEach(k=>{const e=document.getElementById('s'+k.substring(0,2)||k==='rts'?'srt':k==='undel'?'sud':k==='pickup'?'spu':k==='onproses'?'sop':'sdl');});
-  document.getElementById('spu').textContent=c.pickup;
-  document.getElementById('sop').textContent=c.onproses;
-  document.getElementById('sud').textContent=c.undel;
-  document.getElementById('sdl').textContent=c.delivered;
-  document.getElementById('srt').textContent=c.rts;
-  const t=orders.length;
-  document.getElementById('TN').textContent=t;document.getElementById('NT').textContent=t;
+  list.forEach(o=>{if(c[o.status]!==undefined)c[o.status]++;});
+  ['pickup','onproses','undel','delivered','rts'].forEach(k=>{
+    const el=document.getElementById('s'+{pickup:'pu',onproses:'op',undel:'ud',delivered:'dl',rts:'rt'}[k]);
+    if(el)el.textContent=c[k];
+  });
+  const t=list.length;
+  document.getElementById('TN').textContent=t;
+  document.getElementById('NT').textContent=t;
   document.getElementById('DR').textContent=t?Math.round(c.delivered/t*100)+'%':'0%';
-  document.getElementById('PB').innerHTML=[{k:'pu',s:'pickup'},{k:'op',s:'onproses'},{k:'ud',s:'undel'},{k:'dl',s:'delivered'},{k:'rt',s:'rts'}].map(x=>`<div class="pbs pb${x.k}" style="width:${t?(c[x.s]/t*100).toFixed(1):0}%"></div>`).join('');
+  document.getElementById('PB').innerHTML=[{k:'pu',s:'pickup'},{k:'op',s:'onproses'},{k:'ud',s:'undel'},{k:'dl',s:'delivered'},{k:'rt',s:'rts'}]
+    .map(x=>`<div class="pbs pb${x.k}" style="width:${t?(c[x.s]/t*100).toFixed(1):0}%"></div>`).join('');
 }
+
+/* ══ TABLE ══ */
 function RT(){
-  const q=document.getElementById('QS').value.toLowerCase(),kf=document.getElementById('QK').value;
+  const q=document.getElementById('QS').value.toLowerCase();
+  const kf=document.getElementById('QK').value;
+  const csf=document.getElementById('QCS').value;
   const a=me&&me.role==='admin';
   const fl=orders.filter(o=>{
-    if(!a&&me&&o.assigned!==me.username)return false;
-    return(!sf||o.status===sf)&&(!kf||o.kurir===kf)&&(!q||o.resi.toLowerCase().includes(q)||o.nama.toLowerCase().includes(q)||(o.kota||'').toLowerCase().includes(q));
+    if(!a&&(o.cs||'').toLowerCase()!==me.name.toLowerCase())return false;
+    if(sf&&o.status!==sf)return false;
+    if(kf&&(o.ekspedisi||'').toLowerCase()!==kf.toLowerCase())return false;
+    if(csf&&(o.cs||'')!==csf)return false;
+    if(q&&![(o.resi||''),(o.customer||''),(o.orderId||''),(o.produk||''),(o.cs||'')].some(v=>v.toLowerCase().includes(q)))return false;
+    return true;
   });
-  document.getElementById('BR').style.display=(sf||kf||q)?'inline-flex':'none';
-  if(!fl.length){document.getElementById('TB').innerHTML='<tr class="erow"><td colspan="10">Tidak ada pesanan ditemukan</td></tr>';return;}
+  document.getElementById('BR').style.display=(sf||kf||csf||q)?'inline-flex':'none';
+  if(!fl.length){
+    document.getElementById('TB').innerHTML=`<tr class="erow"><td colspan="${a?12:11}">Tidak ada pesanan ditemukan</td></tr>`;
+    return;
+  }
   document.getElementById('TB').innerHTML=fl.map((o,i)=>{
-    const s=SM[o.status];
-    const assignedUser=o.assigned?U[o.assigned]:null;
-    const assignedCell=a?`<td>${assignedUser?`<span class="achip">${assignedUser.name}</span>`:'<span style="color:var(--text3);font-size:11px">—</span>'}</td>`:'';
-    const acts=a?`<button class="ba bedit" onclick="OE(${o.id})">Edit</button><button class="ba bdel" onclick="DEL(${o.id})">Hapus</button>`:`<button class="ba bview" onclick="OV(${o.id})">Lihat</button>`;
-    return `<tr><td style="color:var(--text3);font-size:12px">${i+1}</td><td><span class="rcode">${o.resi}</span></td><td>${o.nama}</td><td style="color:var(--text2);font-size:12px">${o.kota||'—'}</td><td><span class="kchip">${o.kurir}</span></td><td><span class="badge ${s.c}"><span class="bdot"></span>${s.l}</span></td>${assignedCell}<td style="color:var(--text3);font-size:12px">${fd(o.tgl)}</td><td style="color:var(--text2);font-size:12px;max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${o.ket||'—'}</td><td>${acts}</td></tr>`;
+    const s=SM[o.status]||SM.onproses;
+    const badge=`<span class="badge ${s.c}"><span class="bdot"></span>${s.l}</span>`;
+    if(a){
+      return`<tr>
+        <td style="color:var(--t3);font-size:11px">${i+1}</td>
+        <td style="color:var(--t3);font-size:11px;white-space:nowrap">${o.tgl||'—'}</td>
+        <td><span class="kchip">${o.ekspedisi||'—'}</span></td>
+        <td><span class="rcode">${o.resi||'—'}</span></td>
+        <td style="font-size:11px;color:var(--t2)">${o.orderId||'—'}</td>
+        <td style="font-size:12px">${o.produk||'—'}</td>
+        <td style="font-size:12px;font-weight:500">${o.customer||'—'}</td>
+        <td style="font-size:11px;color:var(--t2)">${o.hp||'—'}</td>
+        <td><span class="cschip">${o.cs||'—'}</span></td>
+        <td>${badge}</td>
+        <td style="font-size:11px;color:var(--t3)">${o.statusFinance||'—'}</td>
+        <td><button class="ba bedit" onclick="OE(${o.id})">Edit</button><button class="ba bdelbtn" onclick="DEL(${o.id})">Hapus</button></td>
+      </tr>`;
+    } else {
+      return`<tr>
+        <td style="color:var(--t3);font-size:11px">${i+1}</td>
+        <td style="color:var(--t3);font-size:11px;white-space:nowrap">${o.tgl||'—'}</td>
+        <td><span class="kchip">${o.ekspedisi||'—'}</span></td>
+        <td><span class="rcode">${o.resi||'—'}</span></td>
+        <td style="font-size:11px;color:var(--t2)">${o.orderId||'—'}</td>
+        <td style="font-size:12px">${o.produk||'—'}</td>
+        <td style="font-size:12px;font-weight:500">${o.customer||'—'}</td>
+        <td style="font-size:11px;color:var(--t2);max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${o.alamat||''}">${o.alamat||'—'}</td>
+        <td>${badge}</td>
+        <td style="font-size:11px;color:var(--t3)">${o.statusFinance||'—'}</td>
+        <td><button class="ba bview" onclick="OV(${o.id})">Detail</button></td>
+      </tr>`;
+    }
   }).join('');
 }
-function FB(s){sf=sf===s?null:s;document.querySelectorAll('.sc').forEach(c=>c.classList.remove('af'));if(sf){const i=['pickup','onproses','undel','delivered','rts'].indexOf(s);document.querySelectorAll('.sc')[i].classList.add('af');}RT();}
-function CF(){sf=null;document.getElementById('QS').value='';document.getElementById('QK').value='';document.querySelectorAll('.sc').forEach(c=>c.classList.remove('af'));RT();}
+
+function FB(s){
+  sf=sf===s?null:s;
+  document.querySelectorAll('.sc').forEach(c=>c.classList.remove('af'));
+  if(sf){const i=['pickup','onproses','undel','delivered','rts'].indexOf(s);document.querySelectorAll('.sc')[i].classList.add('af');}
+  RT();
+}
+function CF(){
+  sf=null;
+  document.getElementById('QS').value='';
+  document.getElementById('QK').value='';
+  document.getElementById('QCS').value='';
+  document.querySelectorAll('.sc').forEach(c=>c.classList.remove('af'));
+  RT();
+}
+
+/* ══ SINGLE EDIT ══ */
 function OE(id){
   eid=id||null;
-  if(id){const o=orders.find(x=>x.id===id);document.getElementById('ET').textContent='Edit Pesanan';document.getElementById('FR').value=o.resi;document.getElementById('FN').value=o.nama;document.getElementById('FKT').value=o.kota||'';document.getElementById('FK').value=o.kurir;document.getElementById('FS').value=o.status;document.getElementById('FKE').value=o.ket;}
-  else{document.getElementById('ET').textContent='Tambah Pesanan Baru';['FR','FN','FKT','FKE'].forEach(id=>document.getElementById(id).value='');document.getElementById('FK').value='JNE';document.getElementById('FS').value='pickup';}
+  if(id){
+    const o=orders.find(x=>x.id===id);
+    document.getElementById('ET').textContent='Edit Pesanan';
+    document.getElementById('FR').value=o.resi||'';
+    document.getElementById('FK').value=o.ekspedisi||'JNE';
+    document.getElementById('FN').value=o.customer||'';
+    document.getElementById('FHP').value=o.hp||'';
+    document.getElementById('FOID').value=o.orderId||'';
+    document.getElementById('FPR').value=o.produk||'';
+    document.getElementById('FCS').value=o.cs||'';
+    document.getElementById('FAL').value=o.alamat||'';
+    document.getElementById('FS').value=o.status||'onproses';
+    document.getElementById('FFIN').value=o.statusFinance||'';
+    document.getElementById('FKE').value=o.ket||'';
+  } else {
+    document.getElementById('ET').textContent='Tambah Pesanan Baru';
+    ['FR','FN','FHP','FOID','FPR','FCS','FAL','FFIN','FKE'].forEach(i=>document.getElementById(i).value='');
+    document.getElementById('FK').value='JNE';document.getElementById('FS').value='onproses';
+  }
   document.getElementById('EM').classList.add('open');
 }
 function CE(){document.getElementById('EM').classList.remove('open');}
 function SO(){
   const r=document.getElementById('FR').value.trim(),n=document.getElementById('FN').value.trim();
-  if(!r||!n){alert('No. Resi dan Nama wajib diisi.');return;}
-  const now=new Date().toISOString().split('T')[0];
-  if(eid){const i=orders.findIndex(x=>x.id===eid);orders[i]={...orders[i],resi:r,nama:n,kota:document.getElementById('FKT').value.trim(),kurir:document.getElementById('FK').value,status:document.getElementById('FS').value,ket:document.getElementById('FKE').value.trim(),tgl:now};TT('Pesanan berhasil diperbarui');}
-  else{orders.unshift({id:nid++,assigned:'',resi:r,nama:n,kota:document.getElementById('FKT').value.trim(),kurir:document.getElementById('FK').value,status:document.getElementById('FS').value,ket:document.getElementById('FKE').value.trim(),tgl:now});TT('Pesanan baru ditambahkan');}
-  CE();US();RT();
+  if(!r||!n){alert('No. Resi dan Nama Customer wajib diisi.');return;}
+  const now=new Date().toLocaleDateString('id-ID',{day:'2-digit',month:'2-digit',year:'numeric'});
+  const d={resi:r,ekspedisi:document.getElementById('FK').value,customer:n,
+    hp:document.getElementById('FHP').value.trim(),orderId:document.getElementById('FOID').value.trim(),
+    produk:document.getElementById('FPR').value.trim(),cs:document.getElementById('FCS').value.trim(),
+    alamat:document.getElementById('FAL').value.trim(),status:document.getElementById('FS').value,
+    statusFinance:document.getElementById('FFIN').value.trim(),ket:document.getElementById('FKE').value.trim()};
+  if(eid){const i=orders.findIndex(x=>x.id===eid);orders[i]={...orders[i],...d};TT('Pesanan berhasil diperbarui');}
+  else{orders.unshift({id:nid++,tgl:now,...d});ensureCS(d.cs);TT('Pesanan ditambahkan');}
+  CE();US();RT();buildCSFilter();
 }
-function DEL(id){if(!confirm('Hapus pesanan ini?'))return;orders=orders.filter(x=>x.id!==id);US();RT();TT('Pesanan dihapus',true);}
+function DEL(id){
+  if(!confirm('Hapus pesanan ini?'))return;
+  orders=orders.filter(x=>x.id!==id);
+  US();RT();TT('Pesanan dihapus',true);
+}
+
+/* ══ CS DETAIL VIEW ══ */
 function OV(id){
-  const o=orders.find(x=>x.id===id),s=SM[o.status];
+  const o=orders.find(x=>x.id===id);if(!o)return;
+  const s=SM[o.status]||SM.onproses;
   const fl=[{k:'pickup',l:'Pick Up',o:0},{k:'onproses',l:'On Proses',o:1},{k:'delivered',l:'Delivered',o:3}];
-  const cur=s.o;let tl='<div class="tlwrap"><div class="tlrow">';
+  const cur=s.o;
+  let tl='<div class="tlwrap"><div class="tlrow">';
   fl.forEach((f,i)=>{
     let dc='tlpend';
     if(o.status==='undel'||o.status==='rts'){if(f.o<1)dc='tldone';else if(f.k==='onproses')dc=o.status==='undel'?'tlnowd':'tlnowr';}
@@ -598,278 +671,206 @@ function OV(id){
   fl.forEach((f,i)=>{const c=i===0?'f':i===fl.length-1?'l':'';tl+=`<div class="tllbl ${c}">${f.l}</div>`+(i<fl.length-1?'<div style="flex:1"></div>':'');});
   tl+='</div></div>';
   let note='';
-  if(o.status==='undel')note='<div class="snote snote-ud">⚠ Pengiriman gagal — penerima tidak ada di tempat. Menunggu instruksi lanjutan.</div>';
-  if(o.status==='rts')note='<div class="snote snote-rt">↩ Paket dikembalikan ke pengirim (Return to Sender).</div>';
-  document.getElementById('VC').innerHTML=tl+note+`<div class="drows"><div class="dr"><span class="dk">Status</span><span class="dv"><span class="badge ${s.c}"><span class="bdot"></span>${s.l}</span></span></div><div class="dr"><span class="dk">No. Resi</span><span class="dv" style="font-family:'DM Mono',monospace;font-size:12px">${o.resi}</span></div><div class="dr"><span class="dk">Penerima</span><span class="dv">${o.nama}</span></div><div class="dr"><span class="dk">Kota Tujuan</span><span class="dv">${o.kota||'—'}</span></div><div class="dr"><span class="dk">Kurir</span><span class="dv">${o.kurir}</span></div><div class="dr"><span class="dk">Tgl Update</span><span class="dv">${fd(o.tgl)}</span></div><div class="dr"><span class="dk">Keterangan</span><span class="dv" style="max-width:200px;text-align:right">${o.ket||'—'}</span></div></div>`;
+  if(o.status==='undel')note='<div class="snote snote-ud">⚠ Pengiriman gagal — penerima tidak ada di tempat.</div>';
+  if(o.status==='rts')note='<div class="snote snote-rt">↩ Paket dikembalikan ke pengirim (RTS).</div>';
+  document.getElementById('VC').innerHTML=tl+note+`<div class="drows">
+    <div class="dr"><span class="dk">Status</span><span class="dv"><span class="badge ${s.c}"><span class="bdot"></span>${s.l}</span></span></div>
+    <div class="dr"><span class="dk">No. Resi</span><span class="dv" style="font-family:'DM Mono',monospace;font-size:11px">${o.resi||'—'}</span></div>
+    <div class="dr"><span class="dk">Order ID</span><span class="dv">${o.orderId||'—'}</span></div>
+    <div class="dr"><span class="dk">Ekspedisi</span><span class="dv">${o.ekspedisi||'—'}</span></div>
+    <div class="dr"><span class="dk">Customer</span><span class="dv">${o.customer||'—'}</span></div>
+    <div class="dr"><span class="dk">No. HP</span><span class="dv">${o.hp||'—'}</span></div>
+    <div class="dr"><span class="dk">Produk</span><span class="dv">${o.produk||'—'}</span></div>
+    <div class="dr"><span class="dk">Alamat</span><span class="dv">${o.alamat||'—'}</span></div>
+    <div class="dr"><span class="dk">Tanggal</span><span class="dv">${o.tgl||'—'}</span></div>
+    <div class="dr"><span class="dk">Status Finance</span><span class="dv">${o.statusFinance||'—'}</span></div>
+    ${o.ket?`<div class="dr"><span class="dk">Keterangan</span><span class="dv">${o.ket}</span></div>`:''}
+  </div>`;
   document.getElementById('VM').classList.add('open');
 }
 function CV(){document.getElementById('VM').classList.remove('open');}
-function TT(m,d){const t=document.getElementById('TOAST');document.getElementById('TM').textContent=m;t.className='toast'+(d?' del':'')+' on';setTimeout(()=>t.className='toast'+(d?' del':''),2500);}
-function SD(){document.getElementById('DC').textContent=new Date().toLocaleDateString('id-ID',{weekday:'long',day:'numeric',month:'long',year:'numeric'});}
 
-/* ── BULK INPUT ── */
-const KURIRS=['JNE','J&T','SiCepat','Anteraja','Pos Indonesia','Ninja Express'];
-const STATUSES={pickup:1,onproses:1,undel:1,delivered:1,rts:1};
-let bulkTab='paste', manualRows=0, parsed=[], csvParsed=[];
+/* ══ BULK UPLOAD ══ */
+let bulkTab='csv',parsedCSV=[],parsedPaste=[];
 
 function OB(){
-  if(me&&me.role!=='admin')return;
-  bulkTab='paste';SBT('paste');
+  bulkTab='csv';SBT('csv');
   document.getElementById('BPTA').value='';
-  document.getElementById('BPSUM').innerHTML='';document.getElementById('BPPRV').innerHTML='';
-  document.getElementById('BCSUM').innerHTML='';document.getElementById('BCPRV').innerHTML='';
-  document.getElementById('BFHINT').textContent='';
-  document.getElementById('DZFN').textContent='Format: .csv, maks 5MB';
+  ['BPSUM','BPPRV','PSDIST','BCSUM','BCPRV','CSDIST','BFHINT'].forEach(id=>{const e=document.getElementById(id);if(e)e.innerHTML='';});
+  document.getElementById('DZFN').textContent='File .csv hasil export Google Sheets / Excel';
   document.getElementById('FI').value='';
-  manualRows=0;document.getElementById('MROWS').innerHTML='';AMR();AMR();AMR();
-  parsed=[];csvParsed=[];
+  parsedCSV=[];parsedPaste=[];
   document.getElementById('BM').classList.add('open');
 }
 function CB(){document.getElementById('BM').classList.remove('open');}
 function SBT(t){
   bulkTab=t;
-  ['paste','csv','manual'].forEach(x=>{
-    document.getElementById('p'+x).classList.toggle('active',x===t);
-    document.getElementById('bt'+x.charAt(0)).classList.toggle('active',x===t);
-  });
-  document.getElementById('BFHINT').textContent='';
+  document.getElementById('pcsv').classList.toggle('active',t==='csv');
+  document.getElementById('ppaste').classList.toggle('active',t==='paste');
+  document.getElementById('btp').classList.toggle('active',t==='csv');
+  document.getElementById('btc').classList.toggle('active',t==='paste');
+  document.getElementById('BFHINT').innerHTML='';
 }
 
-function parseLines(raw){
-  const rows=[];
-  raw.split('\n').forEach((line,li)=>{
-    line=line.trim();if(!line)return;
-    const cols=line.includes('\t')?line.split('\t'):line.split('|');
-    const get=i=>(cols[i]||'').trim();
-    const resi=get(0),nama=get(1),kota=get(2),kurir=get(3)||'JNE',status=(get(4)||'pickup').toLowerCase(),ket=get(5);
+function detectCols(hdr){
+  const fi=(keys)=>{
+    for(const k of keys){
+      const i=hdr.findIndex(h=>h.trim().toLowerCase().includes(k.toLowerCase()));
+      if(i>=0)return i;
+    }
+    return -1;
+  };
+  return{
+    tgl:fi(['tanggal','date']),
+    eksp:fi(['ekspedisi','ekspres','kurir','courier']),
+    resi:fi(['nomer resi','no resi','no. resi','resi','awb','waybill']),
+    orderId:fi(['orders','order id','order']),
+    produk:fi(['produk i','produk','product','item']),
+    customer:fi(['customer','penerima nama','nama penerima','nama customer']),
+    hp:fi(['no hp','no. hp','hp','phone','whatsapp','wa']),
+    alamat:fi(['alamat penerima','alamat','address']),
+    cs:fi([' cs ',' cs','cs ',' cs|']),
+    statusCrm:fi(['status crm','status pengiriman','status resi','crm']),
+    statusFin:fi(['status finance','finance','status fin']),
+  };
+}
+
+function parseRows(rows,hdr){
+  const c=detectCols(hdr);
+  const g=(row,i)=>i>=0&&i<row.length?(row[i]||'').trim():'';
+  return rows.map((row)=>{
+    if(!row.some(v=>v.trim()))return null;
+    const resi=g(row,c.resi);
+    const csName=g(row,c.cs);
     const errs=[];
     if(!resi)errs.push('Resi kosong');
-    if(!nama)errs.push('Nama kosong');
-    const kNorm=KURIRS.find(k=>k.toLowerCase()===kurir.toLowerCase())||kurir;
-    if(!KURIRS.find(k=>k.toLowerCase()===kurir.toLowerCase()))errs.push('Kurir tidak valid');
-    if(!STATUSES[status])errs.push('Status tidak valid');
-    const dup=orders.find(o=>o.resi.toLowerCase()===resi.toLowerCase());
-    rows.push({resi,nama,kota,kurir:kNorm,status:STATUSES[status]?status:'pickup',ket,errs,dup:!!dup,line:li+1});
-  });
-  return rows;
+    const dup=orders.find(o=>o.resi&&o.resi===resi);
+    return{
+      resi,csName,
+      tgl:g(row,c.tgl),
+      ekspedisi:g(row,c.eksp)||'JNE',
+      orderId:g(row,c.orderId),
+      produk:g(row,c.produk),
+      customer:g(row,c.customer),
+      hp:g(row,c.hp),
+      alamat:g(row,c.alamat),
+      status:normStatus(g(row,c.statusCrm)),
+      statusFinance:g(row,c.statusFin),
+      errs,dup:!!dup,
+    };
+  }).filter(Boolean);
 }
 
-function renderPreview(rows, sumId, prvId){
+function renderPreview(rows,sumId,prvId,distId){
   const ok=rows.filter(r=>!r.errs.length&&!r.dup).length;
   const err=rows.filter(r=>r.errs.length).length;
   const dup=rows.filter(r=>r.dup&&!r.errs.length).length;
+  const fh=document.getElementById('BFHINT');
+  if(fh)fh.textContent=ok?ok+' baris siap diimport':'';
   document.getElementById(sumId).innerHTML=rows.length?
-    '<div class="bulk-sum"><span class="bs-lbl">Preview:</span>'+
-    '<span class="bs-pill bs-ok">'+ok+' siap disimpan</span>'+
-    (err?'<span class="bs-pill bs-err">'+err+' error</span>':'')+
-    (dup?'<span class="bs-pill bs-dup">'+dup+' duplikat resi</span>':'')+
-    '</div>':'';
-  if(!rows.length){document.getElementById(prvId).innerHTML='';return;}
-  const SM2={pickup:'Pick Up',onproses:'On Proses',undel:'Undelivered',delivered:'Delivered',rts:'RTS'};
-  document.getElementById(prvId).innerHTML='<div class="preview-wrap"><table class="ptbl"><thead><tr><th>#</th><th>Resi</th><th>Nama</th><th>Kota</th><th>Kurir</th><th>Status</th><th>Keterangan</th><th>Info</th></tr></thead><tbody>'+
-    rows.map((r,i)=>{
+    `<div class="bulk-sum"><span style="color:var(--t3)">Preview:</span><span class="bspill bs-ok">${ok} siap import</span>${err?`<span class="bspill bs-err">${err} error</span>`:''} ${dup?`<span class="bspill bs-dup">${dup} duplikat</span>`:''}</div>`:'';
+  if(!rows.length){document.getElementById(prvId).innerHTML='';document.getElementById(distId).innerHTML='';return;}
+  document.getElementById(prvId).innerHTML='<div class="preview-wrap"><table class="ptbl"><thead><tr>'+
+    '<th>#</th><th>Resi</th><th>Customer</th><th>CS</th><th>Ekspedisi</th><th>Status</th><th>Info</th>'+
+    '</tr></thead><tbody>'+
+    rows.slice(0,200).map((r,i)=>{
       const cls=r.errs.length?'perr':r.dup?'pdup':'';
-      const info=r.errs.length?'<span style="color:var(--ud-t)">&#9888; '+r.errs.join(', ')+'</span>':r.dup?'<span style="color:var(--op-t)">Resi duplikat</span>':'<span style="color:var(--dl-t)">&#10003; OK</span>';
-      return '<tr class="'+cls+'"><td>'+(i+1)+'</td><td style="font-family:monospace">'+r.resi+'</td><td>'+r.nama+'</td><td>'+(r.kota||'—')+'</td><td>'+r.kurir+'</td><td>'+(SM2[r.status]||r.status)+'</td><td>'+(r.ket||'—')+'</td><td>'+info+'</td></tr>';
-    }).join('')+'</tbody></table></div>';
-}
+      const info=r.errs.length?`<span style="color:var(--ud-t)">⚠ ${r.errs.join(', ')}</span>`:
+        r.dup?'<span style="color:var(--op-t)">Duplikat</span>':'<span style="color:var(--dl-t)">✓ OK</span>';
+      const st=SM[r.status]||SM.onproses;
+      return`<tr class="${cls}"><td>${i+1}</td><td style="font-family:monospace;font-size:10px">${r.resi}</td>` +
+        `<td>${r.customer||'—'}</td><td><span class="cschip">${r.csName||'—'}</span></td>` +
+        `<td>${r.ekspedisi}</td><td><span class="badge ${st.c}" style="font-size:10px"><span class="bdot"></span>${st.l}</span></td>` +
+        `<td>${info}</td></tr>`;
+    }).join('')+
+    (rows.length>200?`<tr><td colspan="7" style="padding:8px;color:var(--t3)">...+${rows.length-200} baris lainnya</td></tr>`:'')+
+    '</tbody></table></div>';
 
-function PP(){
-  parsed=parseLines(document.getElementById('BPTA').value);
-  renderPreview(parsed,'BPSUM','BPPRV');
-  const ok=parsed.filter(r=>!r.errs.length&&!r.dup).length;
-  document.getElementById('BFHINT').textContent=ok?ok+' baris siap disimpan':'';
-}
-
-function parseCSV(text){
-  const lines=text.split('\n').filter(l=>l.trim());
-  if(!lines.length)return[];
-  const hdr=lines[0].split(',').map(h=>h.trim().toLowerCase().replace(/"/g,''));
-  const get=(cols,key)=>{const i=hdr.indexOf(key);return i>=0?(cols[i]||'').replace(/"/g,'').trim():'';}
-  return lines.slice(1).filter(l=>l.trim()).map((line,li)=>{
-    const cols=line.split(',');
-    const resi=get(cols,'resi'),nama=get(cols,'nama'),kota=get(cols,'kota'),kurir=get(cols,'kurir')||'JNE',status=(get(cols,'status')||'pickup').toLowerCase(),ket=get(cols,'keterangan');
-    const errs=[];
-    if(!resi)errs.push('Resi kosong');if(!nama)errs.push('Nama kosong');
-    const kNorm=KURIRS.find(k=>k.toLowerCase()===kurir.toLowerCase())||kurir;
-    if(!KURIRS.find(k=>k.toLowerCase()===kurir.toLowerCase()))errs.push('Kurir tidak valid');
-    if(!STATUSES[status])errs.push('Status tidak valid');
-    const dup=orders.find(o=>o.resi.toLowerCase()===resi.toLowerCase());
-    return{resi,nama,kota,kurir:kNorm,status:STATUSES[status]?status:'pickup',ket,errs,dup:!!dup,line:li+2};
+  // CS distribution card
+  const csCount={};
+  rows.filter(r=>!r.errs.length&&!r.dup).forEach(r=>{
+    const cs=r.csName||'(tidak ada CS)';
+    csCount[cs]=(csCount[cs]||0)+1;
   });
+  document.getElementById(distId).innerHTML=Object.keys(csCount).length?
+    '<div style="margin-top:14px"><div style="font-size:11px;color:var(--t3);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px">Distribusi per CS:</div>'+
+    '<div class="cs-dist">'+Object.entries(csCount).sort((a,b)=>b[1]-a[1]).map(([name,cnt])=>
+      `<div class="cs-dist-card"><div class="cs-dist-name">${name}</div><div class="cs-dist-cnt">${cnt}</div><div class="cs-dist-lbl">pesanan</div></div>`
+    ).join('')+'</div></div>':'';
 }
 
-function DG(e){e.preventDefault();document.getElementById('DZ').classList.add('drag');}
-function DL2(e){document.getElementById('DZ').classList.remove('drag');}
-function DP(e){e.preventDefault();document.getElementById('DZ').classList.remove('drag');const f=e.dataTransfer.files[0];if(f)PF(f);}
-function HC(e){const f=e.target.files[0];if(f)PF(f);}
-function PF(f){
-  if(!f.name.endsWith('.csv')){alert('Hanya file .csv yang didukung.');return;}
+function ensureCS(csName){
+  if(!csName||csName.trim()==='')return;
+  const key=csName.trim().toLowerCase().replace(/\s+/g,'_');
+  if(!CS_ACCTS[key]){
+    CS_ACCTS[key]={pass:key+'123',role:'cs',name:csName.trim(),init:csName.trim().substring(0,2).toUpperCase()};
+  }
+}
+
+// CSV upload
+function DGG(e){e.preventDefault();document.getElementById('DZ').classList.add('drag');}
+function DLL(e){document.getElementById('DZ').classList.remove('drag');}
+function DPP(e){e.preventDefault();document.getElementById('DZ').classList.remove('drag');const f=e.dataTransfer.files[0];if(f)PFF(f);}
+function HCC(e){const f=e.target.files[0];if(f)PFF(f);}
+function PFF(f){
   document.getElementById('DZFN').textContent=f.name+' ('+Math.round(f.size/1024)+'KB)';
   const reader=new FileReader();
   reader.onload=ev=>{
-    csvParsed=parseCSV(ev.target.result);
-    renderPreview(csvParsed,'BCSUM','BCPRV');
-    const ok=csvParsed.filter(r=>!r.errs.length&&!r.dup).length;
-    document.getElementById('BFHINT').textContent=ok?ok+' baris siap disimpan':'';
+    const text=ev.target.result;
+    const lines=text.replace(/\r/g,'').split('\n').filter(l=>l.trim());
+    if(!lines.length)return;
+    const sep=lines[0].includes('\t')?'\t':',';
+    const hdr=lines[0].split(sep).map(h=>h.replace(/"/g,'').trim());
+    const rows=lines.slice(1).map(l=>l.split(sep).map(c=>c.replace(/"/g,'').trim()));
+    parsedCSV=parseRows(rows,hdr);
+    renderPreview(parsedCSV,'BCSUM','BCPRV','CSDIST');
   };
-  reader.readAsText(f);
-}
-function DLT(e){
-  e.preventDefault();
-  const csv='resi,nama,kota,kurir,status,keterangan\nJNE123456,Budi Santoso,Jakarta Selatan,JNE,delivered,Diterima penerima\nJT654321,Sari Dewi,Bandung,J&T,onproses,';
-  const a=document.createElement('a');a.href='data:text/csv,'+encodeURIComponent(csv);a.download='template_pesanan.csv';a.click();
+  reader.readAsText(f,'UTF-8');
 }
 
-// MANUAL TAB
-const KO='<option>JNE</option><option>J&T</option><option>SiCepat</option><option>Anteraja</option><option>Pos Indonesia</option><option>Ninja Express</option>';
-const SO2='<option value="pickup">Pick Up</option><option value="onproses">On Proses</option><option value="undel">Undelivered</option><option value="delivered">Delivered</option><option value="rts">RTS</option>';
-function AMR(){
-  const id='mr_'+(manualRows++);
-  const d=document.createElement('div');d.className='mrow';d.id=id;
-  d.innerHTML='<input type="text" placeholder="No. Resi"/><input type="text" placeholder="Nama Penerima"/><input type="text" placeholder="Kota"/><select>'+KO+'</select><select>'+SO2+'</select><button class="mrow-del" onclick="this.closest(&#39;.mrow&#39;).remove()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>';
-  document.getElementById('MROWS').appendChild(d);
-}
-function collectManual(){
-  const rows=[];
-  document.querySelectorAll('.mrow').forEach(r=>{
-    const inp=r.querySelectorAll('input');const sel=r.querySelectorAll('select');
-    const resi=inp[0].value.trim(),nama=inp[1].value.trim(),kota=inp[2].value.trim(),kurir=sel[0].value,status=sel[1].value;
-    if(!resi&&!nama)return;
-    const errs=[];
-    if(!resi)errs.push('Resi kosong');if(!nama)errs.push('Nama kosong');
-    const dup=orders.find(o=>o.resi.toLowerCase()===resi.toLowerCase());
-    rows.push({resi,nama,kota,kurir,status,ket:'',errs,dup:!!dup});
-  });
-  return rows;
+// Paste
+function PP(){
+  const text=document.getElementById('BPTA').value;
+  const lines=text.replace(/\r/g,'').split('\n').filter(l=>l.trim());
+  if(lines.length<2){document.getElementById('BPSUM').innerHTML='';document.getElementById('BPPRV').innerHTML='';document.getElementById('PSDIST').innerHTML='';return;}
+  const sep=lines[0].includes('\t')?'\t':'|';
+  const hdr=lines[0].split(sep).map(h=>h.trim());
+  const rows=lines.slice(1).map(l=>l.split(sep).map(c=>c.trim()));
+  parsedPaste=parseRows(rows,hdr);
+  renderPreview(parsedPaste,'BPSUM','BPPRV','PSDIST');
 }
 
 function SBU(){
-  const now=new Date().toISOString().split('T')[0];
-  let src=[];
-  if(bulkTab==='paste')src=parsed;
-  else if(bulkTab==='csv')src=csvParsed;
-  else src=collectManual();
+  const src=bulkTab==='csv'?parsedCSV:parsedPaste;
   const valid=src.filter(r=>!r.errs.length&&!r.dup);
-  if(!valid.length){
-    alert('Tidak ada data valid yang bisa disimpan. Periksa error pada preview.');return;
-  }
-  valid.forEach(r=>orders.unshift({id:nid++,assigned:'',resi:r.resi,nama:r.nama,kota:r.kota,kurir:r.kurir,status:r.status,ket:r.ket,tgl:now}));
-  CB();US();RT();
-  TT(valid.length+' pesanan berhasil ditambahkan');
-}
-/* ── ASSIGN TO CS ── */
-let assignMode='auto', selOrders=new Set(), selCS=new Set();
-
-function getCsUsers(){return Object.entries(U).filter(([k,v])=>v.role==='cs').map(([k,v])=>({key:k,...v}));}
-
-function OA(){
-  if(me&&me.role!=='admin')return;
-  assignMode='auto';
-  selOrders=new Set(orders.map(o=>o.id));
-  selCS=new Set(getCsUsers().map(c=>c.key));
-  setAssignMode('auto');
-  renderCSList();renderOrderPick();updateSplit();
-  document.getElementById('AFiltStat').value='';
-  document.getElementById('AM').classList.add('open');
-}
-function CAM(){document.getElementById('AM').classList.remove('open');}
-
-function setAssignMode(m){
-  assignMode=m;
-  document.getElementById('amAuto').classList.toggle('active',m==='auto');
-  document.getElementById('amManual').classList.toggle('active',m==='manual');
-  updateSplit();
+  if(!valid.length){alert('Tidak ada data valid. Cek preview.');return;}
+  const now=new Date().toLocaleDateString('id-ID',{day:'2-digit',month:'2-digit',year:'numeric'});
+  valid.forEach(r=>{
+    ensureCS(r.csName);
+    orders.unshift({id:nid++,cs:r.csName,tgl:r.tgl||now,ekspedisi:r.ekspedisi,resi:r.resi,
+      orderId:r.orderId,produk:r.produk,customer:r.customer,hp:r.hp,alamat:r.alamat,
+      status:r.status,statusFinance:r.statusFinance,ket:''});
+  });
+  CB();US();RT();buildCSFilter();
+  TT(valid.length+' pesanan berhasil diimport');
 }
 
-function renderCSList(){
-  const csUsers=getCsUsers();
-  document.getElementById('CSL').innerHTML=csUsers.map(c=>{
-    const cnt=orders.filter(o=>o.assigned===c.key).length;
-    const sel=selCS.has(c.key);
-    return `<div class="cs-card${sel?' selected':''}" onclick="toggleCS('${c.key}')">
-      <div class="cav2">${c.init}</div>
-      <div><div class="cname">${c.name}</div><div class="ccount">${cnt} pesanan aktif</div></div>
-      <div class="ccheck">${sel?'&#10003;':''}</div>
-    </div>`;
-  }).join('');
+function DLT(e){
+  e.preventDefault();
+  const csv='Tanggal\tEkspedisi\tNomer Resi\tOrders\tProduk I\tCustomer\tNo HP\tAlamat Penerima\t CS \tStatus CRM\tStatus Finance\n'+
+    '03/03/2026\tJNE\t1219572600142122\t2603035TF9IH\tNTS\tTRISNA PANEO\t6282292475122\tJL. PANGERAN HIDAYAT NO. 165\tSinta\tON PROCESS\tBELUM CAIR\n'+
+    '03/03/2026\tJT\tJO0321592938\t260303JU0O7H\tNTS\tH. SYARIFUDDIN\t6282165026706\tJL. KITA BUKIT, GG. H. II\tAndini\tDELIVERED\tSUDAH CAIR';
+  const a=document.createElement('a');a.href='data:text/csv;charset=utf-8,'+encodeURIComponent(csv);a.download='template_pesanan.csv';a.click();
 }
 
-function toggleCS(key){
-  if(selCS.has(key))selCS.delete(key);else selCS.add(key);
-  renderCSList();updateSplit();
+function TT(m,d){
+  const t=document.getElementById('TOAST');
+  document.getElementById('TM').textContent=m;
+  t.className='toast'+(d?' del':'')+' on';
+  setTimeout(()=>t.className='toast'+(d?' del':''),2800);
 }
-
-function renderOrderPick(){
-  const fStat=document.getElementById('AFiltStat').value;
-  const toShow=orders.filter(o=>!fStat||o.status===fStat);
-  const SM2={pickup:'Pick Up',onproses:'On Proses',undel:'Undelivered',delivered:'Delivered',rts:'RTS'};
-  document.getElementById('OPW').innerHTML=toShow.length?toShow.map(o=>{
-    const checked=selOrders.has(o.id);
-    const assignedUser=o.assigned?U[o.assigned]:null;
-    return `<div class="oprow" onclick="toggleOrder(${o.id})">
-      <input type="checkbox" ${checked?'checked':''} onclick="event.stopPropagation();toggleOrder(${o.id})"/>
-      <span class="oresi">${o.resi}</span>
-      <span class="oname">${o.nama}</span>
-      <span class="oassigned">${assignedUser?assignedUser.name:'—'}</span>
-    </div>`;
-  }).join(''):'<div style="padding:24px;text-align:center;color:var(--text3);font-size:13px">Tidak ada pesanan</div>';
-  const cnt=selOrders.size;
-  document.getElementById('ASUM').textContent=cnt?cnt+' pesanan dipilih':'Belum ada pesanan dipilih';
-  updateSplit();
-}
-
-function toggleOrder(id){
-  if(selOrders.has(id))selOrders.delete(id);else selOrders.add(id);
-  renderOrderPick();
-}
-function selAllOrders(v){
-  const fStat=document.getElementById('AFiltStat').value;
-  const toShow=orders.filter(o=>!fStat||o.status===fStat);
-  toShow.forEach(o=>v?selOrders.add(o.id):selOrders.delete(o.id));
-  renderOrderPick();
-}
-
-function updateSplit(){
-  const csArr=Array.from(selCS);
-  const ordArr=Array.from(selOrders);
-  const hint=document.getElementById('AFTHINT');
-  const splitEl=document.getElementById('SPLIT');
-  if(!csArr.length||!ordArr.length){hint.textContent='';splitEl.innerHTML='<div style="color:var(--text3);font-size:12px">Pilih CS dan pesanan terlebih dahulu</div>';return;}
-  if(assignMode==='auto'){
-    const perCS=Math.ceil(ordArr.length/csArr.length);
-    hint.textContent=ordArr.length+' pesanan → '+csArr.length+' CS (±'+perCS+' per orang)';
-    splitEl.innerHTML='<div style="font-size:11px;color:var(--text3);margin-bottom:6px;font-weight:500">Distribusi otomatis:</div>'+
-      csArr.map((k,i)=>{
-        const start=i*perCS,end=Math.min(start+perCS,ordArr.length),cnt=Math.max(0,end-start);
-        return '<div class="split-row"><span><span class="assigned-dot"></span>'+U[k].name+'</span><span style="color:var(--text2);font-weight:500">'+cnt+' pesanan</span></div>';
-      }).join('');
-  } else {
-    hint.textContent=ordArr.length+' pesanan dipilih, assign ke '+csArr.length+' CS yang dipilih';
-    splitEl.innerHTML='<div style="font-size:12px;color:var(--text3)">Mode manual: semua pesanan yang dipilih akan di-assign ke semua CS yang dipilih (setiap CS dapat semua).</div>';
-  }
-}
-
-function doAssign(){
-  const csArr=Array.from(selCS);
-  const ordArr=Array.from(selOrders);
-  if(!csArr.length){alert('Pilih minimal 1 CS.');return;}
-  if(!ordArr.length){alert('Pilih minimal 1 pesanan.');return;}
-  if(assignMode==='auto'){
-    const perCS=Math.ceil(ordArr.length/csArr.length);
-    ordArr.forEach((id,i)=>{
-      const csKey=csArr[Math.floor(i/perCS)%csArr.length];
-      const o=orders.find(x=>x.id===id);if(o)o.assigned=csKey;
-    });
-  } else {
-    ordArr.forEach(id=>{
-      const o=orders.find(x=>x.id===id);
-      if(o)o.assigned=csArr[0];
-    });
-  }
-  CAM();RT();
-  TT(ordArr.length+' pesanan berhasil ditugaskan');
-}
+function SD(){document.getElementById('DC').textContent=new Date().toLocaleDateString('id-ID',{weekday:'long',day:'numeric',month:'long',year:'numeric'});}
+SD();
 </script>
 </body>
 </html>
