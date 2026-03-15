@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>CS Order Progress Tracker</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg:#0f1117;--bg2:#181b24;--bg3:#1e2230;--bg4:#252a3a;
+    --border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.13);
+    --text:#e8eaf0;--text2:#8b91a8;--text3:#555c72;
+    --pu-bg:#0d2035;--pu-t:#60b4f8;--pu-d:#378add;
+    --op-bg:#221800;--op-t:#f5b942;--op-d:#ef9f27;
+    --ud-bg:#1f0d0d;--ud-t:#f07676;--ud-d:#e24b4a;
+    --dl-bg:#0d1f0d;--dl-t:#7ec95a;--dl-d:#639922;
+    --rt-bg:#220d18;--rt-t:#e87eb0;--rt-d:#d4537e;
+    --accent:#378add;--green:#1D9E75;--r:10px;--rl:14px;
+  }
+  html{font-size:14px;}
+  body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;}
+
+  /* LOGIN */
+  .lscreen{min-height:100vh;display:flex;align-items:center;justify-content:center;position:relative;}
+  .lscreen::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 600px 400px at 50% 40%,rgba(55,138,221,0.07) 0%,transparent 70%);pointer-events:none;}
+  .lbox{width:380px;max-width:95vw;background:var(--bg2);border:1px solid var(--border2);border-radius:20px;padding:36px 32px;}
+  .llogo{text-align:center;margin-bottom:28px;}
+  .llogo .brand{font-size:22px;font-weight:700;color:var(--text);letter-spacing:-0.5px;}
+  .llogo .brand span{color:var(--accent);}
+  .llogo .tag{font-size:12px;color:var(--text3);margin-top:4px;}
+  .rtabs{display:grid;grid-template-columns:1fr 1fr;gap:6px;background:var(--bg3);border-radius:var(--r);padding:4px;margin-bottom:20px;}
+  .rtab{padding:9px;text-align:center;border-radius:7px;font-size:13px;color:var(--text3);cursor:pointer;transition:all 0.2s;border:none;background:transparent;font-family:'DM Sans',sans-serif;display:flex;align-items:center;justify-content:center;gap:6px;}
+  .rtab svg{width:14px;height:14px;}
+  .rtab.active{background:var(--bg2);color:var(--text);font-weight:500;border:1px solid var(--border2);}
+  .lhint{font-size:11px;color:var(--text3);text-align:center;margin-bottom:16px;}
+  .lhint b{color:var(--text2);font-weight:500;}
+  .lf{margin-bottom:14px;}
+  .lf label{display:block;font-size:11px;color:var(--text3);margin-bottom:6px;letter-spacing:0.3px;}
+  .lf input{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:10px 13px;font-size:13px;color:var(--text);font-family:'DM Sans',sans-serif;outline:none;transition:border 0.15s;}
+  .lf input:focus{border-color:var(--border2);}
+  .lf input::placeholder{color:var(--text3);}
+  .btnlogin{width:100%;padding:11px;background:var(--accent);color:#fff;border:none;border-radius:var(--r);font-size:14px;font-weight:500;font-family:'DM Sans',sans-serif;cursor:pointer;transition:opacity 0.15s;}
+  .btnlogin:hover{opacity:0.88;}
+  .lerr{font-size:12px;color:var(--ud-t);text-align:center;margin-top:10px;min-height:18px;}
+
+  /* APP */
+  .app{display:none;}
+  .app.on{display:block;}
+
+  /* SIDEBAR */
+  .sb{position:fixed;left:0;top:0;bottom:0;width:220px;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;z-index:50;}
+  .sblogo{padding:24px 20px 20px;border-bottom:1px solid var(--border);}
+  .sblogo .brand{font-size:15px;font-weight:600;color:var(--text);letter-spacing:-0.3px;}
+  .sblogo .brand span{color:var(--accent);}
+  .sblogo .tag{font-size:11px;color:var(--text3);margin-top:2px;}
+  .sbnav{padding:16px 12px;flex:1;}
+  .nlabel{font-size:10px;color:var(--text3);letter-spacing:0.8px;text-transform:uppercase;padding:0 8px;margin-bottom:6px;margin-top:10px;}
+  .ni{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:8px;color:var(--text2);font-size:13px;cursor:pointer;transition:all 0.15s;margin-bottom:2px;}
+  .ni:hover{background:var(--bg3);color:var(--text);}
+  .ni.active{background:var(--bg4);color:var(--text);font-weight:500;}
+  .ni svg{width:15px;height:15px;flex-shrink:0;opacity:0.7;}
+  .ni.active svg{opacity:1;}
+  .nbadge{margin-left:auto;background:var(--bg4);color:var(--text2);font-size:10px;font-weight:500;padding:1px 7px;border-radius:20px;min-width:22px;text-align:center;}
+  .ni.active .nbadge{background:var(--accent);color:#fff;}
+  .rpillw{padding:0 12px 10px;}
+  .rpill{display:inline-flex;align-items:center;gap:7px;padding:5px 10px;border-radius:8px;font-size:12px;font-weight:500;width:100%;}
+  .rpill.admin{background:rgba(55,138,221,0.1);color:var(--pu-t);border:1px solid rgba(55,138,221,0.18);}
+  .rpill.cs{background:rgba(29,158,117,0.1);color:#4ecda4;border:1px solid rgba(29,158,117,0.18);}
+  .rdot{width:6px;height:6px;border-radius:50%;flex-shrink:0;}
+  .rpill.admin .rdot{background:var(--pu-d);}
+  .rpill.cs .rdot{background:var(--green);}
+  .sbfoot{padding:16px 12px;border-top:1px solid var(--border);}
+  .ucard{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:8px;}
+  .uav{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:#fff;flex-shrink:0;}
+  .aav{background:linear-gradient(135deg,#378add,#185FA5);}
+  .cav{background:linear-gradient(135deg,#1D9E75,#0F6E56);}
+  .uinfo .un{font-size:12px;font-weight:500;color:var(--text);}
+  .uinfo .ur{font-size:10px;color:var(--text3);}
+  .btnout{margin-left:auto;background:none;border:none;color:var(--text3);cursor:pointer;padding:4px;border-radius:5px;transition:color 0.15s;}
+  .btnout:hover{color:var(--ud-t);}
+  .btnout svg{width:14px;height:14px;display:block;}
+
+  /* MAIN */
+  .main{margin-left:220px;padding:28px 28px 48px;min-height:100vh;}
+  .topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:28px;}
+  .ptitle{font-size:20px;font-weight:600;color:var(--text);letter-spacing:-0.3px;}
+  .psub{font-size:12px;color:var(--text3);margin-top:2px;}
+  .dchip{font-size:12px;color:var(--text2);background:var(--bg2);border:1px solid var(--border);padding:6px 12px;border-radius:8px;}
+
+  /* CS BANNER */
+  .csbanner{display:none;background:rgba(29,158,117,0.07);border:1px solid rgba(29,158,117,0.18);border-radius:var(--r);padding:10px 16px;margin-bottom:20px;font-size:12px;color:#4ecda4;align-items:center;gap:10px;}
+  .csbanner svg{width:14px;height:14px;flex-shrink:0;}
+  .csbanner strong{color:#6edcb9;}
+  body.ics .csbanner{display:flex;}
+
+  /* STATS */
+  .sgrid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:24px;}
+  .sc{background:var(--bg2);border:1px solid var(--border);border-radius:var(--rl);padding:16px 18px;cursor:pointer;transition:all 0.2s;position:relative;overflow:hidden;}
+  .sc:hover{border-color:var(--border2);transform:translateY(-1px);}
+  .sc.af{border-color:var(--accent)!important;}
+  .sc::before{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;opacity:0;transition:opacity 0.2s;}
+  .sc:hover::before,.sc.af::before{opacity:1;}
+  .spu::before{background:var(--pu-d);}.sop::before{background:var(--op-d);}.sud::before{background:var(--ud-d);}.sdl::before{background:var(--dl-d);}.srt::before{background:var(--rt-d);}
+  .sico{width:28px;height:28px;border-radius:7px;margin-bottom:10px;display:flex;align-items:center;justify-content:center;}
+  .sico svg{width:14px;height:14px;}
+  .spu .sico{background:var(--pu-bg);color:var(--pu-d);}.sop .sico{background:var(--op-bg);color:var(--op-d);}
+  .sud .sico{background:var(--ud-bg);color:var(--ud-d);}.sdl .sico{background:var(--dl-bg);color:var(--dl-d);}
+  .srt .sico{background:var(--rt-bg);color:var(--rt-d);}
+  .snum{font-size:26px;font-weight:600;letter-spacing:-1px;line-height:1;margin-bottom:4px;}
+  .spu .snum{color:var(--pu-t);}.sop .snum{color:var(--op-t);}.sud .snum{color:var(--ud-t);}.sdl .snum{color:var(--dl-t);}.srt .snum{color:var(--rt-t);}
+  .slbl{font-size:11px;color:var(--text3);}
+
+  /* TOTAL BAR */
+  .tbar{background:var(--bg2);border:1px solid var(--border);border-radius:var(--rl);padding:14px 20px;margin-bottom:20px;display:flex;align-items:center;gap:20px;}
+  .tlbl{font-size:12px;color:var(--text3);}
+  .tnum{font-size:18px;font-weight:600;color:var(--text);}
+  .pbw{flex:1;height:6px;background:var(--bg4);border-radius:99px;overflow:hidden;display:flex;}
+  .pbs{height:100%;transition:width 0.4s;}
+  .pbpu{background:var(--pu-d);}.pbop{background:var(--op-d);}.pbud{background:var(--ud-d);}.pbdl{background:var(--dl-d);}.pbrt{background:var(--rt-d);}
+
+  /* TOOLBAR */
+  .toolbar{display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap;}
+  .sw{position:relative;flex:1;min-width:200px;}
+  .sw input{width:100%;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:8px 12px 8px 36px;font-size:13px;color:var(--text);font-family:'DM Sans',sans-serif;outline:none;transition:border 0.15s;}
+  .sw input::placeholder{color:var(--text3);}
+  .sw input:focus{border-color:var(--border2);}
+  .sico2{position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--text3);}
+  .sico2 svg{width:14px;height:14px;display:block;}
+  .selk{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:8px 12px;font-size:13px;color:var(--text);font-family:'DM Sans',sans-serif;outline:none;cursor:pointer;}
+  .selk option{background:var(--bg2);}
+  .btnadd{background:var(--accent);color:#fff;border:none;border-radius:var(--r);padding:8px 16px;font-size:13px;font-weight:500;font-family:'DM Sans',sans-serif;cursor:pointer;display:flex;align-items:center;gap:6px;transition:opacity 0.15s;white-space:nowrap;}
+  .btnadd:hover{opacity:0.88;}
+  .btnadd svg{width:13px;height:13px;}
+  .btnrst{padding:8px 12px;font-size:13px;background:transparent;color:var(--text2);border:1px solid var(--border);border-radius:var(--r);font-family:'DM Sans',sans-serif;cursor:pointer;}
+  .btnrst:hover{border-color:var(--border2);color:var(--text);}
+
+  /* TABLE */
+  .tw{background:var(--bg2);border:1px solid var(--border);border-radius:var(--rl);overflow:hidden;}
+  table{width:100%;border-collapse:collapse;font-size:13px;}
+  thead tr{background:var(--bg3);}
+  th{padding:11px 16px;text-align:left;font-size:10.5px;font-weight:500;color:var(--text3);letter-spacing:0.6px;text-transform:uppercase;border-bottom:1px solid var(--border);white-space:nowrap;}
+  td{padding:13px 16px;border-bottom:1px solid var(--border);color:var(--text);vertical-align:middle;}
+  tbody tr:last-child td{border-bottom:none;}
+  tbody tr{transition:background 0.1s;}
+  tbody tr:hover td{background:var(--bg3);}
+  .rcode{font-family:'DM Mono',monospace;font-size:12px;color:var(--text2);letter-spacing:0.3px;}
+  .badge{display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:500;white-space:nowrap;}
+  .bdot{width:5px;height:5px;border-radius:50%;flex-shrink:0;}
+  .bpu{background:var(--pu-bg);color:var(--pu-t);}.bpu .bdot{background:var(--pu-d);}
+  .bop{background:var(--op-bg);color:var(--op-t);}.bop .bdot{background:var(--op-d);}
+  .bud{background:var(--ud-bg);color:var(--ud-t);}.bud .bdot{background:var(--ud-d);}
+  .bdl{background:var(--dl-bg);color:var(--dl-t);}.bdl .bdot{background:var(--dl-d);}
+  .brt{background:var(--rt-bg);color:var(--rt-t);}.brt .bdot{background:var(--rt-d);}
+  .kchip{font-size:11px;color:var(--text3);background:var(--bg4);padding:2px 8px;border-radius:5px;display:inline-block;}
+  .ba{padding:4px 10px;font-size:11px;border-radius:6px;border:1px solid var(--border);font-family:'DM Sans',sans-serif;cursor:pointer;transition:all 0.15s;margin-right:4px;background:transparent;}
+  .bedit{color:var(--text2);}.bedit:hover{background:var(--bg4);color:var(--text);border-color:var(--border2);}
+  .bdel{color:var(--ud-t);border-color:var(--ud-bg);}.bdel:hover{background:var(--ud-bg);}
+  .bview{color:var(--pu-t);border-color:var(--pu-bg);}.bview:hover{background:var(--pu-bg);}
+  .erow td{padding:48px 16px;text-align:center;color:var(--text3);font-size:13px;}
+
+  /* MODAL */
+  .mover{position:fixed;inset:0;background:rgba(0,0,0,0.72);display:flex;align-items:center;justify-content:center;z-index:200;backdrop-filter:blur(2px);opacity:0;pointer-events:none;transition:opacity 0.2s;}
+  .mover.open{opacity:1;pointer-events:all;}
+  .modal{background:var(--bg2);border:1px solid var(--border2);border-radius:var(--rl);padding:24px;width:400px;max-width:95vw;transform:translateY(12px);transition:transform 0.2s;}
+  .mover.open .modal{transform:translateY(0);}
+  .mhd{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;}
+  .mtitle{font-size:15px;font-weight:600;color:var(--text);}
+  .mclose{width:26px;height:26px;background:var(--bg4);border:none;border-radius:6px;color:var(--text3);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;}
+  .mclose:hover{color:var(--text);}
+  .fr{margin-bottom:14px;}
+  .fr label{display:block;font-size:11px;color:var(--text3);margin-bottom:6px;letter-spacing:0.3px;}
+  .fr input,.fr select,.fr textarea{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:9px 12px;font-size:13px;color:var(--text);font-family:'DM Sans',sans-serif;outline:none;transition:border 0.15s;}
+  .fr input:focus,.fr select:focus,.fr textarea:focus{border-color:var(--border2);}
+  .fr input::placeholder{color:var(--text3);}
+  .fr select option{background:var(--bg3);}
+  .fr textarea{resize:vertical;min-height:58px;}
+  .fg{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  .mfooter{display:flex;gap:8px;justify-content:flex-end;margin-top:20px;}
+  .bcancel{padding:8px 16px;font-size:13px;background:transparent;color:var(--text2);border:1px solid var(--border);border-radius:var(--r);font-family:'DM Sans',sans-serif;cursor:pointer;}
+  .bcancel:hover{border-color:var(--border2);color:var(--text);}
+  .bsave{padding:8px 20px;font-size:13px;background:var(--accent);color:#fff;border:none;border-radius:var(--r);font-family:'DM Sans',sans-serif;cursor:pointer;font-weight:500;}
+  .bsave:hover{opacity:0.88;}
+
+  /* DETAIL */
+  .tlwrap{margin:8px 0 16px;}
+  .tlrow{display:flex;align-items:center;}
+  .tlnode{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;border:2px solid transparent;flex-shrink:0;}
+  .tldone{background:var(--dl-bg);color:var(--dl-t);border-color:var(--dl-d);}
+  .tlnow{background:var(--pu-bg);color:var(--pu-t);border-color:var(--pu-d);}
+  .tlnoww{background:var(--op-bg);color:var(--op-t);border-color:var(--op-d);}
+  .tlnowd{background:var(--ud-bg);color:var(--ud-t);border-color:var(--ud-d);}
+  .tlnowr{background:var(--rt-bg);color:var(--rt-t);border-color:var(--rt-d);}
+  .tlpend{background:var(--bg4);color:var(--text3);border-color:var(--border);}
+  .tlline{flex:1;height:2px;background:var(--border);}
+  .tlline.done{background:var(--dl-d);}
+  .tllbls{display:flex;margin-top:5px;}
+  .tllbl{flex:1;font-size:9.5px;color:var(--text3);text-align:center;}
+  .tllbl.f{text-align:left;}.tllbl.l{text-align:right;}
+  .drows{margin-top:12px;}
+  .dr{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;padding:9px 0;border-bottom:1px solid var(--border);}
+  .dr:last-child{border-bottom:none;}
+  .dk{font-size:12px;color:var(--text3);flex-shrink:0;}
+  .dv{font-size:13px;color:var(--text);text-align:right;}
+  .snote{padding:9px 13px;border-radius:8px;font-size:12px;margin-bottom:12px;}
+  .snote-ud{background:var(--ud-bg);color:var(--ud-t);}
+  .snote-rt{background:var(--rt-bg);color:var(--rt-t);}
+
+  /* TOAST */
+  .toast{position:fixed;bottom:24px;right:24px;background:var(--bg2);border:1px solid var(--border2);border-radius:var(--r);padding:10px 16px;font-size:13px;color:var(--text);z-index:999;opacity:0;transform:translateY(8px);transition:all 0.25s;display:flex;align-items:center;gap:8px;}
+  .toast.on{opacity:1;transform:translateY(0);}
+  .tdot{width:6px;height:6px;border-radius:50%;background:var(--dl-d);}
+  .toast.del .tdot{background:var(--ud-d);}
+
+  @keyframes fi{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+  .sc{animation:fi 0.3s ease both;}
+  .sc:nth-child(1){animation-delay:0.03s}.sc:nth-child(2){animation-delay:0.07s}
+  .sc:nth-child(3){animation-delay:0.11s}.sc:nth-child(4){animation-delay:0.15s}
+  .sc:nth-child(5){animation-delay:0.19s}
+  @media(max-width:768px){.sb{display:none;}.main{margin-left:0;padding:16px;}.sgrid{grid-template-columns:repeat(3,1fr);}}
+  ::-webkit-scrollbar{width:6px;}::-webkit-scrollbar-track{background:transparent;}::-webkit-scrollbar-thumb{background:var(--bg4);border-radius:3px;}
+</style>
+</head>
+<body>
+
+<div class="lscreen" id="LS">
+  <div class="lbox">
+    <div class="llogo"><div class="brand">Order<span>Track</span></div><div class="tag">CS Management System</div></div>
+    <div class="rtabs">
+      <button class="rtab active" id="tAdmin" onclick="PR('admin')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>Admin
+      </button>
+      <button class="rtab" id="tCS" onclick="PR('cs')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Customer Service
+      </button>
+    </div>
+    <p class="lhint" id="LH">Demo — <b>admin</b> / <b>admin123</b></p>
+    <div class="lf"><label>Username</label><input type="text" id="LU" placeholder="Username" onkeydown="if(event.key==='Enter')DL()"/></div>
+    <div class="lf"><label>Password</label><input type="password" id="LP" placeholder="Password" onkeydown="if(event.key==='Enter')DL()"/></div>
+    <button class="btnlogin" onclick="DL()">Masuk</button>
+    <div class="lerr" id="LE"></div>
+  </div>
+</div>
+
+<div class="app" id="APP">
+  <aside class="sb">
+    <div class="sblogo"><div class="brand">Order<span>Track</span></div><div class="tag">CS Management System</div></div>
+    <nav class="sbnav">
+      <div class="nlabel">Menu</div>
+      <div class="ni active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>Dashboard<span class="nbadge" id="NT">0</span></div>
+      <div class="ni"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 17H7A5 5 0 0 1 7 7h2"/><path d="M15 7h2a5 5 0 0 1 0 10h-2"/><line x1="8" y1="12" x2="16" y2="12"/></svg>Lacak Resi</div>
+      <div id="adminNav" style="display:none">
+        <div class="nlabel">Admin</div>
+        <div class="ni"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>Kelola Pesanan</div>
+        <div class="ni"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Export Data</div>
+      </div>
+    </nav>
+    <div class="rpillw"><div class="rpill" id="RP"><div class="rdot"></div><span id="RPT">—</span></div></div>
+    <div class="sbfoot">
+      <div class="ucard">
+        <div class="uav" id="SAV"></div>
+        <div class="uinfo"><div class="un" id="SN">—</div><div class="ur" id="SR">—</div></div>
+        <button class="btnout" onclick="DO()" title="Keluar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></button>
+      </div>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div class="topbar">
+      <div><div class="ptitle">Order Progress Tracker</div><div class="psub" id="PS">—</div></div>
+      <div class="dchip" id="DC"></div>
+    </div>
+    <div class="csbanner" id="CSB">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      Anda login sebagai <strong>Customer Service</strong> — hanya bisa memantau progres pesanan. Perubahan data hanya bisa dilakukan oleh <strong>Admin</strong>.
+    </div>
+    <div class="sgrid">
+      <div class="sc spu" onclick="FB('pickup')"><div class="sico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 8h14M5 8a2 2 0 1 0-4 0 2 2 0 0 0 4 0zm14 0a2 2 0 1 0 4 0 2 2 0 0 0-4 0zM5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8"/></svg></div><div class="snum" id="spu">0</div><div class="slbl">Pick Up</div></div>
+      <div class="sc sop" onclick="FB('onproses')"><div class="sico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div><div class="snum" id="sop">0</div><div class="slbl">On Proses</div></div>
+      <div class="sc sud" onclick="FB('undel')"><div class="sico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div><div class="snum" id="sud">0</div><div class="slbl">Undelivered</div></div>
+      <div class="sc sdl" onclick="FB('delivered')"><div class="sico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg></div><div class="snum" id="sdl">0</div><div class="slbl">Delivered</div></div>
+      <div class="sc srt" onclick="FB('rts')"><div class="sico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-4.45"/></svg></div><div class="snum" id="srt">0</div><div class="slbl">RTS</div></div>
+    </div>
+    <div class="tbar">
+      <div><div class="tlbl">Total Pesanan</div><div class="tnum" id="TN">0</div></div>
+      <div class="pbw" id="PB"></div>
+      <div style="font-size:11px;color:var(--text3);white-space:nowrap"><span id="DR">0%</span> delivered</div>
+    </div>
+    <div class="toolbar">
+      <div class="sw"><div class="sico2"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div><input type="text" id="QS" placeholder="Cari resi, nama, kota..." oninput="RT()"/></div>
+      <select class="selk" id="QK" onchange="RT()"><option value="">Semua Kurir</option><option>JNE</option><option>J&T</option><option>SiCepat</option><option>Anteraja</option><option>Pos Indonesia</option><option>Ninja Express</option></select>
+      <button class="btnadd" id="BA" style="display:none" onclick="OE()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Tambah Pesanan</button>
+      <button class="btnrst" id="BR" style="display:none" onclick="CF()">&#x2715; Reset</button>
+    </div>
+    <div class="tw"><table><thead><tr><th>#</th><th>No. Resi</th><th>Nama Penerima</th><th>Kota</th><th>Kurir</th><th>Status</th><th>Tgl Update</th><th>Keterangan</th><th id="THA">Aksi</th></tr></thead><tbody id="TB"></tbody></table></div>
+  </main>
+</div>
+
+<!-- ADMIN EDIT MODAL -->
+<div class="mover" id="EM" onclick="if(event.target===this)CE()">
+  <div class="modal">
+    <div class="mhd"><div class="mtitle" id="ET">Tambah Pesanan</div><button class="mclose" onclick="CE()">&#x2715;</button></div>
+    <div class="fg">
+      <div class="fr"><label>No. Resi *</label><input type="text" id="FR" placeholder="cth: JNE123456789"/></div>
+      <div class="fr"><label>Kurir *</label><select id="FK"><option>JNE</option><option>J&T</option><option>SiCepat</option><option>Anteraja</option><option>Pos Indonesia</option><option>Ninja Express</option></select></div>
+    </div>
+    <div class="fr"><label>Nama Penerima *</label><input type="text" id="FN" placeholder="Nama lengkap"/></div>
+    <div class="fg">
+      <div class="fr"><label>Kota Tujuan</label><input type="text" id="FKT" placeholder="cth: Jakarta"/></div>
+      <div class="fr"><label>Status *</label><select id="FS"><option value="pickup">Pick Up</option><option value="onproses">On Proses</option><option value="undel">Undelivered</option><option value="delivered">Delivered</option><option value="rts">RTS</option></select></div>
+    </div>
+    <div class="fr"><label>Keterangan</label><textarea id="FKE" placeholder="Catatan tambahan..."></textarea></div>
+    <div class="mfooter"><button class="bcancel" onclick="CE()">Batal</button><button class="bsave" onclick="SO()">Simpan</button></div>
+  </div>
+</div>
+
+<!-- CS VIEW MODAL -->
+<div class="mover" id="VM" onclick="if(event.target===this)CV()">
+  <div class="modal"><div class="mhd"><div class="mtitle">Detail Pesanan</div><button class="mclose" onclick="CV()">&#x2715;</button></div><div id="VC"></div></div>
+</div>
+
+<div class="toast" id="TOAST"><div class="tdot"></div><span id="TM"></span></div>
+
+<script>
+const U={admin:{pass:'admin123',role:'admin',name:'Administrator',init:'AD'},admin2:{pass:'admin123',role:'admin',name:'Admin Kedua',init:'A2'},cs1:{pass:'cs123',role:'cs',name:'CS Andini',init:'CA'},cs2:{pass:'cs123',role:'cs',name:'CS Bintang',init:'CB'},cs3:{pass:'cs123',role:'cs',name:'CS Citra',init:'CC'}};
+const SM={pickup:{l:'Pick Up',c:'bpu',o:0},onproses:{l:'On Proses',c:'bop',o:1},undel:{l:'Undelivered',c:'bud',o:2},delivered:{l:'Delivered',c:'bdl',o:3},rts:{l:'RTS',c:'brt',o:4}};
+let me=null,sf=null,eid=null;
+let orders=[
+  {id:1,resi:'JNE9812344001',nama:'Budi Santoso',kota:'Jakarta Selatan',kurir:'JNE',status:'delivered',tgl:'2025-03-14',ket:'Diterima langsung oleh penerima'},
+  {id:2,resi:'JT2024038821',nama:'Sari Dewi',kota:'Bandung',kurir:'J&T',status:'onproses',tgl:'2025-03-14',ket:'Sedang dalam perjalanan'},
+  {id:3,resi:'SCP88721001',nama:'Hendra Wijaya',kota:'Surabaya',kurir:'SiCepat',status:'pickup',tgl:'2025-03-15',ket:'Baru dijemput dari gudang'},
+  {id:4,resi:'ANT445812',nama:'Maya Putri',kota:'Medan',kurir:'Anteraja',status:'undel',tgl:'2025-03-13',ket:'Penerima tidak ada di tempat'},
+  {id:5,resi:'JNE7700129',nama:'Rizky Pratama',kota:'Yogyakarta',kurir:'JNE',status:'rts',tgl:'2025-03-12',ket:'Alamat tidak ditemukan'},
+  {id:6,resi:'JT2024041102',nama:'Fitriani Nur',kota:'Semarang',kurir:'J&T',status:'delivered',tgl:'2025-03-15',ket:''},
+  {id:7,resi:'NJX900214',nama:'Dimas Arfan',kota:'Makassar',kurir:'Ninja Express',status:'pickup',tgl:'2025-03-15',ket:''},
+  {id:8,resi:'SCP002349',nama:'Laila Hasanah',kota:'Depok',kurir:'SiCepat',status:'onproses',tgl:'2025-03-14',ket:'Transit hub Bekasi'},
+  {id:9,resi:'POS998112',nama:'Agus Setiawan',kota:'Solo',kurir:'Pos Indonesia',status:'undel',tgl:'2025-03-13',ket:'Rumah terkunci'},
+  {id:10,resi:'JNE4400982',nama:'Dewi Anggraini',kota:'Malang',kurir:'JNE',status:'delivered',tgl:'2025-03-15',ket:'Diterima satpam'},
+];
+let nid=11;
+
+function fd(d){const m=['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agt','Sep','Okt','Nov','Des'],p=d.split('-');return p[2]+' '+m[+p[1]-1]+' '+p[0];}
+
+let rc='admin';
+function PR(r){rc=r;document.getElementById('tAdmin').classList.toggle('active',r==='admin');document.getElementById('tCS').classList.toggle('active',r==='cs');document.getElementById('LH').innerHTML=r==='admin'?'Demo — <b>admin</b> / <b>admin123</b>':'Demo — <b>cs1</b> / <b>cs123</b>';document.getElementById('LE').textContent='';}
+function DL(){
+  const u=document.getElementById('LU').value.trim().toLowerCase(),p=document.getElementById('LP').value,rec=U[u];
+  if(!rec||rec.pass!==p){document.getElementById('LE').textContent='Username atau password salah.';return;}
+  if(rec.role!==rc){document.getElementById('LE').textContent=`Akun ini terdaftar sebagai ${rec.role==='admin'?'Admin':'Customer Service'}.`;return;}
+  me={...rec,username:u};
+  document.getElementById('LS').style.display='none';
+  document.getElementById('APP').classList.add('on');
+  SUI();SD();US();RT();
+}
+function DO(){
+  me=null;sf=null;
+  document.getElementById('QS').value='';document.getElementById('QK').value='';
+  document.getElementById('LU').value='';document.getElementById('LP').value='';document.getElementById('LE').textContent='';
+  document.getElementById('APP').classList.remove('on');document.getElementById('LS').style.display='flex';
+  document.body.classList.remove('ics');
+}
+function SUI(){
+  const a=me.role==='admin';
+  document.getElementById('SN').textContent=me.name;
+  document.getElementById('SR').textContent=a?'Administrator':'Customer Service';
+  const av=document.getElementById('SAV');av.textContent=me.init;av.className='uav '+(a?'aav':'cav');
+  const rp=document.getElementById('RP');rp.className='rpill '+(a?'admin':'cs');
+  document.getElementById('RPT').textContent=a?'Administrator':'Customer Service';
+  document.getElementById('adminNav').style.display=a?'block':'none';
+  document.getElementById('PS').textContent=a?'Kelola & update status pengiriman pesanan':'Pantau progres pengiriman pesanan (read-only)';
+  document.getElementById('BA').style.display=a?'flex':'none';
+  document.getElementById('THA').textContent=a?'Aksi':'Detail';
+  document.getElementById('CSB').style.display=a?'none':'flex';
+  if(!a)document.body.classList.add('ics');
+}
+function US(){
+  const c={pickup:0,onproses:0,undel:0,delivered:0,rts:0};
+  orders.forEach(o=>c[o.status]++);
+  ['pickup','onproses','undel','delivered','rts'].forEach(k=>{const e=document.getElementById('s'+k.substring(0,2)||k==='rts'?'srt':k==='undel'?'sud':k==='pickup'?'spu':k==='onproses'?'sop':'sdl');});
+  document.getElementById('spu').textContent=c.pickup;
+  document.getElementById('sop').textContent=c.onproses;
+  document.getElementById('sud').textContent=c.undel;
+  document.getElementById('sdl').textContent=c.delivered;
+  document.getElementById('srt').textContent=c.rts;
+  const t=orders.length;
+  document.getElementById('TN').textContent=t;document.getElementById('NT').textContent=t;
+  document.getElementById('DR').textContent=t?Math.round(c.delivered/t*100)+'%':'0%';
+  document.getElementById('PB').innerHTML=[{k:'pu',s:'pickup'},{k:'op',s:'onproses'},{k:'ud',s:'undel'},{k:'dl',s:'delivered'},{k:'rt',s:'rts'}].map(x=>`<div class="pbs pb${x.k}" style="width:${t?(c[x.s]/t*100).toFixed(1):0}%"></div>`).join('');
+}
+function RT(){
+  const q=document.getElementById('QS').value.toLowerCase(),kf=document.getElementById('QK').value;
+  const fl=orders.filter(o=>(!sf||o.status===sf)&&(!kf||o.kurir===kf)&&(!q||o.resi.toLowerCase().includes(q)||o.nama.toLowerCase().includes(q)||(o.kota||'').toLowerCase().includes(q)));
+  document.getElementById('BR').style.display=(sf||kf||q)?'inline-flex':'none';
+  if(!fl.length){document.getElementById('TB').innerHTML='<tr class="erow"><td colspan="9">Tidak ada pesanan ditemukan</td></tr>';return;}
+  const a=me&&me.role==='admin';
+  document.getElementById('TB').innerHTML=fl.map((o,i)=>{
+    const s=SM[o.status];
+    const acts=a?`<button class="ba bedit" onclick="OE(${o.id})">Edit</button><button class="ba bdel" onclick="DEL(${o.id})">Hapus</button>`:`<button class="ba bview" onclick="OV(${o.id})">Lihat</button>`;
+    return `<tr><td style="color:var(--text3);font-size:12px">${i+1}</td><td><span class="rcode">${o.resi}</span></td><td>${o.nama}</td><td style="color:var(--text2);font-size:12px">${o.kota||'—'}</td><td><span class="kchip">${o.kurir}</span></td><td><span class="badge ${s.c}"><span class="bdot"></span>${s.l}</span></td><td style="color:var(--text3);font-size:12px">${fd(o.tgl)}</td><td style="color:var(--text2);font-size:12px;max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${o.ket||'—'}</td><td>${acts}</td></tr>`;
+  }).join('');
+}
+function FB(s){sf=sf===s?null:s;document.querySelectorAll('.sc').forEach(c=>c.classList.remove('af'));if(sf){const i=['pickup','onproses','undel','delivered','rts'].indexOf(s);document.querySelectorAll('.sc')[i].classList.add('af');}RT();}
+function CF(){sf=null;document.getElementById('QS').value='';document.getElementById('QK').value='';document.querySelectorAll('.sc').forEach(c=>c.classList.remove('af'));RT();}
+function OE(id){
+  eid=id||null;
+  if(id){const o=orders.find(x=>x.id===id);document.getElementById('ET').textContent='Edit Pesanan';document.getElementById('FR').value=o.resi;document.getElementById('FN').value=o.nama;document.getElementById('FKT').value=o.kota||'';document.getElementById('FK').value=o.kurir;document.getElementById('FS').value=o.status;document.getElementById('FKE').value=o.ket;}
+  else{document.getElementById('ET').textContent='Tambah Pesanan Baru';['FR','FN','FKT','FKE'].forEach(id=>document.getElementById(id).value='');document.getElementById('FK').value='JNE';document.getElementById('FS').value='pickup';}
+  document.getElementById('EM').classList.add('open');
+}
+function CE(){document.getElementById('EM').classList.remove('open');}
+function SO(){
+  const r=document.getElementById('FR').value.trim(),n=document.getElementById('FN').value.trim();
+  if(!r||!n){alert('No. Resi dan Nama wajib diisi.');return;}
+  const now=new Date().toISOString().split('T')[0];
+  if(eid){const i=orders.findIndex(x=>x.id===eid);orders[i]={...orders[i],resi:r,nama:n,kota:document.getElementById('FKT').value.trim(),kurir:document.getElementById('FK').value,status:document.getElementById('FS').value,ket:document.getElementById('FKE').value.trim(),tgl:now};TT('Pesanan berhasil diperbarui');}
+  else{orders.unshift({id:nid++,resi:r,nama:n,kota:document.getElementById('FKT').value.trim(),kurir:document.getElementById('FK').value,status:document.getElementById('FS').value,ket:document.getElementById('FKE').value.trim(),tgl:now});TT('Pesanan baru ditambahkan');}
+  CE();US();RT();
+}
+function DEL(id){if(!confirm('Hapus pesanan ini?'))return;orders=orders.filter(x=>x.id!==id);US();RT();TT('Pesanan dihapus',true);}
+function OV(id){
+  const o=orders.find(x=>x.id===id),s=SM[o.status];
+  const fl=[{k:'pickup',l:'Pick Up',o:0},{k:'onproses',l:'On Proses',o:1},{k:'delivered',l:'Delivered',o:3}];
+  const cur=s.o;let tl='<div class="tlwrap"><div class="tlrow">';
+  fl.forEach((f,i)=>{
+    let dc='tlpend';
+    if(o.status==='undel'||o.status==='rts'){if(f.o<1)dc='tldone';else if(f.k==='onproses')dc=o.status==='undel'?'tlnowd':'tlnowr';}
+    else{if(f.o<cur)dc='tldone';else if(f.o===cur)dc='tlnow';}
+    tl+=`<div class="tlnode ${dc}">${i+1}</div>`;
+    if(i<fl.length-1){const ld=f.o<cur&&o.status!=='undel'&&o.status!=='rts';tl+=`<div class="tlline${ld?' done':''}"></div>`;}
+  });
+  tl+='</div><div class="tllbls">';
+  fl.forEach((f,i)=>{const c=i===0?'f':i===fl.length-1?'l':'';tl+=`<div class="tllbl ${c}">${f.l}</div>`+(i<fl.length-1?'<div style="flex:1"></div>':'');});
+  tl+='</div></div>';
+  let note='';
+  if(o.status==='undel')note='<div class="snote snote-ud">⚠ Pengiriman gagal — penerima tidak ada di tempat. Menunggu instruksi lanjutan.</div>';
+  if(o.status==='rts')note='<div class="snote snote-rt">↩ Paket dikembalikan ke pengirim (Return to Sender).</div>';
+  document.getElementById('VC').innerHTML=tl+note+`<div class="drows"><div class="dr"><span class="dk">Status</span><span class="dv"><span class="badge ${s.c}"><span class="bdot"></span>${s.l}</span></span></div><div class="dr"><span class="dk">No. Resi</span><span class="dv" style="font-family:'DM Mono',monospace;font-size:12px">${o.resi}</span></div><div class="dr"><span class="dk">Penerima</span><span class="dv">${o.nama}</span></div><div class="dr"><span class="dk">Kota Tujuan</span><span class="dv">${o.kota||'—'}</span></div><div class="dr"><span class="dk">Kurir</span><span class="dv">${o.kurir}</span></div><div class="dr"><span class="dk">Tgl Update</span><span class="dv">${fd(o.tgl)}</span></div><div class="dr"><span class="dk">Keterangan</span><span class="dv" style="max-width:200px;text-align:right">${o.ket||'—'}</span></div></div>`;
+  document.getElementById('VM').classList.add('open');
+}
+function CV(){document.getElementById('VM').classList.remove('open');}
+function TT(m,d){const t=document.getElementById('TOAST');document.getElementById('TM').textContent=m;t.className='toast'+(d?' del':'')+' on';setTimeout(()=>t.className='toast'+(d?' del':''),2500);}
+function SD(){document.getElementById('DC').textContent=new Date().toLocaleDateString('id-ID',{weekday:'long',day:'numeric',month:'long',year:'numeric'});}
+</script>
+</body>
+</html>
