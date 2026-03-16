@@ -3,874 +3,871 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>CS Order Tracker</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<title>Order Tracker — CS Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
 <style>
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --bg:#0f1117;--bg2:#181b24;--bg3:#1e2230;--bg4:#252a3a;
-  --b:rgba(255,255,255,0.07);--b2:rgba(255,255,255,0.13);
-  --t:#e8eaf0;--t2:#8b91a8;--t3:#555c72;
-  --pu-bg:#0d2035;--pu-t:#60b4f8;--pu-d:#378add;
-  --op-bg:#221800;--op-t:#f5b942;--op-d:#ef9f27;
-  --ud-bg:#1f0d0d;--ud-t:#f07676;--ud-d:#e24b4a;
-  --dl-bg:#0d1f0d;--dl-t:#7ec95a;--dl-d:#639922;
-  --rt-bg:#220d18;--rt-t:#e87eb0;--rt-d:#d4537e;
-  --ac:#378add;--r:10px;--rl:14px;
+  --bg:#0d1117;--bg2:#161b22;--bg3:#1c2128;--bg4:#22272e;--bg5:#2d333b;
+  --br:rgba(255,255,255,0.06);--br2:rgba(255,255,255,0.12);
+  --t1:#e6edf3;--t2:#8b949e;--t3:#484f58;
+  --blue:#388bfd;--blue-bg:rgba(56,139,253,.1);--blue-br:rgba(56,139,253,.25);
+  --green:#3fb950;--green-bg:rgba(63,185,80,.1);--green-br:rgba(63,185,80,.25);
+  --yellow:#d29922;--yellow-bg:rgba(210,153,34,.1);--yellow-br:rgba(210,153,34,.25);
+  --red:#f85149;--red-bg:rgba(248,81,73,.1);--red-br:rgba(248,81,73,.25);
+  --r:8px;--rl:12px;
 }
-html{font-size:14px;}
-body{background:var(--bg);color:var(--t);font-family:'DM Sans',sans-serif;min-height:100vh;}
+html{font-size:14px}
+body{background:var(--bg);color:var(--t1);font-family:'DM Sans',sans-serif;min-height:100vh}
 
-.ls{min-height:100vh;display:flex;align-items:center;justify-content:center;position:relative;}
-.ls::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 600px 400px at 50% 40%,rgba(55,138,221,0.07),transparent 70%);pointer-events:none;}
-.lbox{width:400px;max-width:95vw;background:var(--bg2);border:1px solid var(--b2);border-radius:20px;padding:36px 32px;position:relative;z-index:1;}
-.llogo{text-align:center;margin-bottom:28px;}
-.llogo .brand{font-size:22px;font-weight:700;letter-spacing:-0.5px;}
-.llogo .brand span{color:var(--ac);}
-.llogo .tag{font-size:12px;color:var(--t3);margin-top:4px;}
-.rtabs{display:grid;grid-template-columns:1fr 1fr;gap:5px;background:var(--bg3);border-radius:var(--r);padding:4px;margin-bottom:20px;}
-.rtab{padding:9px;border-radius:7px;font-size:13px;color:var(--t3);cursor:pointer;border:none;background:transparent;font-family:'DM Sans',sans-serif;display:flex;align-items:center;justify-content:center;gap:6px;transition:all 0.15s;}
-.rtab svg{width:14px;height:14px;}
-.rtab.active{background:var(--bg2);color:var(--t);font-weight:500;border:1px solid var(--b2);}
-.lhint{font-size:11px;color:var(--t3);text-align:center;margin-bottom:16px;}
-.lhint b{color:var(--t2);}
-.lf{margin-bottom:14px;}
-.lf label{display:block;font-size:11px;color:var(--t3);margin-bottom:6px;}
-.lf input{width:100%;background:var(--bg3);border:1px solid var(--b);border-radius:var(--r);padding:10px 13px;font-size:13px;color:var(--t);font-family:'DM Sans',sans-serif;outline:none;transition:border 0.15s;}
-.lf input:focus{border-color:var(--b2);}
-.lf input::placeholder{color:var(--t3);}
-.btnlogin{width:100%;padding:11px;background:var(--ac);color:#fff;border:none;border-radius:var(--r);font-size:14px;font-weight:500;font-family:'DM Sans',sans-serif;cursor:pointer;transition:opacity 0.15s;}
-.btnlogin:hover{opacity:0.88;}
-.lerr{font-size:12px;color:var(--ud-t);text-align:center;margin-top:10px;min-height:18px;}
-.cs-pwd-info{background:var(--bg3);border:1px solid var(--b);border-radius:8px;padding:10px 13px;font-size:11px;color:var(--t3);margin-top:10px;line-height:1.7;}
-.cs-pwd-info b{color:var(--t2);}
+/* ── SETUP ── */
+.setup-screen{min-height:100vh;display:flex;align-items:center;justify-content:center}
+.setup-box{width:560px;max-width:96vw;background:var(--bg2);border:1px solid var(--br2);border-radius:16px;padding:32px 28px}
+.s-logo{text-align:center;margin-bottom:22px}
+.s-logo .brand{font-size:20px;font-weight:700;letter-spacing:-.5px}
+.s-logo .brand span{color:var(--blue)}
+.s-logo .sub{font-size:11px;color:var(--t3);margin-top:3px}
+.s-step{display:flex;gap:13px;margin-bottom:18px;padding-bottom:18px;border-bottom:1px solid var(--br)}
+.s-step:last-of-type{border-bottom:none;margin-bottom:0;padding-bottom:0}
+.s-num{width:22px;height:22px;border-radius:50%;background:var(--blue-bg);border:1px solid var(--blue-br);color:var(--blue);font-size:10px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.s-body .s-title{font-size:13px;font-weight:500;color:var(--t1);margin-bottom:4px}
+.s-body .s-desc{font-size:11px;color:var(--t3);line-height:1.65}
+.s-desc code{font-family:'DM Mono',monospace;font-size:10px;color:#79c0ff;background:rgba(56,139,253,.1);padding:1px 4px;border-radius:3px}
+.s-desc b{color:var(--t2);font-weight:500}
+.setup-inp{width:100%;background:var(--bg3);border:1px solid var(--br);border-radius:var(--r);padding:8px 11px;font-size:12px;color:var(--t1);font-family:'DM Sans',sans-serif;outline:none;transition:border .15s;margin-top:7px}
+.setup-inp:focus{border-color:var(--blue-br)}
+.setup-inp::placeholder{color:var(--t3)}
+/* file list */
+.file-list{margin-top:8px;display:flex;flex-direction:column;gap:5px;max-height:220px;overflow-y:auto}
+.file-row{display:flex;gap:6px;align-items:center}
+.file-row input{flex:1;background:var(--bg3);border:1px solid var(--br);border-radius:var(--r);padding:7px 10px;font-size:11px;color:var(--t1);font-family:'DM Mono',monospace;outline:none;transition:border .15s}
+.file-row input:focus{border-color:var(--blue-br)}
+.file-row input::placeholder{color:var(--t3);font-family:'DM Sans',sans-serif}
+.file-row .fname{font-size:10px;color:var(--t3);min-width:90px;text-align:right;padding-right:2px}
+.file-row .fname.ok{color:var(--green)}
+.file-row .fname.err{color:var(--red)}
+.file-del{background:none;border:none;color:var(--t3);cursor:pointer;padding:3px;border-radius:4px;flex-shrink:0}
+.file-del:hover{color:var(--red)}
+.file-del svg{width:12px;height:12px;display:block}
+.btn-addfile{background:transparent;border:1px dashed var(--br2);border-radius:var(--r);padding:6px 12px;font-size:11px;color:var(--t3);font-family:'DM Sans',sans-serif;cursor:pointer;margin-top:6px;transition:all .15s;width:100%}
+.btn-addfile:hover{border-color:var(--blue-br);color:var(--blue)}
+.btn-test{background:transparent;border:1px solid var(--blue-br);border-radius:var(--r);padding:6px 12px;font-size:11px;color:var(--blue);font-family:'DM Sans',sans-serif;cursor:pointer;margin-top:7px;transition:all .15s}
+.btn-test:hover{background:var(--blue-bg)}
+.test-res{font-size:10px;margin-top:5px;color:var(--t3);line-height:1.5}
+.test-res .ok{color:var(--green)}.test-res .err{color:var(--red)}
+.btn-enter{width:100%;padding:10px;background:var(--blue);color:#fff;border:none;border-radius:var(--r);font-size:13px;font-weight:500;font-family:'DM Sans',sans-serif;cursor:pointer;margin-top:18px}
+.btn-enter:hover{opacity:.88}
+.s-err{font-size:11px;color:var(--red);text-align:center;margin-top:7px;min-height:16px}
 
-.app{display:none;}.app.on{display:block;}
-.sb{position:fixed;left:0;top:0;bottom:0;width:220px;background:var(--bg2);border-right:1px solid var(--b);display:flex;flex-direction:column;z-index:50;}
-.sblogo{padding:24px 20px 20px;border-bottom:1px solid var(--b);}
-.sblogo .brand{font-size:15px;font-weight:600;letter-spacing:-0.3px;}
-.sblogo .brand span{color:var(--ac);}
-.sblogo .tag{font-size:11px;color:var(--t3);margin-top:2px;}
-.sbnav{padding:16px 12px;flex:1;}
-.nlbl{font-size:10px;color:var(--t3);letter-spacing:0.8px;text-transform:uppercase;padding:0 8px;margin-bottom:6px;margin-top:10px;}
-.ni{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:8px;color:var(--t2);font-size:13px;cursor:pointer;transition:all 0.15s;margin-bottom:2px;}
-.ni:hover{background:var(--bg3);color:var(--t);}
-.ni.active{background:var(--bg4);color:var(--t);font-weight:500;}
-.ni svg{width:15px;height:15px;flex-shrink:0;opacity:0.7;}
-.ni.active svg{opacity:1;}
-.nbadge{margin-left:auto;background:var(--bg4);color:var(--t2);font-size:10px;font-weight:500;padding:1px 7px;border-radius:20px;min-width:22px;text-align:center;}
-.ni.active .nbadge{background:var(--ac);color:#fff;}
-.sbfoot{padding:16px 12px;border-top:1px solid var(--b);}
-.ucard{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:8px;}
-.uav{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:#fff;flex-shrink:0;}
-.aav{background:linear-gradient(135deg,#378add,#185FA5);}
-.cav{background:linear-gradient(135deg,#1D9E75,#0F6E56);}
-.uinfo .un{font-size:12px;font-weight:500;color:var(--t);}
-.uinfo .ur{font-size:10px;color:var(--t3);}
-.btnout{margin-left:auto;background:none;border:none;color:var(--t3);cursor:pointer;padding:4px;border-radius:5px;transition:color 0.15s;}
-.btnout:hover{color:var(--ud-t);}
-.btnout svg{width:14px;height:14px;display:block;}
+/* ── LOGIN ── */
+.login-screen{min-height:100vh;display:flex;align-items:center;justify-content:center;position:relative}
+.login-screen::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 600px 400px at 50% 0%,rgba(56,139,253,.06),transparent 60%);pointer-events:none}
+.login-box{width:340px;max-width:95vw;background:var(--bg2);border:1px solid var(--br2);border-radius:16px;padding:28px 24px;position:relative;z-index:1}
+.l-logo{text-align:center;margin-bottom:20px}
+.l-logo .brand{font-size:18px;font-weight:700;letter-spacing:-.5px}
+.l-logo .brand span{color:var(--blue)}
+.l-logo .sub{font-size:10px;color:var(--t3);margin-top:2px}
+.rtabs{display:grid;grid-template-columns:1fr 1fr;gap:4px;background:var(--bg3);border-radius:var(--r);padding:3px;margin-bottom:14px}
+.rtab{padding:7px;text-align:center;border-radius:6px;font-size:12px;color:var(--t3);cursor:pointer;border:none;background:transparent;font-family:'DM Sans',sans-serif;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:5px}
+.rtab svg{width:12px;height:12px}
+.rtab.on{background:var(--bg2);color:var(--t1);font-weight:500;border:1px solid var(--br2)}
+.lhint{font-size:10px;color:var(--t3);text-align:center;margin-bottom:12px;line-height:1.5}
+.lhint b{color:var(--t2);font-weight:500}
+.lf{margin-bottom:10px}
+.lf label{display:block;font-size:10px;color:var(--t3);margin-bottom:4px}
+.lf input{width:100%;background:var(--bg3);border:1px solid var(--br);border-radius:var(--r);padding:8px 11px;font-size:12px;color:var(--t1);font-family:'DM Sans',sans-serif;outline:none;transition:border .15s}
+.lf input:focus{border-color:var(--br2)}
+.lf input::placeholder{color:var(--t3)}
+.btnlogin{width:100%;padding:9px;background:var(--blue);color:#fff;border:none;border-radius:var(--r);font-size:13px;font-weight:500;font-family:'DM Sans',sans-serif;cursor:pointer;margin-top:12px;transition:opacity .15s}
+.btnlogin:hover{opacity:.88}
+.lerr{font-size:10px;color:var(--red);text-align:center;margin-top:7px;min-height:14px}
+.setup-link{font-size:10px;color:var(--t3);text-align:center;margin-top:9px;cursor:pointer;text-decoration:underline}
+.setup-link:hover{color:var(--t2)}
 
-.main{margin-left:220px;padding:28px 28px 48px;min-height:100vh;}
-.topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:12px;}
-.ptitle{font-size:20px;font-weight:600;letter-spacing:-0.3px;}
-.psub{font-size:12px;color:var(--t3);margin-top:2px;}
-.dchip{font-size:12px;color:var(--t2);background:var(--bg2);border:1px solid var(--b);padding:6px 12px;border-radius:8px;white-space:nowrap;}
+/* ── SIDEBAR ── */
+.sb{position:fixed;left:0;top:0;bottom:0;width:212px;background:var(--bg2);border-right:1px solid var(--br);display:flex;flex-direction:column;z-index:50}
+.sbhead{padding:16px 14px 13px;border-bottom:1px solid var(--br)}
+.sbhead .brand{font-size:13px;font-weight:600;color:var(--t1);letter-spacing:-.3px}
+.sbhead .brand span{color:var(--blue)}
+.sbhead .tag{font-size:9px;color:var(--t3);margin-top:1px}
+.cdot{width:6px;height:6px;border-radius:50%;background:var(--green);display:inline-block;margin-left:5px;vertical-align:middle}
+.cdot.off{background:var(--red)}
+.sbnav{padding:10px 8px;flex:1;overflow-y:auto}
+.nlbl{font-size:9px;color:var(--t3);letter-spacing:.7px;text-transform:uppercase;padding:0 8px;margin-bottom:4px;margin-top:8px}
+.ni{display:flex;align-items:center;gap:8px;padding:7px 8px;border-radius:7px;color:var(--t2);font-size:12px;cursor:pointer;transition:all .15s;margin-bottom:1px}
+.ni:hover{background:var(--bg3);color:var(--t1)}
+.ni.on{background:var(--bg4);color:var(--t1);font-weight:500}
+.ni svg{width:13px;height:13px;flex-shrink:0;opacity:.7}
+.ni.on svg,.ni:hover svg{opacity:1}
+.nbadge{margin-left:auto;font-size:9px;font-weight:500;padding:1px 6px;border-radius:20px;background:var(--bg5);color:var(--t2)}
+.ni.on .nbadge{background:var(--blue);color:#fff}
+.sbfoot{padding:10px 8px;border-top:1px solid var(--br)}
+.ucard{display:flex;align-items:center;gap:8px;padding:7px 8px;border-radius:7px}
+.uav{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#fff;flex-shrink:0}
+.av-admin{background:linear-gradient(135deg,#388bfd,#1158c7)}
+.av-cs{background:linear-gradient(135deg,#3fb950,#1a7f37)}
+.uname{font-size:11px;font-weight:500;color:var(--t1)}
+.urole{font-size:9px;color:var(--t3)}
+.btnout{margin-left:auto;background:none;border:none;color:var(--t3);cursor:pointer;padding:3px;border-radius:4px}
+.btnout:hover{color:var(--red)}
+.btnout svg{width:13px;height:13px;display:block}
 
-.csbanner{display:flex;background:rgba(29,158,117,0.07);border:1px solid rgba(29,158,117,0.18);border-radius:var(--r);padding:11px 16px;margin-bottom:20px;font-size:12px;color:#4ecda4;align-items:center;gap:10px;}
-.csbanner svg{width:14px;height:14px;flex-shrink:0;}
-.csbanner strong{color:#6edcb9;}
+/* ── MAIN ── */
+.app{display:none}.app.on{display:block}
+.main{margin-left:212px;padding:20px 20px 48px;min-height:100vh}
+.topbar{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:16px;gap:10px}
+.ptitle{font-size:17px;font-weight:600;color:var(--t1);letter-spacing:-.3px}
+.psub{font-size:11px;color:var(--t3);margin-top:2px}
+.topbar-r{display:flex;gap:7px;align-items:center;flex-shrink:0;flex-wrap:wrap;justify-content:flex-end}
+.dchip{font-size:10px;color:var(--t2);background:var(--bg2);border:1px solid var(--br);padding:4px 10px;border-radius:6px;white-space:nowrap}
+.sync-btn{background:transparent;border:1px solid var(--br);border-radius:6px;padding:5px 10px;font-size:11px;color:var(--t2);font-family:'DM Sans',sans-serif;cursor:pointer;display:flex;align-items:center;gap:4px;transition:all .15s;white-space:nowrap}
+.sync-btn:hover{border-color:var(--br2);color:var(--t1)}
+.sync-btn svg{width:11px;height:11px}
+.sync-btn.spin svg{animation:rot .7s linear infinite}
+@keyframes rot{to{transform:rotate(360deg)}}
+.lsync{font-size:9px;color:var(--t3);white-space:nowrap}
 
-.sgrid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:20px;}
-.sc{background:var(--bg2);border:1px solid var(--b);border-radius:var(--rl);padding:16px 18px;cursor:pointer;transition:all 0.2s;position:relative;overflow:hidden;}
-.sc:hover{border-color:var(--b2);transform:translateY(-1px);}
-.sc.af{border-color:var(--ac)!important;}
-.sc::before{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;opacity:0;transition:opacity 0.2s;}
-.sc:hover::before,.sc.af::before{opacity:1;}
-.spu::before{background:var(--pu-d);}.sop::before{background:var(--op-d);}.sud::before{background:var(--ud-d);}.sdl::before{background:var(--dl-d);}.srt::before{background:var(--rt-d);}
-.sico{width:28px;height:28px;border-radius:7px;margin-bottom:10px;display:flex;align-items:center;justify-content:center;}
-.sico svg{width:14px;height:14px;}
-.spu .sico{background:var(--pu-bg);color:var(--pu-d);}.sop .sico{background:var(--op-bg);color:var(--op-d);}
-.sud .sico{background:var(--ud-bg);color:var(--ud-d);}.sdl .sico{background:var(--dl-bg);color:var(--dl-d);}.srt .sico{background:var(--rt-bg);color:var(--rt-d);}
-.snum{font-size:26px;font-weight:600;letter-spacing:-1px;line-height:1;margin-bottom:4px;}
-.spu .snum{color:var(--pu-t);}.sop .snum{color:var(--op-t);}.sud .snum{color:var(--ud-t);}.sdl .snum{color:var(--dl-t);}.srt .snum{color:var(--rt-t);}
-.slbl{font-size:11px;color:var(--t3);}
+/* ── MONTH FILTER BAR ── */
+.month-bar{display:flex;align-items:center;gap:8px;margin-bottom:14px;flex-wrap:wrap}
+.month-bar-lbl{font-size:10px;color:var(--t3);flex-shrink:0}
+.month-pills{display:flex;gap:5px;flex-wrap:wrap;flex:1}
+.mpill{padding:4px 11px;border-radius:20px;font-size:11px;font-weight:400;color:var(--t2);background:var(--bg2);border:1px solid var(--br);cursor:pointer;transition:all .15s;white-space:nowrap}
+.mpill:hover{border-color:var(--br2);color:var(--t1)}
+.mpill.on{background:var(--blue-bg);border-color:var(--blue-br);color:var(--blue);font-weight:500}
+.mpill.loading{opacity:.5;cursor:wait}
+.mpill .mdot{display:inline-block;width:5px;height:5px;border-radius:50%;background:var(--green);margin-right:4px;vertical-align:middle}
+.mpill.on .mdot{background:var(--blue)}
 
-.tbar{background:var(--bg2);border:1px solid var(--b);border-radius:var(--rl);padding:14px 20px;margin-bottom:20px;display:flex;align-items:center;gap:20px;}
-.tlbl{font-size:12px;color:var(--t3);}.tnum{font-size:18px;font-weight:600;color:var(--t);}
-.pbw{flex:1;height:6px;background:var(--bg4);border-radius:99px;overflow:hidden;display:flex;}
-.pbs{height:100%;transition:width 0.4s;}
-.pbpu{background:var(--pu-d);}.pbop{background:var(--op-d);}.pbud{background:var(--ud-d);}.pbdl{background:var(--dl-d);}.pbrt{background:var(--rt-d);}
+/* ── CS BANNER ── */
+.cs-banner{display:flex;align-items:center;gap:9px;background:var(--green-bg);border:1px solid var(--green-br);border-radius:var(--r);padding:9px 13px;margin-bottom:13px;font-size:11px;color:var(--green)}
+.cs-banner svg{width:13px;height:13px;flex-shrink:0}
 
-.toolbar{display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap;}
-.sw{position:relative;flex:1;min-width:180px;}
-.sw input{width:100%;background:var(--bg2);border:1px solid var(--b);border-radius:var(--r);padding:8px 12px 8px 36px;font-size:13px;color:var(--t);font-family:'DM Sans',sans-serif;outline:none;transition:border 0.15s;}
-.sw input::placeholder{color:var(--t3);}
-.sw input:focus{border-color:var(--b2);}
-.sico2{position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--t3);}
-.sico2 svg{width:14px;height:14px;display:block;}
-.selk{background:var(--bg2);border:1px solid var(--b);border-radius:var(--r);padding:8px 12px;font-size:13px;color:var(--t);font-family:'DM Sans',sans-serif;outline:none;cursor:pointer;}
-.selk option{background:var(--bg2);}
-.btnprimary{background:var(--ac);color:#fff;border:none;border-radius:var(--r);padding:8px 16px;font-size:13px;font-weight:500;font-family:'DM Sans',sans-serif;cursor:pointer;display:flex;align-items:center;gap:6px;transition:opacity 0.15s;white-space:nowrap;}
-.btnprimary:hover{opacity:0.88;}
-.btnprimary svg{width:13px;height:13px;}
-.btngreen{background:var(--bg2);color:var(--dl-t);border:1px solid rgba(99,153,34,0.3);border-radius:var(--r);padding:8px 14px;font-size:13px;font-weight:500;font-family:'DM Sans',sans-serif;cursor:pointer;display:flex;align-items:center;gap:6px;transition:all 0.15s;white-space:nowrap;}
-.btngreen:hover{background:rgba(99,153,34,0.08);border-color:var(--dl-d);}
-.btngreen svg{width:13px;height:13px;}
-.btnghost{padding:8px 12px;font-size:13px;background:transparent;color:var(--t2);border:1px solid var(--b);border-radius:var(--r);font-family:'DM Sans',sans-serif;cursor:pointer;white-space:nowrap;}
-.btnghost:hover{border-color:var(--b2);color:var(--t);}
+/* ── STATS ── */
+.stats-row{display:grid;grid-template-columns:repeat(5,1fr);gap:9px;margin-bottom:13px}
+.scard{background:var(--bg2);border:1px solid var(--br);border-radius:var(--rl);padding:12px 14px;cursor:pointer;transition:all .2s;position:relative;overflow:hidden}
+.scard:hover{border-color:var(--br2);transform:translateY(-1px)}
+.scard.af{border-color:var(--blue)!important}
+.scard::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;opacity:0;transition:opacity .2s}
+.scard:hover::after,.scard.af::after{opacity:1}
+.sc-all::after,.sc-op::after{background:var(--blue)}
+.sc-dl::after{background:var(--green)}.sc-ud::after{background:var(--yellow)}.sc-rt::after{background:var(--red)}
+.sico{width:22px;height:22px;border-radius:5px;display:flex;align-items:center;justify-content:center;margin-bottom:7px}
+.sico svg{width:11px;height:11px}
+.sc-all .sico,.sc-op .sico{background:var(--blue-bg);color:var(--blue)}
+.sc-dl .sico{background:var(--green-bg);color:var(--green)}
+.sc-ud .sico{background:var(--yellow-bg);color:var(--yellow)}
+.sc-rt .sico{background:var(--red-bg);color:var(--red)}
+.snum{font-size:20px;font-weight:600;letter-spacing:-1px;line-height:1;margin-bottom:2px}
+.sc-all .snum,.sc-op .snum{color:var(--blue)}
+.sc-dl .snum{color:var(--green)}.sc-ud .snum{color:var(--yellow)}.sc-rt .snum{color:var(--red)}
+.slbl{font-size:10px;color:var(--t3)}
 
-.tw{background:var(--bg2);border:1px solid var(--b);border-radius:var(--rl);overflow:hidden;}
-.tw-scroll{overflow-x:auto;}
-table{width:100%;border-collapse:collapse;font-size:12.5px;}
-thead tr{background:var(--bg3);}
-th{padding:10px 14px;text-align:left;font-size:10px;font-weight:500;color:var(--t3);letter-spacing:0.6px;text-transform:uppercase;border-bottom:1px solid var(--b);white-space:nowrap;}
-td{padding:11px 14px;border-bottom:1px solid var(--b);color:var(--t);vertical-align:middle;}
-tbody tr:last-child td{border-bottom:none;}
-tbody tr{transition:background 0.1s;}
-tbody tr:hover td{background:var(--bg3);}
-.rcode{font-family:'DM Mono',monospace;font-size:11px;color:var(--t2);letter-spacing:0.3px;}
-.badge{display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:500;white-space:nowrap;}
-.bdot{width:5px;height:5px;border-radius:50%;flex-shrink:0;}
-.bpu{background:var(--pu-bg);color:var(--pu-t);}.bpu .bdot{background:var(--pu-d);}
-.bop{background:var(--op-bg);color:var(--op-t);}.bop .bdot{background:var(--op-d);}
-.bud{background:var(--ud-bg);color:var(--ud-t);}.bud .bdot{background:var(--ud-d);}
-.bdl{background:var(--dl-bg);color:var(--dl-t);}.bdl .bdot{background:var(--dl-d);}
-.brt{background:var(--rt-bg);color:var(--rt-t);}.brt .bdot{background:var(--rt-d);}
-.kchip{font-size:10px;color:var(--t3);background:var(--bg4);padding:2px 7px;border-radius:5px;display:inline-block;}
-.cschip{font-size:11px;background:rgba(55,138,221,0.12);color:var(--pu-t);padding:2px 9px;border-radius:20px;display:inline-block;white-space:nowrap;}
-.ba{padding:3px 9px;font-size:11px;border-radius:6px;border:1px solid var(--b);font-family:'DM Sans',sans-serif;cursor:pointer;transition:all 0.15s;margin-right:3px;background:transparent;}
-.bedit{color:var(--t2);}.bedit:hover{background:var(--bg4);color:var(--t);border-color:var(--b2);}
-.bdelbtn{color:var(--ud-t);border-color:var(--ud-bg);}.bdelbtn:hover{background:var(--ud-bg);}
-.bview{color:var(--pu-t);border-color:var(--pu-bg);}.bview:hover{background:var(--pu-bg);}
-.erow td{padding:40px 16px;text-align:center;color:var(--t3);font-size:13px;}
+/* ── TOOLBAR ── */
+.toolbar{display:flex;align-items:center;gap:7px;margin-bottom:10px;flex-wrap:wrap}
+.srch{position:relative;flex:1;min-width:170px}
+.srch input{width:100%;background:var(--bg2);border:1px solid var(--br);border-radius:var(--r);padding:7px 10px 7px 29px;font-size:12px;color:var(--t1);font-family:'DM Sans',sans-serif;outline:none;transition:border .15s}
+.srch input::placeholder{color:var(--t3)}
+.srch input:focus{border-color:var(--br2)}
+.srch svg{position:absolute;left:9px;top:50%;transform:translateY(-50%);width:12px;height:12px;color:var(--t3);pointer-events:none}
+.sel{background:var(--bg2);border:1px solid var(--br);border-radius:var(--r);padding:7px 9px;font-size:12px;color:var(--t1);font-family:'DM Sans',sans-serif;outline:none;cursor:pointer}
+.sel option{background:var(--bg3)}
+.btn-p{background:var(--blue);color:#fff;border:none;border-radius:var(--r);padding:7px 12px;font-size:12px;font-weight:500;font-family:'DM Sans',sans-serif;cursor:pointer;display:flex;align-items:center;gap:5px;white-space:nowrap;transition:opacity .15s}
+.btn-p:hover{opacity:.88}
+.btn-p svg,.btn-g svg{width:11px;height:11px}
+.btn-g{background:transparent;color:var(--green);border:1px solid var(--green-br);border-radius:var(--r);padding:7px 11px;font-size:12px;font-weight:500;font-family:'DM Sans',sans-serif;cursor:pointer;display:flex;align-items:center;gap:5px;white-space:nowrap;transition:all .15s}
+.btn-g:hover{background:var(--green-bg)}
+.btn-ghost{background:transparent;color:var(--t2);border:1px solid var(--br);border-radius:var(--r);padding:7px 10px;font-size:12px;font-family:'DM Sans',sans-serif;cursor:pointer;white-space:nowrap;transition:all .15s}
+.btn-ghost:hover{border-color:var(--br2);color:var(--t1)}
 
-.mover{position:fixed;inset:0;background:rgba(0,0,0,0.72);display:flex;align-items:center;justify-content:center;z-index:200;backdrop-filter:blur(2px);opacity:0;pointer-events:none;transition:opacity 0.2s;}
-.mover.open{opacity:1;pointer-events:all;}
-.modal{background:var(--bg2);border:1px solid var(--b2);border-radius:var(--rl);padding:24px;width:440px;max-width:96vw;transform:translateY(12px);transition:transform 0.2s;max-height:92vh;overflow-y:auto;}
-.mover.open .modal{transform:translateY(0);}
-.modal-xl{width:880px;max-width:98vw;}
-.mhd{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;}
-.mtitle{font-size:15px;font-weight:600;color:var(--t);}
-.mclose{width:26px;height:26px;background:var(--bg4);border:none;border-radius:6px;color:var(--t3);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;}
-.mclose:hover{color:var(--t);}
-.fr{margin-bottom:14px;}
-.fr label{display:block;font-size:11px;color:var(--t3);margin-bottom:6px;}
-.fr input,.fr select,.fr textarea{width:100%;background:var(--bg3);border:1px solid var(--b);border-radius:var(--r);padding:9px 12px;font-size:13px;color:var(--t);font-family:'DM Sans',sans-serif;outline:none;transition:border 0.15s;}
-.fr input:focus,.fr select:focus,.fr textarea:focus{border-color:var(--b2);}
-.fr input::placeholder{color:var(--t3);}
-.fr select option{background:var(--bg3);}
-.fr textarea{resize:vertical;min-height:54px;}
-.fg{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
-.mfooter{display:flex;gap:8px;justify-content:flex-end;margin-top:18px;}
-.bcancel{padding:8px 16px;font-size:13px;background:transparent;color:var(--t2);border:1px solid var(--b);border-radius:var(--r);font-family:'DM Sans',sans-serif;cursor:pointer;}
-.bcancel:hover{border-color:var(--b2);color:var(--t);}
-.bsave{padding:8px 20px;font-size:13px;background:var(--ac);color:#fff;border:none;border-radius:var(--r);font-family:'DM Sans',sans-serif;cursor:pointer;font-weight:500;}
-.bsave:hover{opacity:0.88;}
+/* ── TABLE ── */
+.tw{background:var(--bg2);border:1px solid var(--br);border-radius:var(--rl);overflow:hidden}
+.tscroll{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:12px;min-width:900px}
+thead tr{background:var(--bg3)}
+th{padding:8px 11px;text-align:left;font-size:9.5px;font-weight:500;color:var(--t3);letter-spacing:.5px;text-transform:uppercase;border-bottom:1px solid var(--br);white-space:nowrap}
+td{padding:10px 11px;border-bottom:1px solid var(--br);color:var(--t1);vertical-align:middle}
+tbody tr:last-child td{border-bottom:none}
+tbody tr:hover td{background:var(--bg3)}
+.rcode{font-family:'DM Mono',monospace;font-size:11px;color:var(--t2)}
+.kchip{font-size:10px;color:var(--t3);background:var(--bg4);padding:2px 7px;border-radius:4px;white-space:nowrap}
+.file-chip{font-size:9px;color:var(--t3);background:var(--bg4);padding:1px 6px;border-radius:4px;white-space:nowrap;max-width:90px;overflow:hidden;text-overflow:ellipsis;display:inline-block}
+.cschip{font-size:10px;font-weight:500;padding:2px 8px;border-radius:20px;white-space:nowrap}
+.badge{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:20px;font-size:10px;font-weight:500;white-space:nowrap}
+.bdot{width:4px;height:4px;border-radius:50%;flex-shrink:0}
+.b-op{background:var(--blue-bg);color:var(--blue)}.b-op .bdot{background:var(--blue)}
+.b-dl{background:var(--green-bg);color:var(--green)}.b-dl .bdot{background:var(--green)}
+.b-rt{background:var(--red-bg);color:var(--red)}.b-rt .bdot{background:var(--red)}
+.b-ud{background:var(--yellow-bg);color:var(--yellow)}.b-ud .bdot{background:var(--yellow)}
+.b-ot{background:var(--bg4);color:var(--t2)}.b-ot .bdot{background:var(--t3)}
+.erow td{padding:36px;text-align:center;color:var(--t3);font-size:12px}
+.act-btn{padding:3px 8px;font-size:10px;border-radius:5px;border:1px solid var(--br);background:transparent;color:var(--t2);cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .15s;margin-right:3px}
+.act-btn:hover{background:var(--bg4);color:var(--t1);border-color:var(--br2)}
+.act-del{color:var(--red);border-color:var(--red-bg)}.act-del:hover{background:var(--red-bg)}
 
-.btabs{display:flex;gap:0;background:var(--bg3);border-radius:8px;padding:3px;margin-bottom:16px;}
-.btab{flex:1;padding:7px;text-align:center;border-radius:6px;font-size:12px;color:var(--t3);cursor:pointer;border:none;background:transparent;font-family:'DM Sans',sans-serif;transition:all 0.15s;}
-.btab.active{background:var(--bg2);color:var(--t);font-weight:500;border:1px solid var(--b2);}
-.bpane{display:none;}.bpane.active{display:block;}
-.hint-box{background:var(--bg3);border:1px solid var(--b);border-radius:var(--r);padding:11px 14px;font-size:12px;color:var(--t3);margin-bottom:14px;line-height:1.75;}
-.hint-box b{color:var(--t2);}
-.hint-box code{font-family:'DM Mono',monospace;font-size:11px;color:var(--pu-t);background:rgba(55,138,221,0.1);padding:1px 5px;border-radius:4px;}
-.drop-zone{border:1.5px dashed var(--b2);border-radius:var(--r);padding:28px 20px;text-align:center;cursor:pointer;transition:all 0.2s;margin-bottom:12px;}
-.drop-zone:hover,.drop-zone.drag{border-color:var(--dl-d);background:rgba(99,153,34,0.04);}
-.drop-zone svg{width:30px;height:30px;color:var(--t3);margin:0 auto 8px;display:block;}
-.drop-zone .dzlbl{font-size:13px;color:var(--t2);margin-bottom:3px;}
-.drop-zone .dzsub{font-size:11px;color:var(--t3);}
-.drop-zone input[type=file]{display:none;}
-.bulk-ta{width:100%;min-height:150px;background:var(--bg3);border:1px solid var(--b);border-radius:var(--r);padding:10px 13px;font-size:12px;font-family:'DM Mono',monospace;color:var(--t);outline:none;resize:vertical;line-height:1.7;}
-.bulk-ta:focus{border-color:var(--b2);}
-.preview-wrap{max-height:220px;overflow-y:auto;background:var(--bg2);border:1px solid var(--b);border-radius:var(--r);margin-top:10px;}
-.ptbl{width:100%;border-collapse:collapse;font-size:11.5px;}
-.ptbl th{padding:6px 10px;background:var(--bg3);color:var(--t3);font-size:10px;letter-spacing:0.5px;text-transform:uppercase;border-bottom:1px solid var(--b);text-align:left;position:sticky;top:0;}
-.ptbl td{padding:6px 10px;border-bottom:1px solid var(--b);color:var(--t);}
-.ptbl tr:last-child td{border-bottom:none;}
-.ptbl .perr td{color:var(--ud-t)!important;}
-.ptbl .pdup td{color:var(--op-t)!important;}
-.bulk-sum{display:flex;align-items:center;gap:8px;font-size:12px;margin:10px 0;flex-wrap:wrap;}
-.bspill{padding:3px 10px;border-radius:20px;font-size:11px;font-weight:500;}
-.bs-ok{background:var(--dl-bg);color:var(--dl-t);}
-.bs-err{background:var(--ud-bg);color:var(--ud-t);}
-.bs-dup{background:var(--op-bg);color:var(--op-t);}
-.cs-dist{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px;margin-top:10px;}
-.cs-dist-card{background:var(--bg3);border:1px solid var(--b);border-radius:9px;padding:12px 14px;}
-.cs-dist-name{font-size:12px;font-weight:500;color:var(--t);margin-bottom:4px;}
-.cs-dist-cnt{font-size:24px;font-weight:600;color:var(--pu-t);letter-spacing:-0.5px;line-height:1;}
-.cs-dist-lbl{font-size:10px;color:var(--t3);margin-top:2px;}
+/* ── LOADING ── */
+.lov{position:fixed;inset:0;background:rgba(0,0,0,.65);display:flex;align-items:center;justify-content:center;z-index:500;backdrop-filter:blur(2px)}
+.lbox{background:var(--bg2);border:1px solid var(--br2);border-radius:var(--rl);padding:22px 30px;text-align:center}
+.lsp{width:28px;height:28px;border:2px solid var(--br2);border-top-color:var(--blue);border-radius:50%;animation:rot .7s linear infinite;margin:0 auto 10px}
+.ltxt{font-size:12px;color:var(--t2)}
 
-.tlwrap{margin:6px 0 14px;}
-.tlrow{display:flex;align-items:center;}
-.tlnode{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;border:2px solid transparent;flex-shrink:0;}
-.tldone{background:var(--dl-bg);color:var(--dl-t);border-color:var(--dl-d);}
-.tlnow{background:var(--pu-bg);color:var(--pu-t);border-color:var(--pu-d);}
-.tlnowd{background:var(--ud-bg);color:var(--ud-t);border-color:var(--ud-d);}
-.tlnowr{background:var(--rt-bg);color:var(--rt-t);border-color:var(--rt-d);}
-.tlpend{background:var(--bg4);color:var(--t3);border-color:var(--b);}
-.tlline{flex:1;height:2px;background:var(--b);}
-.tlline.done{background:var(--dl-d);}
-.tllbls{display:flex;margin-top:4px;}
-.tllbl{flex:1;font-size:9px;color:var(--t3);text-align:center;}
-.tllbl.f{text-align:left;}.tllbl.l{text-align:right;}
-.drows{margin-top:10px;}
-.dr{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;padding:8px 0;border-bottom:1px solid var(--b);}
-.dr:last-child{border-bottom:none;}
-.dk{font-size:12px;color:var(--t3);flex-shrink:0;}
-.dv{font-size:12px;color:var(--t);text-align:right;max-width:260px;word-break:break-word;}
-.snote{padding:8px 12px;border-radius:8px;font-size:12px;margin-bottom:10px;}
-.snote-ud{background:var(--ud-bg);color:var(--ud-t);}
-.snote-rt{background:var(--rt-bg);color:var(--rt-t);}
+/* ── MODAL ── */
+.mover{position:fixed;inset:0;background:rgba(0,0,0,.75);display:flex;align-items:center;justify-content:center;z-index:200;backdrop-filter:blur(3px);opacity:0;pointer-events:none;transition:opacity .2s}
+.mover.open{opacity:1;pointer-events:all}
+.modal{background:var(--bg2);border:1px solid var(--br2);border-radius:var(--rl);padding:20px;width:400px;max-width:96vw;transform:translateY(9px);transition:transform .2s;max-height:92vh;overflow-y:auto}
+.mover.open .modal{transform:translateY(0)}
+.modal-lg{width:780px;max-width:98vw}
+.mhd{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.mtitle{font-size:13px;font-weight:600;color:var(--t1)}
+.mclose{width:22px;height:22px;background:var(--bg4);border:none;border-radius:5px;color:var(--t3);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:12px}
+.mclose:hover{color:var(--t1)}
+.fr{margin-bottom:10px}
+.fr label{display:block;font-size:10px;color:var(--t3);margin-bottom:4px}
+.fr input,.fr select,.fr textarea{width:100%;background:var(--bg3);border:1px solid var(--br);border-radius:var(--r);padding:7px 10px;font-size:12px;color:var(--t1);font-family:'DM Sans',sans-serif;outline:none;transition:border .15s}
+.fr input:focus,.fr select:focus,.fr textarea:focus{border-color:var(--br2)}
+.fr input::placeholder{color:var(--t3)}
+.fr select option{background:var(--bg3)}
+.fr textarea{resize:vertical;min-height:52px}
+.fg{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.mfoot{display:flex;gap:7px;justify-content:flex-end;margin-top:14px}
+.bcancel{padding:6px 12px;font-size:12px;background:transparent;color:var(--t2);border:1px solid var(--br);border-radius:var(--r);font-family:'DM Sans',sans-serif;cursor:pointer}
+.bcancel:hover{border-color:var(--br2);color:var(--t1)}
+.bsave{padding:6px 15px;font-size:12px;background:var(--blue);color:#fff;border:none;border-radius:var(--r);font-family:'DM Sans',sans-serif;cursor:pointer;font-weight:500}
+.bsave:hover{opacity:.88}
+/* target sheet selector */
+.target-sel{background:var(--bg3);border:1px solid var(--yellow-br);border-radius:var(--r);padding:8px 11px;font-size:12px;color:var(--t1);font-family:'DM Sans',sans-serif;outline:none;width:100%;margin-bottom:10px}
+.target-sel option{background:var(--bg3)}
+.target-label{font-size:10px;color:var(--yellow);margin-bottom:5px;display:block}
 
-.toast{position:fixed;bottom:24px;right:24px;background:var(--bg2);border:1px solid var(--b2);border-radius:var(--r);padding:10px 16px;font-size:13px;color:var(--t);z-index:999;opacity:0;transform:translateY(8px);transition:all 0.25s;display:flex;align-items:center;gap:8px;pointer-events:none;}
-.toast.on{opacity:1;transform:translateY(0);}
-.tdot{width:6px;height:6px;border-radius:50%;background:var(--dl-d);}
-.toast.del .tdot{background:var(--ud-d);}
+/* ── BULK ── */
+.btabs{display:flex;gap:0;background:var(--bg3);border-radius:7px;padding:3px;margin-bottom:12px}
+.btab{flex:1;padding:6px;text-align:center;border-radius:5px;font-size:11px;color:var(--t3);cursor:pointer;border:none;background:transparent;font-family:'DM Sans',sans-serif;transition:all .15s}
+.btab.on{background:var(--bg2);color:var(--t1);font-weight:500;border:1px solid var(--br2)}
+.bpane{display:none}.bpane.on{display:block}
+.bulk-ta{width:100%;min-height:120px;background:var(--bg3);border:1px solid var(--br);border-radius:var(--r);padding:8px 10px;font-size:11px;font-family:'DM Mono',monospace;color:var(--t1);outline:none;resize:vertical;line-height:1.7}
+.bulk-ta:focus{border-color:var(--br2)}
+.hint{background:var(--bg3);border:1px solid var(--br);border-radius:var(--r);padding:9px 11px;font-size:11px;color:var(--t3);margin-bottom:10px;line-height:1.65}
+.hint b{color:var(--t2);font-weight:500}
+.hint code{font-family:'DM Mono',monospace;font-size:10px;color:#79c0ff;background:rgba(56,139,253,.08);padding:1px 4px;border-radius:3px}
+.dz{border:1.5px dashed var(--br2);border-radius:var(--r);padding:24px;text-align:center;cursor:pointer;transition:all .2s;margin-bottom:10px}
+.dz:hover,.dz.drag{border-color:var(--green);background:var(--green-bg)}
+.dz svg{width:24px;height:24px;color:var(--t3);margin:0 auto 7px;display:block}
+.dz .dzl{font-size:12px;color:var(--t2);margin-bottom:2px}
+.dz .dzs{font-size:10px;color:var(--t3)}
+.prv-wrap{max-height:160px;overflow-y:auto;background:var(--bg2);border:1px solid var(--br);border-radius:var(--r);margin-top:8px}
+.ptbl{width:100%;border-collapse:collapse;font-size:11px}
+.ptbl th{padding:5px 9px;background:var(--bg3);color:var(--t3);font-size:9px;letter-spacing:.4px;text-transform:uppercase;border-bottom:1px solid var(--br);text-align:left;position:sticky;top:0}
+.ptbl td{padding:5px 9px;border-bottom:1px solid var(--br);color:var(--t1)}
+.ptbl tr:last-child td{border-bottom:none}
+.perr td{color:var(--red)!important}.pdup td{color:var(--yellow)!important}
+.bsum{display:flex;gap:5px;margin:7px 0;flex-wrap:wrap;align-items:center}
+.bp{padding:2px 8px;border-radius:20px;font-size:10px;font-weight:500}
+.bp-ok{background:var(--green-bg);color:var(--green)}.bp-err{background:var(--red-bg);color:var(--red)}.bp-dup{background:var(--yellow-bg);color:var(--yellow)}.bp-lbl{color:var(--t3);font-size:11px}
+.mrow{display:grid;grid-template-columns:110px 1fr 75px 75px 75px 22px;gap:4px;margin-bottom:5px;align-items:center}
+.mrow input,.mrow select{background:var(--bg3);border:1px solid var(--br);border-radius:6px;padding:6px 7px;font-size:11px;color:var(--t1);font-family:'DM Sans',sans-serif;outline:none;width:100%}
+.mrow-del{background:none;border:none;color:var(--t3);cursor:pointer;padding:2px}
+.mrow-del:hover{color:var(--red)}
+.mrow-del svg{width:11px;height:11px;display:block}
+.mhdr2{display:grid;grid-template-columns:110px 1fr 75px 75px 75px 22px;gap:4px;margin-bottom:5px}
+.mhdr2 span{font-size:9px;color:var(--t3);letter-spacing:.3px;text-transform:uppercase;padding:0 2px}
 
-@keyframes fi{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
-.sc{animation:fi 0.3s ease both;}
-.sc:nth-child(1){animation-delay:.03s}.sc:nth-child(2){animation-delay:.07s}
-.sc:nth-child(3){animation-delay:.11s}.sc:nth-child(4){animation-delay:.15s}.sc:nth-child(5){animation-delay:.19s}
-@media(max-width:768px){.sb{display:none;}.main{margin-left:0;padding:16px;}.sgrid{grid-template-columns:repeat(3,1fr);}}
-::-webkit-scrollbar{width:6px;}::-webkit-scrollbar-track{background:transparent;}::-webkit-scrollbar-thumb{background:var(--bg4);border-radius:3px;}
+/* ── DETAIL ── */
+.dgrid{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:12px}
+.df{background:var(--bg3);border-radius:6px;padding:8px 10px}
+.df-l{font-size:9px;color:var(--t3);margin-bottom:2px;text-transform:uppercase;letter-spacing:.3px}
+.df-v{font-size:12px;color:var(--t1)}
+.tl-row{display:flex;align-items:center;margin:7px 0 12px}
+.tl-node{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:600;border:2px solid transparent;flex-shrink:0}
+.tn-done{background:var(--green-bg);color:var(--green);border-color:var(--green)}
+.tn-now{background:var(--blue-bg);color:var(--blue);border-color:var(--blue)}
+.tn-warn{background:var(--yellow-bg);color:var(--yellow);border-color:var(--yellow)}
+.tn-red{background:var(--red-bg);color:var(--red);border-color:var(--red)}
+.tn-pend{background:var(--bg4);color:var(--t3);border-color:var(--br)}
+.tl-line{flex:1;height:2px;background:var(--br)}
+.tl-line.done{background:var(--green)}
+.tl-lbls{display:flex;margin-top:3px;margin-bottom:9px}
+.tl-lbl{flex:1;font-size:9px;color:var(--t3);text-align:center}
+.tl-lbl.f{text-align:left}.tl-lbl.l{text-align:right}
+.snote{padding:7px 10px;border-radius:6px;font-size:11px;margin-bottom:10px}
+.sn-rt{background:var(--red-bg);color:var(--red)}.sn-ud{background:var(--yellow-bg);color:var(--yellow)}
+
+/* ── TOAST ── */
+.toast{position:fixed;bottom:16px;right:16px;background:var(--bg2);border:1px solid var(--br2);border-radius:var(--r);padding:8px 13px;font-size:12px;color:var(--t1);z-index:999;opacity:0;transform:translateY(5px);transition:all .25s;display:flex;align-items:center;gap:6px}
+.toast.on{opacity:1;transform:translateY(0)}
+.tdot{width:5px;height:5px;border-radius:50%;background:var(--green)}
+.toast.del .tdot{background:var(--red)}.toast.warn .tdot{background:var(--yellow)}
+
+@keyframes fi{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+.scard{animation:fi .25s ease both}
+.scard:nth-child(1){animation-delay:.02s}.scard:nth-child(2){animation-delay:.05s}
+.scard:nth-child(3){animation-delay:.08s}.scard:nth-child(4){animation-delay:.11s}
+.scard:nth-child(5){animation-delay:.14s}
+@media(max-width:768px){.sb{display:none}.main{margin-left:0;padding:10px}.stats-row{grid-template-columns:repeat(3,1fr)}}
+::-webkit-scrollbar{width:5px;height:5px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--bg5);border-radius:3px}
 </style>
 </head>
 <body>
 
-<!-- LOGIN -->
-<div class="ls" id="LS">
-  <div class="lbox">
-    <div class="llogo"><div class="brand">Order<span>Track</span></div><div class="tag">CS Management System</div></div>
-    <div class="rtabs">
-      <button class="rtab active" id="tAdmin" onclick="PR('admin')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>Admin
-      </button>
-      <button class="rtab" id="tCS" onclick="PR('cs')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Customer Service
-      </button>
+<!-- ══ SETUP ══ -->
+<div id="SETUP">
+<div class="setup-screen">
+<div class="setup-box">
+  <div class="s-logo"><div class="brand">Order<span>Track</span></div><div class="sub">Setup koneksi Google Sheets</div></div>
+  <div class="setup-steps">
+    <div class="s-step">
+      <div class="s-num">1</div>
+      <div class="s-body">
+        <div class="s-title">Pasang script ke setiap file Google Sheets</div>
+        <div class="s-desc">Buka tiap file → <b>Extensions → Apps Script</b> → paste isi <b>Code.gs</b> → ubah <code>SHEET_NAME</code> sesuai nama tab → <b>Deploy → Web app → Anyone → Deploy</b> → copy URL.</div>
+      </div>
     </div>
-    <p class="lhint" id="LH">Demo — <b>admin</b> / <b>admin123</b></p>
-    <div class="lf"><label>Username</label><input type="text" id="LU" placeholder="Username" onkeydown="if(event.key==='Enter')DL()"/></div>
-    <div class="lf"><label>Password</label><input type="password" id="LP" placeholder="Password" onkeydown="if(event.key==='Enter')DL()"/></div>
-    <button class="btnlogin" onclick="DL()">Masuk</button>
-    <div class="lerr" id="LE"></div>
-    <div class="cs-pwd-info" id="CPINFO" style="display:none">
-      Password CS = nama CS lowercase + "123"<br>
-      Contoh: CS bernama <b>Sinta</b> → username: <b>sinta</b>, password: <b>sinta123</b><br>
-      CS bernama <b>Andini</b> → username: <b>andini</b>, password: <b>andini123</b>
+    <div class="s-step">
+      <div class="s-num">2</div>
+      <div class="s-body">
+        <div class="s-title">Daftarkan URL tiap file (satu per bulan)</div>
+        <div class="s-desc">Tambahkan URL dan label bulan untuk tiap file. App akan membaca semua file sekaligus dan menggabungkan datanya.</div>
+        <div class="file-list" id="FL"></div>
+        <button class="btn-addfile" onclick="addFileRow()">+ Tambah file bulan baru</button>
+        <button class="btn-test" onclick="testAll()">🔗 Test semua koneksi</button>
+        <div class="test-res" id="TR"></div>
+      </div>
+    </div>
+    <div class="s-step">
+      <div class="s-num">3</div>
+      <div class="s-body">
+        <div class="s-title">Admin Key</div>
+        <div class="s-desc">Harus sama dengan <code>ADMIN_KEY</code> di script (default: <code>rahasia123</code>)</div>
+        <input class="setup-inp" id="SKEY" type="password" placeholder="Admin key" value="rahasia123"/>
+      </div>
     </div>
   </div>
+  <button class="btn-enter" onclick="saveSetup()">Lanjut ke App →</button>
+  <div class="s-err" id="SERR"></div>
+</div>
+</div>
 </div>
 
-<!-- APP -->
+<!-- ══ LOGIN ══ -->
+<div id="LOGIN" style="display:none">
+<div class="login-screen">
+<div class="login-box">
+  <div class="l-logo"><div class="brand">Order<span>Track</span></div><div class="sub" id="LSUB">Multi-file Google Sheets</div></div>
+  <div class="rtabs">
+    <button class="rtab on" id="tA" onclick="setRole('admin')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>Admin</button>
+    <button class="rtab" id="tC" onclick="setRole('cs')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>CS</button>
+  </div>
+  <p class="lhint" id="LH">Login sebagai Admin</p>
+  <div class="lf"><label>Username</label><input id="LU" placeholder="Username" onkeydown="if(event.key==='Enter')doLogin()"/></div>
+  <div class="lf"><label>Password</label><input id="LP" type="password" placeholder="Password" onkeydown="if(event.key==='Enter')doLogin()"/></div>
+  <button class="btnlogin" onclick="doLogin()">Masuk</button>
+  <div class="lerr" id="LE"></div>
+  <div class="setup-link" onclick="goSetup()">⚙ Kelola koneksi Google Sheets</div>
+</div>
+</div>
+</div>
+
+<!-- ══ APP ══ -->
 <div class="app" id="APP">
   <aside class="sb">
-    <div class="sblogo"><div class="brand">Order<span>Track</span></div><div class="tag">CS Management System</div></div>
+    <div class="sbhead">
+      <div class="brand">Order<span>Track</span><span class="cdot" id="CDOT"></span></div>
+      <div class="tag" id="STAG">— sheets connected</div>
+    </div>
     <nav class="sbnav">
       <div class="nlbl">Menu</div>
-      <div class="ni active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>Dashboard<span class="nbadge" id="NT">0</span></div>
+      <div class="ni on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>Dashboard<span class="nbadge" id="NB">0</span></div>
       <div id="adminNav" style="display:none">
         <div class="nlbl">Admin</div>
-        <div class="ni" onclick="OB()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 15v4c0 1.1.9 2 2 2h14a2 2 0 0 0 2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>Upload CSV / Paste</div>
-        <div class="ni" onclick="OE()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Tambah Manual</div>
+        <div class="ni" onclick="openEdit()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Tambah Pesanan</div>
+        <div class="ni" onclick="openBulk()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 15v4c0 1.1.9 2 2 2h14a2 2 0 0 0 2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>Upload Data</div>
+        <div class="ni" onclick="goSetup()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>Kelola Sheets</div>
       </div>
     </nav>
     <div class="sbfoot">
       <div class="ucard">
-        <div class="uav" id="SAV"></div>
-        <div class="uinfo"><div class="un" id="SN">—</div><div class="ur" id="SR">—</div></div>
-        <button class="btnout" onclick="DO()" title="Keluar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></button>
+        <div class="uav" id="UAV"></div>
+        <div><div class="uname" id="UN">—</div><div class="urole" id="UR">—</div></div>
+        <button class="btnout" onclick="doLogout()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></button>
       </div>
     </div>
   </aside>
 
   <main class="main">
     <div class="topbar">
-      <div><div class="ptitle" id="PTITLE">Order Progress Tracker</div><div class="psub" id="PS">—</div></div>
-      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
-        <div id="adminBtns" style="display:none;gap:8px;flex-wrap:wrap">
-          <button class="btnprimary" onclick="OE()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Tambah</button>
-          <button class="btngreen" onclick="OB()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 15v4c0 1.1.9 2 2 2h14a2 2 0 0 0 2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>Upload CSV / Paste</button>
-        </div>
+      <div><div class="ptitle">Order Progress Tracker</div><div class="psub" id="PS">—</div></div>
+      <div class="topbar-r">
+        <span class="lsync" id="LSYNC"></span>
+        <button class="sync-btn" id="SYNCBTN" onclick="syncAll()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-4.45"/></svg>Sync Semua</button>
         <div class="dchip" id="DC"></div>
       </div>
     </div>
 
-    <div class="csbanner" id="CSB" style="display:none">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-      Halo <strong id="CSNAME">—</strong>! Berikut pesanan yang ditugaskan ke kamu. Hubungi Admin untuk perubahan data.
+    <!-- MONTH FILTER PILLS -->
+    <div class="month-bar">
+      <span class="month-bar-lbl">File:</span>
+      <div class="month-pills" id="MPILLS"></div>
     </div>
 
-    <div class="sgrid">
-      <div class="sc spu" onclick="FB('pickup')"><div class="sico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 8h14M5 8a2 2 0 1 0-4 0 2 2 0 0 0 4 0zm14 0a2 2 0 1 0 4 0 2 2 0 0 0-4 0zM5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8"/></svg></div><div class="snum" id="spu">0</div><div class="slbl">Pick Up</div></div>
-      <div class="sc sop" onclick="FB('onproses')"><div class="sico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div><div class="snum" id="sop">0</div><div class="slbl">On Proses</div></div>
-      <div class="sc sud" onclick="FB('undel')"><div class="sico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div><div class="snum" id="sud">0</div><div class="slbl">Undelivered</div></div>
-      <div class="sc sdl" onclick="FB('delivered')"><div class="sico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg></div><div class="snum" id="sdl">0</div><div class="slbl">Delivered</div></div>
-      <div class="sc srt" onclick="FB('rts')"><div class="sico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-4.45"/></svg></div><div class="snum" id="srt">0</div><div class="slbl">RTS</div></div>
+    <div class="cs-banner" id="CSB" style="display:none">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      Halo <strong id="CSBN">—</strong>! Semua pesanan yang ditugaskan ke kamu dari semua bulan ditampilkan di sini.
     </div>
 
-    <div class="tbar">
-      <div><div class="tlbl">Total Pesanan</div><div class="tnum" id="TN">0</div></div>
-      <div class="pbw" id="PB"></div>
-      <div style="font-size:11px;color:var(--t3);white-space:nowrap"><span id="DR">0%</span> delivered</div>
-    </div>
+    <div class="stats-row" id="SR"></div>
 
     <div class="toolbar">
-      <div class="sw"><div class="sico2"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div>
-        <input type="text" id="QS" placeholder="Cari resi, nama customer, order ID, produk..." oninput="RT()"/>
-      </div>
-      <select class="selk" id="QK" onchange="RT()">
-        <option value="">Semua Ekspedisi</option>
-        <option>JNE</option><option>JT</option><option>SiCepat</option>
-        <option>Anteraja</option><option>Pos Indonesia</option><option>Ninja Express</option>
-      </select>
-      <select class="selk" id="QCS" onchange="RT()" style="display:none">
-        <option value="">Semua CS</option>
-      </select>
-      <button class="btnghost" id="BR" style="display:none" onclick="CF()">&#x2715; Reset</button>
+      <div class="srch"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input id="QS" placeholder="Cari resi, nama, no HP..." oninput="renderTable()"/></div>
+      <select class="sel" id="QE" onchange="renderTable()"><option value="">Semua Ekspedisi</option><option>JNE</option><option>JT</option><option>SiCepat</option><option>Anteraja</option><option>Pos Indonesia</option><option>Ninja</option></select>
+      <select class="sel" id="QSTAT" onchange="renderTable()"><option value="">Semua Status</option><option value="ON PROCESS">On Process</option><option value="DELIVERED">Delivered</option><option value="RTS">RTS</option><option value="UNDELIVERED">Undelivered</option></select>
+      <button class="btn-p" id="BADD" style="display:none" onclick="openEdit()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Tambah</button>
+      <button class="btn-g" id="BBULK" style="display:none" onclick="openBulk()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 15v4c0 1.1.9 2 2 2h14a2 2 0 0 0 2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>Upload</button>
+      <button class="btn-ghost" id="BRST" style="display:none" onclick="clearFilter()">✕ Reset</button>
     </div>
 
-    <div class="tw"><div class="tw-scroll">
-      <table><thead><tr id="TH"></tr></thead><tbody id="TB"></tbody></table>
-    </div></div>
+    <div class="tw"><div class="tscroll"><table><thead><tr id="TH"></tr></thead><tbody id="TB"></tbody></table></div></div>
   </main>
 </div>
 
 <!-- EDIT MODAL -->
-<div class="mover" id="EM" onclick="if(event.target===this)CE()">
+<div class="mover" id="EM" onclick="if(event.target===this)closeEdit()">
   <div class="modal">
-    <div class="mhd"><div class="mtitle" id="ET">Tambah Pesanan</div><button class="mclose" onclick="CE()">&#x2715;</button></div>
+    <div class="mhd"><div class="mtitle" id="ET">Tambah Pesanan</div><button class="mclose" onclick="closeEdit()">✕</button></div>
+    <label class="target-label">Simpan ke file bulan:</label>
+    <select class="target-sel" id="eTARGET"></select>
     <div class="fg">
-      <div class="fr"><label>No. Resi *</label><input type="text" id="FR" placeholder="cth: JNE123456789"/></div>
-      <div class="fr"><label>Ekspedisi</label><select id="FK"><option>JNE</option><option>JT</option><option>SiCepat</option><option>Anteraja</option><option>Pos Indonesia</option><option>Ninja Express</option></select></div>
+      <div class="fr"><label>Tanggal</label><input id="eDate" placeholder="DD/MM/YYYY"/></div>
+      <div class="fr"><label>Ekspedisi</label><select id="eExp"><option>JNE</option><option>JT</option><option>SiCepat</option><option>Anteraja</option><option>Pos Indonesia</option><option>Ninja</option></select></div>
     </div>
     <div class="fg">
-      <div class="fr"><label>Nama Customer *</label><input type="text" id="FN" placeholder="Nama penerima"/></div>
-      <div class="fr"><label>No. HP</label><input type="text" id="FHP" placeholder="628xxx"/></div>
+      <div class="fr"><label>No. Resi *</label><input id="eResi" placeholder="Nomor resi"/></div>
+      <div class="fr"><label>No. Order</label><input id="eOrder" placeholder="Order ID"/></div>
     </div>
     <div class="fg">
-      <div class="fr"><label>Order ID</label><input type="text" id="FOID" placeholder="cth: 2603035TF9IH"/></div>
-      <div class="fr"><label>Produk</label><input type="text" id="FPR" placeholder="Nama produk"/></div>
+      <div class="fr"><label>Customer *</label><input id="eCust" placeholder="Nama customer"/></div>
+      <div class="fr"><label>No. HP</label><input id="eHP" placeholder="628..."/></div>
+    </div>
+    <div class="fr"><label>Alamat</label><textarea id="eAlamat" placeholder="Alamat penerima"></textarea></div>
+    <div class="fg">
+      <div class="fr"><label>CS * <span style="color:var(--t3);font-weight:400">(sesuai nama di sheet)</span></label><input id="eCS" placeholder="Nama CS"/></div>
+      <div class="fr"><label>Status Finance</label><select id="eStat"><option value="ON PROCESS">On Process</option><option value="DELIVERED">Delivered</option><option value="RTS">RTS</option><option value="UNDELIVERED">Undelivered</option></select></div>
     </div>
     <div class="fg">
-      <div class="fr"><label>CS (nama sesuai data)</label><input type="text" id="FCS" placeholder="cth: Sinta"/></div>
-      <div class="fr"><label>Status</label>
-        <select id="FS"><option value="pickup">Pick Up</option><option value="onproses">On Proses</option><option value="undel">Undelivered</option><option value="delivered">Delivered</option><option value="rts">RTS</option></select>
-      </div>
+      <div class="fr"><label>Jumlah COD</label><input id="eCOD" type="number" placeholder="0"/></div>
+      <div class="fr"><label>Status Gudang</label><input id="eGudang" placeholder="—"/></div>
     </div>
-    <div class="fr"><label>Alamat Penerima</label><textarea id="FAL" placeholder="Alamat lengkap"></textarea></div>
-    <div class="fg">
-      <div class="fr"><label>Status Finance</label><input type="text" id="FFIN" placeholder="cth: BELUM CAIR"/></div>
-      <div class="fr"><label>Keterangan</label><input type="text" id="FKE" placeholder="Catatan opsional"/></div>
-    </div>
-    <div class="mfooter"><button class="bcancel" onclick="CE()">Batal</button><button class="bsave" onclick="SO()">Simpan</button></div>
+    <div class="mfoot"><button class="bcancel" onclick="closeEdit()">Batal</button><button class="bsave" onclick="saveEdit()">Simpan ke Sheets</button></div>
   </div>
 </div>
 
-<!-- BULK UPLOAD MODAL -->
-<div class="mover" id="BM" onclick="if(event.target===this)CB()">
-  <div class="modal modal-xl">
-    <div class="mhd"><div class="mtitle">&#128196; Upload / Import Data Pesanan</div><button class="mclose" onclick="CB()">&#x2715;</button></div>
+<!-- BULK MODAL -->
+<div class="mover" id="BM" onclick="if(event.target===this)closeBulk()">
+  <div class="modal modal-lg">
+    <div class="mhd"><div class="mtitle">📋 Upload Data Massal</div><button class="mclose" onclick="closeBulk()">✕</button></div>
+    <label class="target-label">Simpan ke file bulan:</label>
+    <select class="target-sel" id="bTARGET"></select>
     <div class="btabs">
-      <button class="btab active" id="btp" onclick="SBT('csv')">&#128196; Upload File CSV</button>
-      <button class="btab" id="btc" onclick="SBT('paste')">&#128203; Paste dari Google Sheets</button>
+      <button class="btab on" id="btp" onclick="setBTab('paste')">📋 Paste dari Sheets</button>
+      <button class="btab" id="btc" onclick="setBTab('csv')">📄 Upload CSV</button>
+      <button class="btab" id="btm" onclick="setBTab('manual')">✏ Manual</button>
     </div>
-
-    <div class="bpane active" id="pcsv">
-      <div class="hint-box">
-        Export sheet dari Google Sheets: <b>File → Download → CSV</b>, lalu upload di sini.<br>
-        Kolom yang otomatis dikenali: <code>Nomer Resi</code> <code>Ekspedisi</code> <code>Customer</code> <code>No HP</code> <code>Alamat Penerima</code> <code>CS</code> <code>Orders</code> <code>Produk I</code> <code>Status CRM</code> <code>Status Finance</code><br>
-        <b>Nama CS di kolom "CS"</b> otomatis jadi akun login — CS cukup login dengan nama lowercase + "123".
-        &nbsp;<a href="#" onclick="DLT(event)" style="color:var(--pu-t);text-decoration:underline">&#11015; Download template CSV</a>
-      </div>
-      <div class="drop-zone" id="DZ" onclick="document.getElementById('FI').click()" ondragover="DGG(event)" ondrop="DPP(event)" ondragleave="DLL(event)">
-        <input type="file" id="FI" accept=".csv,.tsv,.txt" onchange="HCC(event)"/>
+    <div class="bpane on" id="ppaste">
+      <div class="hint">Copy-paste langsung dari Google Sheets. Sistem baca otomatis kolom Tanggal, Ekspedisi, Resi, Order, Customer, HP, Alamat, <b>CS</b>, Status, COD. Kolom <b>CS</b> menentukan pesanan milik siapa.</div>
+      <textarea class="bulk-ta" id="BPTA" oninput="parsePaste()" placeholder="Paste data di sini..."></textarea>
+      <div id="BPSUM"></div><div id="BPPRV"></div>
+    </div>
+    <div class="bpane" id="pcsv">
+      <div class="hint">Upload <b>.csv</b> dengan header: <code>tanggal,ekspedisi,resi,order,customer,hp,alamat,cs,cod,status,gudang</code><br><a href="#" onclick="dlTpl(event)" style="color:#79c0ff;text-decoration:underline">↓ Download template</a></div>
+      <div class="dz" id="DZ" onclick="document.getElementById('FI').click()" ondragover="dzO(event)" ondrop="dzD(event)" ondragleave="dzL()">
+        <input type="file" id="FI" accept=".csv" style="display:none" onchange="doFile(event)"/>
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-        <div class="dzlbl">Klik atau drag &amp; drop file CSV</div>
-        <div class="dzsub" id="DZFN">File .csv hasil export Google Sheets / Excel</div>
+        <div class="dzl">Klik atau drag &amp; drop CSV</div>
+        <div class="dzs" id="DZN">Format: .csv</div>
       </div>
-      <div id="BCSUM"></div><div id="BCPRV"></div><div id="CSDIST"></div>
+      <div id="BCSUM"></div><div id="BCPRV"></div>
     </div>
-
-    <div class="bpane" id="ppaste">
-      <div class="hint-box">
-        Di Google Sheets: <b>Ctrl+A</b> untuk pilih semua, lalu <b>Ctrl+C</b> copy, kemudian paste di sini.<br>
-        Baris pertama harus berisi header kolom. Sistem akan otomatis mendeteksi kolom <code>CS</code>, <code>Nomer Resi</code>, <code>Status CRM</code>, dll.
-      </div>
-      <textarea class="bulk-ta" id="BPTA" oninput="PP()" placeholder="Paste data dari Google Sheets di sini...&#10;&#10;Tanggal	Ekspedisi	Nomer Resi	Orders	Produk I	Customer	No HP	Alamat Penerima	 CS 	Status CRM	Status Finance&#10;03/03/2026	JNE	JNE123456	ORD001	NTS	BUDI SANTOSO	628123	JL. MERDEKA	Sinta	ON PROCESS	BELUM CAIR"></textarea>
-      <div id="BPSUM"></div><div id="BPPRV"></div><div id="PSDIST"></div>
+    <div class="bpane" id="pmanual">
+      <div class="hint">Isi manual. <b>Resi</b>, <b>Customer</b>, <b>CS</b> wajib diisi.</div>
+      <div class="mhdr2"><span>No. Resi*</span><span>Customer*</span><span>Eksp.</span><span>CS*</span><span>Status</span><span></span></div>
+      <div id="MROWS"></div>
+      <button class="btn-ghost" style="font-size:11px;margin-top:6px" onclick="addMRow()">+ Tambah Baris</button>
     </div>
-
-    <div class="mfooter">
-      <div style="margin-right:auto;font-size:12px;color:var(--t3)" id="BFHINT"></div>
-      <button class="bcancel" onclick="CB()">Batal</button>
-      <button class="bsave" onclick="SBU()">&#10003; Import Semua</button>
+    <div class="mfoot">
+      <div style="margin-right:auto;font-size:11px;color:var(--t3)" id="BFHINT"></div>
+      <button class="bcancel" onclick="closeBulk()">Batal</button>
+      <button class="bsave" onclick="saveBulk()">✓ Simpan ke Sheets</button>
     </div>
   </div>
 </div>
 
-<!-- CS DETAIL MODAL -->
-<div class="mover" id="VM" onclick="if(event.target===this)CV()">
-  <div class="modal">
-    <div class="mhd"><div class="mtitle">Detail Pesanan</div><button class="mclose" onclick="CV()">&#x2715;</button></div>
-    <div id="VC"></div>
-    <div class="mfooter"><button class="bcancel" onclick="CV()">Tutup</button></div>
+<!-- DETAIL MODAL -->
+<div class="mover" id="DM" onclick="if(event.target===this)closeDetail()">
+  <div class="modal modal-lg">
+    <div class="mhd"><div class="mtitle">Detail Pesanan</div><button class="mclose" onclick="closeDetail()">✕</button></div>
+    <div id="DC2"></div>
+    <div class="mfoot"><button class="bcancel" onclick="closeDetail()">Tutup</button></div>
   </div>
 </div>
 
+<div class="lov" id="LOV" style="display:none"><div class="lbox"><div class="lsp"></div><div class="ltxt" id="LTXT">Memuat...</div></div></div>
 <div class="toast" id="TOAST"><div class="tdot"></div><span id="TM"></span></div>
 
 <script>
-/* ══ USERS ══
-   CS accounts auto-created from uploaded data.
-   Username = nama lowercase (spasi → underscore)
-   Password = username + "123"
-*/
-const ADMINS={admin:{pass:'admin123',role:'admin',name:'Administrator',init:'AD'}};
-let CS_ACCTS={
-  sinta:   {pass:'sinta123',  role:'cs',name:'Sinta',  init:'SI'},
-  andini:  {pass:'andini123', role:'cs',name:'Andini', init:'AN'},
-  bintang: {pass:'bintang123',role:'cs',name:'Bintang',init:'BI'},
-  citra:   {pass:'citra123',  role:'cs',name:'Citra',  init:'CI'},
+// ══ USERS ══
+// csName harus SAMA PERSIS (case-insensitive) dengan nilai di kolom CS spreadsheet
+const USERS = {
+  admin: {pass:'admin123', role:'admin', name:'Administrator', init:'AD'},
+  sinta: {pass:'cs123', role:'cs', name:'Sinta', init:'SI', csName:'Sinta'},
+  dina:  {pass:'cs123', role:'cs', name:'Dina',  init:'DI', csName:'Dina'},
+  rina:  {pass:'cs123', role:'cs', name:'Rina',  init:'RI', csName:'Rina'},
+  dewi:  {pass:'cs123', role:'cs', name:'Dewi',  init:'DW', csName:'Dewi'},
+  // → Tambah CS baru di sini sesuai nama di kolom CS spreadsheet
 };
-const getUsers=()=>({...ADMINS,...CS_ACCTS});
 
-/* ══ STATUS ══ */
-const SM={pickup:{l:'Pick Up',c:'bpu',o:0},onproses:{l:'On Proses',c:'bop',o:1},undel:{l:'Undelivered',c:'bud',o:2},delivered:{l:'Delivered',c:'bdl',o:3},rts:{l:'RTS',c:'brt',o:4}};
-
-function normStatus(raw){
-  const s=(raw||'').toLowerCase();
-  if(s.includes('pick'))return'pickup';
-  if(s.includes('on pro')||s.includes('onpro')||s.includes('process'))return'onproses';
-  if(s.includes('undel')||s.includes('gagal'))return'undel';
-  if(s.includes('deliver')||s.includes('terkirim'))return'delivered';
-  if(s.includes('rts')||s.includes('return'))return'rts';
-  return'onproses';
-}
-
-/* ══ DATA ══ */
-let orders=[
-  {id:1,cs:'Sinta',tgl:'03/03/2026',ekspedisi:'JNE',resi:'1219572600142122',orderId:'2603035TF9IH',produk:'NTS',customer:'TRISNA PANEO',hp:'6282292475122',alamat:'JL. PANGERAN HIDAYAT NO. 165, KEL. DEMBE JAYA',status:'onproses',statusFinance:'BELUM CAIR',ket:''},
-  {id:2,cs:'Sinta',tgl:'03/03/2026',ekspedisi:'JNE',resi:'1270302600246848',orderId:'2603030X6FVY',produk:'NTS',customer:'TASAN WIYAH',hp:'6282113496061',alamat:'PT ESI, RT 02 RW 04 NO. 21, KEL. CICADAS',status:'onproses',statusFinance:'BELUM CAIR',ket:''},
-  {id:3,cs:'Sinta',tgl:'03/03/2026',ekspedisi:'JNE',resi:'1219572600142114',orderId:'260303XLYARJ',produk:'NTS',customer:'LISMAWATY MOKODENSEHO',hp:'6281340266070',alamat:'JL. PANCURAN 9, KEL. WINANGUN SATU',status:'undel',statusFinance:'BELUM CAIR',ket:''},
-  {id:4,cs:'Andini',tgl:'03/03/2026',ekspedisi:'JNE',resi:'1219572600142080',orderId:'260303DW0WVV',produk:'NTS',customer:'YAARNI',hp:'6282311409541',alamat:'RUMAH KEPALA DESA KARANG CAYO',status:'onproses',statusFinance:'BELUM CAIR',ket:''},
-  {id:5,cs:'Andini',tgl:'03/03/2026',ekspedisi:'JT',resi:'JO0321592938',orderId:'260303JU0O7H',produk:'NTS',customer:'H. SYARIFUDDIN',hp:'6282165026706',alamat:'JL. KITA BUKIT, GG. H. II BANTAMAT, KEL. PORANG',status:'pickup',statusFinance:'BELUM CAIR',ket:''},
-  {id:6,cs:'Bintang',tgl:'03/03/2026',ekspedisi:'JNE',resi:'1219572600142155',orderId:'2603031WPB2J',produk:'NTS',customer:'HARTINI',hp:'6282299395731',alamat:'DESA BUSAK 2, KEL. BUSAK II',status:'delivered',statusFinance:'SUDAH CAIR',ket:''},
-  {id:7,cs:'Bintang',tgl:'03/03/2026',ekspedisi:'JNE',resi:'1219572600142148',orderId:'260303ZP7OY5',produk:'NTS',customer:'DRS. DEDY ACHDIAT',hp:'6282186068089',alamat:'JL. RATU DIBALAU, PERUMDAM TANJUNG RAYA PERMAI BLOK AA NO. 19',status:'rts',statusFinance:'BELUM CAIR',ket:''},
-  {id:8,cs:'Citra',tgl:'03/03/2026',ekspedisi:'JNE',resi:'1270302600246830',orderId:'260303P2D8VH',produk:'NTS',customer:'M. KODRAT',hp:'6281331525666',alamat:'PERUM GRAND CIKARANG CITY BLOK G. 54/36, KEL. KARANGRAHARJA',status:'delivered',statusFinance:'SUDAH CAIR',ket:''},
-  {id:9,cs:'Citra',tgl:'03/03/2026',ekspedisi:'JNE',resi:'1270302600246806',orderId:'260303X1112M',produk:'NTS',customer:'DENI SURYO',hp:'628121962562',alamat:'JL. PISANGAN LAMA III, GANG AA NO. 32A, KEL. PISANGAN TIMUR',status:'onproses',statusFinance:'BELUM CAIR',ket:''},
+const CS_COL=[
+  {bg:'rgba(56,139,253,.13)',c:'#79c0ff'},{bg:'rgba(63,185,80,.13)',c:'#7ee787'},
+  {bg:'rgba(188,140,255,.13)',c:'#d2a8ff'},{bg:'rgba(227,179,65,.13)',c:'#e3b341'},
+  {bg:'rgba(248,81,73,.13)',c:'#ff7b72'},{bg:'rgba(29,185,132,.13)',c:'#39d353'},
 ];
-let nid=10;
-let me=null,sf=null,eid=null,rc='admin';
+const csClr={};
+function gcc(n){if(!n)return{bg:'var(--bg4)',c:'var(--t3)'};if(!csClr[n]){csClr[n]=CS_COL[Object.keys(csClr).length%CS_COL.length];}return csClr[n];}
 
-/* ══ LOGIN ══ */
-function PR(r){
-  rc=r;
-  document.getElementById('tAdmin').classList.toggle('active',r==='admin');
-  document.getElementById('tCS').classList.toggle('active',r==='cs');
-  document.getElementById('LH').innerHTML=r==='admin'?'Demo — <b>admin</b> / <b>admin123</b>':'Nama CS lowercase + "123" — cth: <b>sinta</b> / <b>sinta123</b>';
-  document.getElementById('CPINFO').style.display=r==='cs'?'block':'none';
-  document.getElementById('LE').textContent='';
-}
-function DL(){
-  const u=document.getElementById('LU').value.trim().toLowerCase(),p=document.getElementById('LP').value;
-  const rec=getUsers()[u];
-  if(!rec||rec.pass!==p){document.getElementById('LE').textContent='Username atau password salah.';return;}
-  if(rec.role!==rc){document.getElementById('LE').textContent='Akun ini terdaftar sebagai '+(rec.role==='admin'?'Admin':'CS')+'.';return;}
-  me={...rec,username:u};
-  document.getElementById('LS').style.display='none';
-  document.getElementById('APP').classList.add('on');
-  SUI();SD();US();RT();
-}
-function DO(){
-  me=null;sf=null;
-  ['QS','QK','QCS','LU','LP'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});
-  document.getElementById('LE').textContent='';
-  document.getElementById('APP').classList.remove('on');
-  document.getElementById('LS').style.display='flex';
-}
-function SUI(){
-  const a=me.role==='admin';
-  document.getElementById('SN').textContent=me.name;
-  document.getElementById('SR').textContent=a?'Administrator':'Customer Service';
-  const av=document.getElementById('SAV');av.textContent=me.init;av.className='uav '+(a?'aav':'cav');
-  document.getElementById('adminNav').style.display=a?'block':'none';
-  document.getElementById('adminBtns').style.display=a?'flex':'none';
-  document.getElementById('PS').textContent=a?'Kelola & monitor semua pesanan':'Pesanan yang ditugaskan ke kamu';
-  document.getElementById('CSB').style.display=a?'none':'flex';
-  document.getElementById('CSNAME').textContent=me.name;
-  // CS filter dropdown (admin only)
-  const csFilter=document.getElementById('QCS');
-  csFilter.style.display=a?'inline-block':'none';
-  if(a) buildCSFilter();
-  buildHeader(a);
-}
-function buildCSFilter(){
-  const csNames=[...new Set(orders.map(o=>o.cs).filter(Boolean))].sort();
-  const sel=document.getElementById('QCS');
-  sel.innerHTML='<option value="">Semua CS</option>'+csNames.map(n=>`<option value="${n}">${n}</option>`).join('');
-}
-function buildHeader(a){
-  const cols=a
-    ?['#','Tanggal','Ekspedisi','No. Resi','Order ID','Produk','Customer','No. HP','CS','Status','Status Finance','Aksi']
-    :['#','Tanggal','Ekspedisi','No. Resi','Order ID','Produk','Customer','Alamat','Status','Status Finance','Detail'];
-  document.getElementById('TH').innerHTML=cols.map(c=>`<th>${c}</th>`).join('');
+const SM={'ON PROCESS':{cls:'b-op',lbl:'On Process'},'DELIVERED':{cls:'b-dl',lbl:'Delivered'},'RTS':{cls:'b-rt',lbl:'RTS'},'UNDELIVERED':{cls:'b-ud',lbl:'Undelivered'}};
+function ns(s){const u=(s||'').toUpperCase();if(u.includes('DELIVER')&&!u.includes('UN'))return'DELIVERED';if(u.includes('RTS')||u.includes('RETURN'))return'RTS';if(u.includes('UNDEL')||u.includes('GAGAL'))return'UNDELIVERED';return'ON PROCESS';}
+function bdg(st){const s=SM[st]||{cls:'b-ot',lbl:st||'—'};return`<span class="badge ${s.cls}"><span class="bdot"></span>${s.lbl}</span>`;}
+
+// ══ STATE ══
+// files = [{label, url}]  — loaded from localStorage
+let files=[], ADMIN_KEY='rahasia123';
+let me=null, allOrders=[], sf=null, activeFile=null, loginRole='admin';
+let editId=null, editFile=null, bulkTab='paste', mrc=0, pParsed=[], cParsed=[];
+
+// ══ SETUP ══
+function init(){
+  const saved=localStorage.getItem('ot_files');
+  if(saved)try{files=JSON.parse(saved);}catch(e){files=[];}
+  ADMIN_KEY=localStorage.getItem('ot_key')||'rahasia123';
+  if(files.length){
+    hide('SETUP'); show('LOGIN');
+    document.getElementById('LSUB').textContent=files.length+' file terhubung';
+  } else {
+    show('SETUP'); hide('LOGIN');
+    renderFileList();
+  }
 }
 
-/* ══ STATS ══ */
-function myOrders(){
-  if(!me)return[];
-  return me.role==='admin'?orders:orders.filter(o=>(o.cs||'').toLowerCase()===me.name.toLowerCase());
+let fileRowCount=0;
+function addFileRow(label='',url=''){
+  const id='fr_'+(fileRowCount++);
+  const d=document.createElement('div'); d.className='file-row'; d.id=id;
+  d.innerHTML=`<input style="min-width:80px;max-width:100px" placeholder="Label (cth: Maret 2026)" value="${label}"/>
+    <input placeholder="https://script.google.com/macros/s/.../exec" value="${url}" style="font-size:10px"/>
+    <span class="fname" id="fn_${id}"></span>
+    <button class="file-del" onclick="document.getElementById('${id}').remove()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>`;
+  document.getElementById('FL').appendChild(d);
 }
-function US(){
-  const list=myOrders();
-  const c={pickup:0,onproses:0,undel:0,delivered:0,rts:0};
-  list.forEach(o=>{if(c[o.status]!==undefined)c[o.status]++;});
-  ['pickup','onproses','undel','delivered','rts'].forEach(k=>{
-    const el=document.getElementById('s'+{pickup:'pu',onproses:'op',undel:'ud',delivered:'dl',rts:'rt'}[k]);
-    if(el)el.textContent=c[k];
+function renderFileList(){
+  document.getElementById('FL').innerHTML='';
+  fileRowCount=0;
+  if(files.length){files.forEach(f=>addFileRow(f.label,f.url));}
+  else{addFileRow('Maret 2026','');addFileRow('April 2026','');}
+}
+
+async function testAll(){
+  const rows=document.querySelectorAll('.file-row');
+  const tr=document.getElementById('TR');
+  tr.innerHTML='Menguji...';
+  let ok=0,fail=0;
+  for(const row of rows){
+    const inps=row.querySelectorAll('input');
+    const url=inps[1].value.trim();
+    const id=row.id;
+    const fnEl=document.getElementById('fn_'+id);
+    if(!url){fnEl.textContent='(kosong)';fnEl.className='fname';continue;}
+    try{
+      const r=await fetch(url+'?action=getInfo');
+      const d=await r.json();
+      if(d.ok){fnEl.textContent='✓ '+d.fileName;fnEl.className='fname ok';ok++;}
+      else{fnEl.textContent='✗ Error';fnEl.className='fname err';fail++;}
+    }catch(e){fnEl.textContent='✗ Gagal';fnEl.className='fname err';fail++;}
+  }
+  tr.innerHTML=`<span class="${ok?'ok':''}">${ok} berhasil</span>${fail?` <span class="err">${fail} gagal — pastikan URL sudah di-deploy dengan akses Anyone</span>`:''}`;
+}
+
+function saveSetup(){
+  const rows=document.querySelectorAll('.file-row');
+  const newFiles=[];
+  rows.forEach(row=>{
+    const inps=row.querySelectorAll('input');
+    const label=inps[0].value.trim();
+    const url=inps[1].value.trim();
+    if(url)newFiles.push({label:label||url.slice(-20),url});
   });
-  const t=list.length;
-  document.getElementById('TN').textContent=t;
-  document.getElementById('NT').textContent=t;
-  document.getElementById('DR').textContent=t?Math.round(c.delivered/t*100)+'%':'0%';
-  document.getElementById('PB').innerHTML=[{k:'pu',s:'pickup'},{k:'op',s:'onproses'},{k:'ud',s:'undel'},{k:'dl',s:'delivered'},{k:'rt',s:'rts'}]
-    .map(x=>`<div class="pbs pb${x.k}" style="width:${t?(c[x.s]/t*100).toFixed(1):0}%"></div>`).join('');
+  if(!newFiles.length){document.getElementById('SERR').textContent='Tambahkan minimal 1 URL file.';return;}
+  files=newFiles;
+  ADMIN_KEY=document.getElementById('SKEY').value.trim()||'rahasia123';
+  localStorage.setItem('ot_files',JSON.stringify(files));
+  localStorage.setItem('ot_key',ADMIN_KEY);
+  hide('SETUP'); show('LOGIN');
+  document.getElementById('LSUB').textContent=files.length+' file terhubung';
+}
+function goSetup(){
+  document.getElementById('APP').classList.remove('on');
+  hide('LOGIN'); show('SETUP');
+  document.getElementById('SKEY').value=ADMIN_KEY;
+  renderFileList();
 }
 
-/* ══ TABLE ══ */
-function RT(){
-  const q=document.getElementById('QS').value.toLowerCase();
-  const kf=document.getElementById('QK').value;
-  const csf=document.getElementById('QCS').value;
+// ══ AUTH ══
+function setRole(r){loginRole=r;document.getElementById('tA').classList.toggle('on',r==='admin');document.getElementById('tC').classList.toggle('on',r==='cs');document.getElementById('LH').textContent=r==='admin'?'Login sebagai Admin':'Login sebagai Customer Service';document.getElementById('LE').textContent='';}
+function doLogin(){
+  const u=document.getElementById('LU').value.trim().toLowerCase(),p=document.getElementById('LP').value;
+  const rec=USERS[u];
+  if(!rec||rec.pass!==p){document.getElementById('LE').textContent='Username atau password salah.';return;}
+  if(rec.role!==loginRole){document.getElementById('LE').textContent=`Akun ini adalah ${rec.role==='admin'?'Admin':'CS'}.`;return;}
+  me={...rec,username:u};
+  hide('LOGIN'); document.getElementById('APP').classList.add('on');
+  setupUI(); renderDate(); syncAll();
+}
+function doLogout(){me=null;sf=null;activeFile=null;allOrders=[];document.getElementById('APP').classList.remove('on');show('LOGIN');['QS','LU','LP'].forEach(i=>document.getElementById(i).value='');}
+
+function setupUI(){
+  const a=me.role==='admin';
+  document.getElementById('UAV').textContent=me.init;
+  document.getElementById('UAV').className='uav '+(a?'av-admin':'av-cs');
+  document.getElementById('UN').textContent=me.name;
+  document.getElementById('UR').textContent=a?'Administrator':'CS';
+  document.getElementById('adminNav').style.display=a?'block':'none';
+  document.getElementById('PS').textContent=a?'Semua pesanan dari semua file — terhubung ke Google Sheets':'Pesanan milik '+me.name+' dari semua bulan';
+  document.getElementById('BADD').style.display=a?'flex':'none';
+  document.getElementById('BBULK').style.display=a?'flex':'none';
+  document.getElementById('CSB').style.display=a?'none':'flex';
+  if(!a)document.getElementById('CSBN').textContent=me.name;
+  document.getElementById('STAG').textContent=files.length+' sheets connected';
+  const ths=a?['#','File','Tanggal','Ekspedisi','No. Resi','No. Order','Customer','No. HP','CS','Status','COD','Aksi']:['#','File','Tanggal','Ekspedisi','No. Resi','No. Order','Customer','Status','COD','Detail'];
+  document.getElementById('TH').innerHTML=ths.map(h=>`<th>${h}</th>`).join('');
+  populateTargetSelects();
+}
+function populateTargetSelects(){
+  const opts=files.map((f,i)=>`<option value="${i}">${f.label||'File '+(i+1)}</option>`).join('');
+  ['eTARGET','bTARGET'].forEach(id=>document.getElementById(id).innerHTML=opts);
+}
+
+// ══ SYNC ══
+async function syncAll(){
+  if(!files.length)return;
+  setSyncSpin(true);
+  allOrders=[];
+  let ok=0,fail=0;
+  const results=await Promise.allSettled(files.map((f,idx)=>
+    fetch(f.url+'?action=getOrders').then(r=>r.json()).then(d=>{
+      if(d.ok){d.orders.forEach(o=>o._fileIdx=idx);allOrders.push(...(d.orders||[]));ok++;}
+      else fail++;
+    }).catch(()=>fail++)
+  ));
+  document.getElementById('CDOT').className='cdot'+(fail&&!ok?' off':'');
+  document.getElementById('LSYNC').textContent='Sync '+new Date().toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'});
+  setSyncSpin(false);
+  renderMonthPills();
+  renderStats(); renderTable();
+  toast(`${allOrders.length} pesanan dari ${ok}/${files.length} file`+(fail?' ('+fail+' gagal)':''));
+}
+function setSyncSpin(on){const b=document.getElementById('SYNCBTN');b.classList.toggle('spin',on);b.disabled=on;}
+
+// ══ MONTH PILLS ══
+function renderMonthPills(){
+  const cont=document.getElementById('MPILLS');
+  const allPill=`<div class="mpill${activeFile===null?' on':''}" onclick="setFile(null)"><span class="mdot"></span>Semua (${allOrders.length})</div>`;
+  const filePills=files.map((f,i)=>{
+    const cnt=allOrders.filter(o=>o._fileIdx===i).length;
+    return`<div class="mpill${activeFile===i?' on':''}" onclick="setFile(${i})"><span class="mdot"></span>${f.label||'File '+(i+1)} (${cnt})</div>`;
+  }).join('');
+  cont.innerHTML=allPill+filePills;
+}
+function setFile(idx){activeFile=idx;renderMonthPills();renderStats();renderTable();}
+
+// ══ STATS ══
+function myOrders(){
+  let src=activeFile===null?allOrders:allOrders.filter(o=>o._fileIdx===activeFile);
+  if(me&&me.role==='cs')src=src.filter(o=>(o.cs||'').toLowerCase()===(me.csName||'').toLowerCase());
+  return src;
+}
+function renderStats(){
+  const src=myOrders();
+  const c={total:src.length,'ON PROCESS':0,'DELIVERED':0,'RTS':0,'UNDELIVERED':0};
+  src.forEach(o=>{if(c[o.status]!==undefined)c[o.status]++;});
+  document.getElementById('NB').textContent=c.total;
+  const cards=[
+    {cls:'sc-op',stat:'ON PROCESS',ico:'<circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>',lbl:'On Process',num:c['ON PROCESS']},
+    {cls:'sc-dl',stat:'DELIVERED', ico:'<polyline points="20 6 9 17 4 12"/>',lbl:'Delivered',num:c['DELIVERED']},
+    {cls:'sc-ud',stat:'UNDELIVERED',ico:'<circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>',lbl:'Undelivered',num:c['UNDELIVERED']},
+    {cls:'sc-rt',stat:'RTS',ico:'<polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-4.45"/>',lbl:'RTS',num:c['RTS']},
+    {cls:'sc-all',stat:null,ico:'<rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/>',lbl:'Total',num:c.total},
+  ];
+  document.getElementById('SR').innerHTML=cards.map(card=>`<div class="scard ${card.cls}${sf===card.stat?' af':''}" onclick="filterStat(${JSON.stringify(card.stat)})"><div class="sico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">${card.ico}</svg></div><div class="snum">${card.num}</div><div class="slbl">${card.lbl}</div></div>`).join('');
+}
+function filterStat(s){sf=(sf===s)?null:s;renderStats();renderTable();}
+
+// ══ TABLE ══
+function renderTable(){
+  const q=document.getElementById('QS').value.toLowerCase(),qe=document.getElementById('QE').value,qs=document.getElementById('QSTAT').value;
   const a=me&&me.role==='admin';
-  const fl=orders.filter(o=>{
-    if(!a&&(o.cs||'').toLowerCase()!==me.name.toLowerCase())return false;
+  const fl=myOrders().filter(o=>{
     if(sf&&o.status!==sf)return false;
-    if(kf&&(o.ekspedisi||'').toLowerCase()!==kf.toLowerCase())return false;
-    if(csf&&(o.cs||'')!==csf)return false;
-    if(q&&![(o.resi||''),(o.customer||''),(o.orderId||''),(o.produk||''),(o.cs||'')].some(v=>v.toLowerCase().includes(q)))return false;
+    if(qe&&(o.exp||'')!==qe)return false;
+    if(qs&&o.status!==qs)return false;
+    if(q&&!((o.resi||'').toLowerCase().includes(q)||(o.customer||'').toLowerCase().includes(q)||(o.hp||'').includes(q)||(o.order||'').toLowerCase().includes(q)))return false;
     return true;
   });
-  document.getElementById('BR').style.display=(sf||kf||csf||q)?'inline-flex':'none';
-  if(!fl.length){
-    document.getElementById('TB').innerHTML=`<tr class="erow"><td colspan="${a?12:11}">Tidak ada pesanan ditemukan</td></tr>`;
-    return;
-  }
+  document.getElementById('BRST').style.display=(sf||qe||qs||q)?'inline-block':'none';
+  if(!fl.length){document.getElementById('TB').innerHTML=`<tr class="erow"><td colspan="${a?12:10}">Tidak ada data. Klik Sync untuk memuat dari Google Sheets.</td></tr>`;return;}
   document.getElementById('TB').innerHTML=fl.map((o,i)=>{
-    const s=SM[o.status]||SM.onproses;
-    const badge=`<span class="badge ${s.c}"><span class="bdot"></span>${s.l}</span>`;
-    if(a){
-      return`<tr>
-        <td style="color:var(--t3);font-size:11px">${i+1}</td>
-        <td style="color:var(--t3);font-size:11px;white-space:nowrap">${o.tgl||'—'}</td>
-        <td><span class="kchip">${o.ekspedisi||'—'}</span></td>
-        <td><span class="rcode">${o.resi||'—'}</span></td>
-        <td style="font-size:11px;color:var(--t2)">${o.orderId||'—'}</td>
-        <td style="font-size:12px">${o.produk||'—'}</td>
-        <td style="font-size:12px;font-weight:500">${o.customer||'—'}</td>
-        <td style="font-size:11px;color:var(--t2)">${o.hp||'—'}</td>
-        <td><span class="cschip">${o.cs||'—'}</span></td>
-        <td>${badge}</td>
-        <td style="font-size:11px;color:var(--t3)">${o.statusFinance||'—'}</td>
-        <td><button class="ba bedit" onclick="OE(${o.id})">Edit</button><button class="ba bdelbtn" onclick="DEL(${o.id})">Hapus</button></td>
-      </tr>`;
-    } else {
-      return`<tr>
-        <td style="color:var(--t3);font-size:11px">${i+1}</td>
-        <td style="color:var(--t3);font-size:11px;white-space:nowrap">${o.tgl||'—'}</td>
-        <td><span class="kchip">${o.ekspedisi||'—'}</span></td>
-        <td><span class="rcode">${o.resi||'—'}</span></td>
-        <td style="font-size:11px;color:var(--t2)">${o.orderId||'—'}</td>
-        <td style="font-size:12px">${o.produk||'—'}</td>
-        <td style="font-size:12px;font-weight:500">${o.customer||'—'}</td>
-        <td style="font-size:11px;color:var(--t2);max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${o.alamat||''}">${o.alamat||'—'}</td>
-        <td>${badge}</td>
-        <td style="font-size:11px;color:var(--t3)">${o.statusFinance||'—'}</td>
-        <td><button class="ba bview" onclick="OV(${o.id})">Detail</button></td>
-      </tr>`;
-    }
+    const cc=gcc(o.cs),fl2=files[o._fileIdx];
+    const fileCell=`<td><span class="file-chip" title="${fl2?fl2.label:''}">${fl2?fl2.label:'?'}</span></td>`;
+    const csCell=a?`<td><span class="cschip" style="background:${cc.bg};color:${cc.c}">${o.cs||'—'}</span></td>`:'';
+    const actCell=a
+      ?`<td><button class="act-btn" onclick="openEdit(${JSON.stringify(o._row)},${o._fileIdx})">Edit</button><button class="act-btn act-del" onclick="delOrder(${JSON.stringify(o._row)},${o._fileIdx})">Hapus</button></td>`
+      :`<td><button class="act-btn" onclick="openDetail('${o.resi}',${o._fileIdx})">Detail</button></td>`;
+    return`<tr>
+      <td style="color:var(--t3)">${i+1}</td>
+      ${fileCell}
+      <td style="color:var(--t3);font-size:11px">${o.tanggal||'—'}</td>
+      <td><span class="kchip">${o.exp||'—'}</span></td>
+      <td><span class="rcode">${o.resi}</span></td>
+      <td style="color:var(--t3);font-size:11px">${o.order||'—'}</td>
+      <td style="max-width:130px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${o.customer}">${o.customer}</td>
+      ${a?`<td style="color:var(--t3);font-size:11px">${o.hp||'—'}</td>`:''}
+      ${csCell}
+      <td>${bdg(o.status)}</td>
+      <td style="font-size:11px;color:var(--t2)">${o.cod?'Rp '+Number(o.cod).toLocaleString('id-ID'):'—'}</td>
+      ${actCell}
+    </tr>`;
   }).join('');
 }
+function clearFilter(){sf=null;['QS','QE','QSTAT'].forEach(i=>{const el=document.getElementById(i);el.value='';});renderStats();renderTable();}
 
-function FB(s){
-  sf=sf===s?null:s;
-  document.querySelectorAll('.sc').forEach(c=>c.classList.remove('af'));
-  if(sf){const i=['pickup','onproses','undel','delivered','rts'].indexOf(s);document.querySelectorAll('.sc')[i].classList.add('af');}
-  RT();
-}
-function CF(){
-  sf=null;
-  document.getElementById('QS').value='';
-  document.getElementById('QK').value='';
-  document.getElementById('QCS').value='';
-  document.querySelectorAll('.sc').forEach(c=>c.classList.remove('af'));
-  RT();
+// ══ API ══
+async function api(fileIdx,body){
+  const url=files[fileIdx].url;
+  const r=await fetch(url,{method:'POST',body:JSON.stringify({...body,adminKey:ADMIN_KEY})});
+  return r.json();
 }
 
-/* ══ SINGLE EDIT ══ */
-function OE(id){
-  eid=id||null;
-  if(id){
-    const o=orders.find(x=>x.id===id);
+// ══ EDIT ══
+function openEdit(row,fIdx){
+  editId=row||null; editFile=fIdx!==undefined?fIdx:null;
+  if(row!==undefined&&row!==null){
+    const o=allOrders.find(x=>x._row===row&&x._fileIdx===fIdx);
+    if(!o)return;
     document.getElementById('ET').textContent='Edit Pesanan';
-    document.getElementById('FR').value=o.resi||'';
-    document.getElementById('FK').value=o.ekspedisi||'JNE';
-    document.getElementById('FN').value=o.customer||'';
-    document.getElementById('FHP').value=o.hp||'';
-    document.getElementById('FOID').value=o.orderId||'';
-    document.getElementById('FPR').value=o.produk||'';
-    document.getElementById('FCS').value=o.cs||'';
-    document.getElementById('FAL').value=o.alamat||'';
-    document.getElementById('FS').value=o.status||'onproses';
-    document.getElementById('FFIN').value=o.statusFinance||'';
-    document.getElementById('FKE').value=o.ket||'';
+    document.getElementById('eTARGET').value=fIdx;
+    ['eDate','eExp','eResi','eOrder','eCust','eHP','eAlamat','eCS','eStat','eCOD','eGudang'].forEach((id,i)=>{
+      const vals=[o.tanggal,o.exp,o.resi,o.order,o.customer,o.hp,o.alamat,o.cs,o.status,o.cod||'',o.gudang];
+      const el=document.getElementById(id); el.value=vals[i]||'';
+    });
   } else {
     document.getElementById('ET').textContent='Tambah Pesanan Baru';
-    ['FR','FN','FHP','FOID','FPR','FCS','FAL','FFIN','FKE'].forEach(i=>document.getElementById(i).value='');
-    document.getElementById('FK').value='JNE';document.getElementById('FS').value='onproses';
+    ['eResi','eOrder','eCust','eHP','eAlamat','eCS','eCOD','eGudang'].forEach(i=>document.getElementById(i).value='');
+    document.getElementById('eDate').value=new Date().toLocaleDateString('id-ID');
+    document.getElementById('eExp').value='JNE'; document.getElementById('eStat').value='ON PROCESS';
+    // Default ke bulan yang aktif
+    if(activeFile!==null)document.getElementById('eTARGET').value=activeFile;
   }
   document.getElementById('EM').classList.add('open');
 }
-function CE(){document.getElementById('EM').classList.remove('open');}
-function SO(){
-  const r=document.getElementById('FR').value.trim(),n=document.getElementById('FN').value.trim();
-  if(!r||!n){alert('No. Resi dan Nama Customer wajib diisi.');return;}
-  const now=new Date().toLocaleDateString('id-ID',{day:'2-digit',month:'2-digit',year:'numeric'});
-  const d={resi:r,ekspedisi:document.getElementById('FK').value,customer:n,
-    hp:document.getElementById('FHP').value.trim(),orderId:document.getElementById('FOID').value.trim(),
-    produk:document.getElementById('FPR').value.trim(),cs:document.getElementById('FCS').value.trim(),
-    alamat:document.getElementById('FAL').value.trim(),status:document.getElementById('FS').value,
-    statusFinance:document.getElementById('FFIN').value.trim(),ket:document.getElementById('FKE').value.trim()};
-  if(eid){const i=orders.findIndex(x=>x.id===eid);orders[i]={...orders[i],...d};TT('Pesanan berhasil diperbarui');}
-  else{orders.unshift({id:nid++,tgl:now,...d});ensureCS(d.cs);TT('Pesanan ditambahkan');}
-  CE();US();RT();buildCSFilter();
+function closeEdit(){document.getElementById('EM').classList.remove('open');}
+async function saveEdit(){
+  const resi=document.getElementById('eResi').value.trim(),cust=document.getElementById('eCust').value.trim(),cs=document.getElementById('eCS').value.trim();
+  if(!resi||!cust||!cs){alert('Resi, Customer, CS wajib diisi.');return;}
+  const obj={tanggal:document.getElementById('eDate').value,exp:document.getElementById('eExp').value,resi,order:document.getElementById('eOrder').value.trim(),customer:cust,hp:document.getElementById('eHP').value.trim(),alamat:document.getElementById('eAlamat').value.trim(),cs,status:document.getElementById('eStat').value,cod:parseInt(document.getElementById('eCOD').value)||0,gudang:document.getElementById('eGudang').value.trim()};
+  const tgt=parseInt(document.getElementById('eTARGET').value);
+  closeEdit(); showL('Menyimpan ke '+files[tgt].label+'...');
+  try{
+    const d=editId!==null?await api(tgt,{action:'updateOrder',order:obj,_row:editId}):await api(tgt,{action:'saveOrder',order:obj});
+    if(d.ok){toast(editId!==null?'Pesanan diperbarui':'Pesanan ditambahkan');await syncAll();}
+    else toast('Gagal: '+(d.msg||'error'),'warn');
+  }catch(e){toast('Gagal terhubung','warn');}
+  hideL();
 }
-function DEL(id){
-  if(!confirm('Hapus pesanan ini?'))return;
-  orders=orders.filter(x=>x.id!==id);
-  US();RT();TT('Pesanan dihapus',true);
+async function delOrder(row,fIdx){
+  if(!confirm('Hapus pesanan ini dari Google Sheets?'))return;
+  showL('Menghapus...');
+  try{
+    const d=await api(fIdx,{action:'deleteOrder',_row:row});
+    if(d.ok){toast('Pesanan dihapus',true);await syncAll();}
+    else toast('Gagal: '+(d.msg||'error'),'warn');
+  }catch(e){toast('Gagal terhubung','warn');}
+  hideL();
 }
 
-/* ══ CS DETAIL VIEW ══ */
-function OV(id){
-  const o=orders.find(x=>x.id===id);if(!o)return;
-  const s=SM[o.status]||SM.onproses;
-  const fl=[{k:'pickup',l:'Pick Up',o:0},{k:'onproses',l:'On Proses',o:1},{k:'delivered',l:'Delivered',o:3}];
-  const cur=s.o;
-  let tl='<div class="tlwrap"><div class="tlrow">';
-  fl.forEach((f,i)=>{
-    let dc='tlpend';
-    if(o.status==='undel'||o.status==='rts'){if(f.o<1)dc='tldone';else if(f.k==='onproses')dc=o.status==='undel'?'tlnowd':'tlnowr';}
-    else{if(f.o<cur)dc='tldone';else if(f.o===cur)dc='tlnow';}
-    tl+=`<div class="tlnode ${dc}">${i+1}</div>`;
-    if(i<fl.length-1){const ld=f.o<cur&&o.status!=='undel'&&o.status!=='rts';tl+=`<div class="tlline${ld?' done':''}"></div>`;}
+// ══ DETAIL ══
+function openDetail(resi,fIdx){
+  const o=allOrders.find(x=>x.resi===resi&&x._fileIdx===fIdx);if(!o)return;
+  const isDl=o.status==='DELIVERED',isRT=o.status==='RTS',isUD=o.status==='UNDELIVERED';
+  let tl='<div class="tl-row">';
+  [{l:'On Process'},{l:'Delivered'}].forEach((s,i)=>{
+    let nc=i===0?(isDl||isRT||isUD?'tn-done':'tn-now'):(isDl?'tn-done':'tn-pend');
+    if(i===0&&isUD)nc='tn-warn';if(i===0&&isRT)nc='tn-red';
+    tl+=`<div class="tl-node ${nc}">${i===0&&(isDl||isRT||isUD)?'✓':(i===0?'●':i+1)}</div>`;
+    if(i===0)tl+=`<div class="tl-line${isDl?' done':''}"></div>`;
   });
-  tl+='</div><div class="tllbls">';
-  fl.forEach((f,i)=>{const c=i===0?'f':i===fl.length-1?'l':'';tl+=`<div class="tllbl ${c}">${f.l}</div>`+(i<fl.length-1?'<div style="flex:1"></div>':'');});
-  tl+='</div></div>';
-  let note='';
-  if(o.status==='undel')note='<div class="snote snote-ud">⚠ Pengiriman gagal — penerima tidak ada di tempat.</div>';
-  if(o.status==='rts')note='<div class="snote snote-rt">↩ Paket dikembalikan ke pengirim (RTS).</div>';
-  document.getElementById('VC').innerHTML=tl+note+`<div class="drows">
-    <div class="dr"><span class="dk">Status</span><span class="dv"><span class="badge ${s.c}"><span class="bdot"></span>${s.l}</span></span></div>
-    <div class="dr"><span class="dk">No. Resi</span><span class="dv" style="font-family:'DM Mono',monospace;font-size:11px">${o.resi||'—'}</span></div>
-    <div class="dr"><span class="dk">Order ID</span><span class="dv">${o.orderId||'—'}</span></div>
-    <div class="dr"><span class="dk">Ekspedisi</span><span class="dv">${o.ekspedisi||'—'}</span></div>
-    <div class="dr"><span class="dk">Customer</span><span class="dv">${o.customer||'—'}</span></div>
-    <div class="dr"><span class="dk">No. HP</span><span class="dv">${o.hp||'—'}</span></div>
-    <div class="dr"><span class="dk">Produk</span><span class="dv">${o.produk||'—'}</span></div>
-    <div class="dr"><span class="dk">Alamat</span><span class="dv">${o.alamat||'—'}</span></div>
-    <div class="dr"><span class="dk">Tanggal</span><span class="dv">${o.tgl||'—'}</span></div>
-    <div class="dr"><span class="dk">Status Finance</span><span class="dv">${o.statusFinance||'—'}</span></div>
-    ${o.ket?`<div class="dr"><span class="dk">Keterangan</span><span class="dv">${o.ket}</span></div>`:''}
+  tl+='</div><div class="tl-lbls"><div class="tl-lbl f">Pick Up / On Process</div><div class="tl-lbl l">Delivered</div></div>';
+  let note='';if(isRT)note='<div class="snote sn-rt">↩ Paket dikembalikan ke pengirim (RTS).</div>';if(isUD)note='<div class="snote sn-ud">⚠ Pengiriman gagal — menunggu tindak lanjut.</div>';
+  const cc=gcc(o.cs),fl=files[o._fileIdx];
+  document.getElementById('DC2').innerHTML=tl+note+`<div class="dgrid">
+    <div class="df"><div class="df-l">Status</div><div class="df-v">${bdg(o.status)}</div></div>
+    <div class="df"><div class="df-l">No. Resi</div><div class="df-v" style="font-family:'DM Mono',monospace;font-size:11px">${o.resi}</div></div>
+    <div class="df"><div class="df-l">File / Bulan</div><div class="df-v" style="font-size:11px">${fl?fl.label:'—'}</div></div>
+    <div class="df"><div class="df-l">No. Order</div><div class="df-v" style="font-size:11px">${o.order||'—'}</div></div>
+    <div class="df"><div class="df-l">Customer</div><div class="df-v">${o.customer}</div></div>
+    <div class="df"><div class="df-l">No. HP</div><div class="df-v">${o.hp||'—'}</div></div>
+    <div class="df" style="grid-column:span 2"><div class="df-l">Alamat</div><div class="df-v" style="font-size:11px;line-height:1.5">${o.alamat||'—'}</div></div>
+    <div class="df"><div class="df-l">COD</div><div class="df-v">${o.cod?'Rp '+Number(o.cod).toLocaleString('id-ID'):'—'}</div></div>
+    <div class="df"><div class="df-l">CS</div><div class="df-v"><span class="cschip" style="background:${cc.bg};color:${cc.c}">${o.cs||'—'}</span></div></div>
+    <div class="df"><div class="df-l">Tanggal</div><div class="df-v">${o.tanggal||'—'}</div></div>
+    <div class="df"><div class="df-l">Status Gudang</div><div class="df-v" style="font-size:11px">${o.gudang||'—'}</div></div>
   </div>`;
-  document.getElementById('VM').classList.add('open');
+  document.getElementById('DM').classList.add('open');
 }
-function CV(){document.getElementById('VM').classList.remove('open');}
+function closeDetail(){document.getElementById('DM').classList.remove('open');}
 
-/* ══ BULK UPLOAD ══ */
-let bulkTab='csv',parsedCSV=[],parsedPaste=[];
-
-function OB(){
-  bulkTab='csv';SBT('csv');
-  document.getElementById('BPTA').value='';
-  ['BPSUM','BPPRV','PSDIST','BCSUM','BCPRV','CSDIST','BFHINT'].forEach(id=>{const e=document.getElementById(id);if(e)e.innerHTML='';});
-  document.getElementById('DZFN').textContent='File .csv hasil export Google Sheets / Excel';
-  document.getElementById('FI').value='';
-  parsedCSV=[];parsedPaste=[];
-  document.getElementById('BM').classList.add('open');
-}
-function CB(){document.getElementById('BM').classList.remove('open');}
-function SBT(t){
-  bulkTab=t;
-  document.getElementById('pcsv').classList.toggle('active',t==='csv');
-  document.getElementById('ppaste').classList.toggle('active',t==='paste');
-  document.getElementById('btp').classList.toggle('active',t==='csv');
-  document.getElementById('btc').classList.toggle('active',t==='paste');
-  document.getElementById('BFHINT').innerHTML='';
-}
-
-function detectCols(hdr){
-  const fi=(keys)=>{
-    for(const k of keys){
-      const i=hdr.findIndex(h=>h.trim().toLowerCase().includes(k.toLowerCase()));
-      if(i>=0)return i;
-    }
-    return -1;
-  };
-  return{
-    tgl:fi(['tanggal','date']),
-    eksp:fi(['ekspedisi','ekspres','kurir','courier']),
-    resi:fi(['nomer resi','no resi','no. resi','resi','awb','waybill']),
-    orderId:fi(['orders','order id','order']),
-    produk:fi(['produk i','produk','product','item']),
-    customer:fi(['customer','penerima nama','nama penerima','nama customer']),
-    hp:fi(['no hp','no. hp','hp','phone','whatsapp','wa']),
-    alamat:fi(['alamat penerima','alamat','address']),
-    cs:fi([' cs ',' cs','cs ',' cs|']),
-    statusCrm:fi(['status crm','status pengiriman','status resi','crm']),
-    statusFin:fi(['status finance','finance','status fin']),
-  };
-}
-
-function parseRows(rows,hdr){
-  const c=detectCols(hdr);
-  const g=(row,i)=>i>=0&&i<row.length?(row[i]||'').trim():'';
-  return rows.map((row)=>{
-    if(!row.some(v=>v.trim()))return null;
-    const resi=g(row,c.resi);
-    const csName=g(row,c.cs);
-    const errs=[];
-    if(!resi)errs.push('Resi kosong');
-    const dup=orders.find(o=>o.resi&&o.resi===resi);
-    return{
-      resi,csName,
-      tgl:g(row,c.tgl),
-      ekspedisi:g(row,c.eksp)||'JNE',
-      orderId:g(row,c.orderId),
-      produk:g(row,c.produk),
-      customer:g(row,c.customer),
-      hp:g(row,c.hp),
-      alamat:g(row,c.alamat),
-      status:normStatus(g(row,c.statusCrm)),
-      statusFinance:g(row,c.statusFin),
-      errs,dup:!!dup,
-    };
-  }).filter(Boolean);
-}
-
-function renderPreview(rows,sumId,prvId,distId){
-  const ok=rows.filter(r=>!r.errs.length&&!r.dup).length;
-  const err=rows.filter(r=>r.errs.length).length;
-  const dup=rows.filter(r=>r.dup&&!r.errs.length).length;
-  const fh=document.getElementById('BFHINT');
-  if(fh)fh.textContent=ok?ok+' baris siap diimport':'';
-  document.getElementById(sumId).innerHTML=rows.length?
-    `<div class="bulk-sum"><span style="color:var(--t3)">Preview:</span><span class="bspill bs-ok">${ok} siap import</span>${err?`<span class="bspill bs-err">${err} error</span>`:''} ${dup?`<span class="bspill bs-dup">${dup} duplikat</span>`:''}</div>`:'';
-  if(!rows.length){document.getElementById(prvId).innerHTML='';document.getElementById(distId).innerHTML='';return;}
-  document.getElementById(prvId).innerHTML='<div class="preview-wrap"><table class="ptbl"><thead><tr>'+
-    '<th>#</th><th>Resi</th><th>Customer</th><th>CS</th><th>Ekspedisi</th><th>Status</th><th>Info</th>'+
-    '</tr></thead><tbody>'+
-    rows.slice(0,200).map((r,i)=>{
-      const cls=r.errs.length?'perr':r.dup?'pdup':'';
-      const info=r.errs.length?`<span style="color:var(--ud-t)">⚠ ${r.errs.join(', ')}</span>`:
-        r.dup?'<span style="color:var(--op-t)">Duplikat</span>':'<span style="color:var(--dl-t)">✓ OK</span>';
-      const st=SM[r.status]||SM.onproses;
-      return`<tr class="${cls}"><td>${i+1}</td><td style="font-family:monospace;font-size:10px">${r.resi}</td>` +
-        `<td>${r.customer||'—'}</td><td><span class="cschip">${r.csName||'—'}</span></td>` +
-        `<td>${r.ekspedisi}</td><td><span class="badge ${st.c}" style="font-size:10px"><span class="bdot"></span>${st.l}</span></td>` +
-        `<td>${info}</td></tr>`;
-    }).join('')+
-    (rows.length>200?`<tr><td colspan="7" style="padding:8px;color:var(--t3)">...+${rows.length-200} baris lainnya</td></tr>`:'')+
-    '</tbody></table></div>';
-
-  // CS distribution card
-  const csCount={};
-  rows.filter(r=>!r.errs.length&&!r.dup).forEach(r=>{
-    const cs=r.csName||'(tidak ada CS)';
-    csCount[cs]=(csCount[cs]||0)+1;
-  });
-  document.getElementById(distId).innerHTML=Object.keys(csCount).length?
-    '<div style="margin-top:14px"><div style="font-size:11px;color:var(--t3);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px">Distribusi per CS:</div>'+
-    '<div class="cs-dist">'+Object.entries(csCount).sort((a,b)=>b[1]-a[1]).map(([name,cnt])=>
-      `<div class="cs-dist-card"><div class="cs-dist-name">${name}</div><div class="cs-dist-cnt">${cnt}</div><div class="cs-dist-lbl">pesanan</div></div>`
-    ).join('')+'</div></div>':'';
-}
-
-function ensureCS(csName){
-  if(!csName||csName.trim()==='')return;
-  const key=csName.trim().toLowerCase().replace(/\s+/g,'_');
-  if(!CS_ACCTS[key]){
-    CS_ACCTS[key]={pass:key+'123',role:'cs',name:csName.trim(),init:csName.trim().substring(0,2).toUpperCase()};
-  }
-}
-
-// CSV upload
-function DGG(e){e.preventDefault();document.getElementById('DZ').classList.add('drag');}
-function DLL(e){document.getElementById('DZ').classList.remove('drag');}
-function DPP(e){e.preventDefault();document.getElementById('DZ').classList.remove('drag');const f=e.dataTransfer.files[0];if(f)PFF(f);}
-function HCC(e){const f=e.target.files[0];if(f)PFF(f);}
-function PFF(f){
-  document.getElementById('DZFN').textContent=f.name+' ('+Math.round(f.size/1024)+'KB)';
-  const reader=new FileReader();
-  reader.onload=ev=>{
-    const text=ev.target.result;
-    const lines=text.replace(/\r/g,'').split('\n').filter(l=>l.trim());
-    if(!lines.length)return;
-    const sep=lines[0].includes('\t')?'\t':',';
-    const hdr=lines[0].split(sep).map(h=>h.replace(/"/g,'').trim());
-    const rows=lines.slice(1).map(l=>l.split(sep).map(c=>c.replace(/"/g,'').trim()));
-    parsedCSV=parseRows(rows,hdr);
-    renderPreview(parsedCSV,'BCSUM','BCPRV','CSDIST');
-  };
-  reader.readAsText(f,'UTF-8');
-}
-
-// Paste
-function PP(){
-  const text=document.getElementById('BPTA').value;
-  const lines=text.replace(/\r/g,'').split('\n').filter(l=>l.trim());
-  if(lines.length<2){document.getElementById('BPSUM').innerHTML='';document.getElementById('BPPRV').innerHTML='';document.getElementById('PSDIST').innerHTML='';return;}
-  const sep=lines[0].includes('\t')?'\t':'|';
-  const hdr=lines[0].split(sep).map(h=>h.trim());
-  const rows=lines.slice(1).map(l=>l.split(sep).map(c=>c.trim()));
-  parsedPaste=parseRows(rows,hdr);
-  renderPreview(parsedPaste,'BPSUM','BPPRV','PSDIST');
-}
-
-function SBU(){
-  const src=bulkTab==='csv'?parsedCSV:parsedPaste;
+// ══ BULK ══
+function pRow(cols){const g=i=>(cols[i]||'').trim();if(cols.length>=20){return{tanggal:g(0),exp:g(1)||'JNE',resi:g(2)||g(27),order:g(4),customer:g(12),hp:g(13),alamat:g(14),cs:g(15).split('|')[0].trim(),cod:parseInt((g(22)||'0').replace(/[^\d]/g,''))||0,status:ns(g(28)||g(27)),gudang:g(30)||''};}return{tanggal:g(0),exp:g(1)||'JNE',resi:g(2),order:g(3)||'',customer:g(4)||g(3),hp:g(5),alamat:g(6),cs:g(7)||'',cod:parseInt((g(8)||'0').replace(/[^\d]/g,''))||0,status:ns(g(9)),gudang:g(10)||''};}
+function vRows(rows){return rows.map(r=>{const errs=[];if(!r.resi)errs.push('Resi kosong');if(!r.customer)errs.push('Customer kosong');if(!r.cs)errs.push('CS kosong');const dup=allOrders.find(o=>o.resi&&o.resi.toLowerCase()===r.resi.toLowerCase());return{...r,errs,dup:!!dup};});}
+function parseRaw(raw){const rows=[];raw.split('\n').forEach(line=>{line=line.trim();if(!line)return;const cols=line.split('\t');if(cols.length<3)return;rows.push(pRow(cols));});return vRows(rows);}
+function parseCSV(txt){const lines=txt.split('\n').filter(l=>l.trim());if(!lines.length)return[];const hdr=lines[0].split(',').map(h=>h.replace(/"/g,'').trim().toLowerCase());const gi=(c,k)=>{const i=hdr.findIndex(h=>h.includes(k));return i>=0?(c[i]||'').replace(/"/g,'').trim():'';};return vRows(lines.slice(1).filter(l=>l.trim()).map(line=>{const c=line.split(',');return{tanggal:gi(c,'tanggal')||gi(c,'date'),exp:gi(c,'eks')||gi(c,'exp')||'JNE',resi:gi(c,'resi'),order:gi(c,'order'),customer:gi(c,'customer')||gi(c,'nama'),hp:gi(c,'hp')||gi(c,'phone'),alamat:gi(c,'alamat'),cs:gi(c,'cs'),cod:parseInt((gi(c,'cod')||'0').replace(/[^\d]/g,''))||0,status:ns(gi(c,'status')||gi(c,'finance')),gudang:gi(c,'gudang')};}))}
+function rPreview(rows,sId,pId){const ok=rows.filter(r=>!r.errs.length&&!r.dup).length,err=rows.filter(r=>r.errs.length).length,dup=rows.filter(r=>r.dup&&!r.errs.length).length;document.getElementById(sId).innerHTML=rows.length?`<div class="bsum"><span class="bp-lbl">Preview:</span><span class="bp bp-ok">${ok} siap simpan</span>${err?`<span class="bp bp-err">${err} error</span>`:''}${dup?`<span class="bp bp-dup">${dup} duplikat</span>`:''}</div>`:'' ;if(!rows.length){document.getElementById(pId).innerHTML='';return;}document.getElementById(pId).innerHTML='<div class="prv-wrap"><table class="ptbl"><thead><tr><th>#</th><th>Resi</th><th>Customer</th><th>CS</th><th>Status</th><th>Info</th></tr></thead><tbody>'+rows.map((r,i)=>{const cls=r.errs.length?'perr':r.dup?'pdup':'';const info=r.errs.length?`<span style="color:var(--red)">⚠ ${r.errs.join(', ')}</span>`:r.dup?'<span style="color:var(--yellow)">Duplikat</span>':'<span style="color:var(--green)">✓ OK</span>';return`<tr class="${cls}"><td>${i+1}</td><td style="font-family:monospace;font-size:10px">${r.resi}</td><td>${r.customer}</td><td>${r.cs||'—'}</td><td>${r.status}</td><td>${info}</td></tr>`}).join('')+'</tbody></table></div>';}
+function parsePaste(){pParsed=parseRaw(document.getElementById('BPTA').value);rPreview(pParsed,'BPSUM','BPPRV');const ok=pParsed.filter(r=>!r.errs.length&&!r.dup).length;document.getElementById('BFHINT').textContent=ok?ok+' baris valid':'';}
+function openBulk(){bulkTab='paste';setBTab('paste');document.getElementById('BPTA').value='';['BPSUM','BPPRV','BCSUM','BCPRV','BFHINT'].forEach(i=>document.getElementById(i).innerHTML='');document.getElementById('DZN').textContent='Format: .csv';document.getElementById('FI').value='';mrc=0;document.getElementById('MROWS').innerHTML='';addMRow();addMRow();pParsed=[];cParsed=[];if(activeFile!==null)document.getElementById('bTARGET').value=activeFile;document.getElementById('BM').classList.add('open');}
+function closeBulk(){document.getElementById('BM').classList.remove('open');}
+function setBTab(t){bulkTab=t;['paste','csv','manual'].forEach(x=>{document.getElementById('p'+x).classList.toggle('on',x===t);document.getElementById('bt'+x.charAt(0)).classList.toggle('on',x===t);});document.getElementById('BFHINT').textContent='';}
+function dzO(e){e.preventDefault();document.getElementById('DZ').classList.add('drag');}function dzL(){document.getElementById('DZ').classList.remove('drag');}function dzD(e){e.preventDefault();dzL();const f=e.dataTransfer.files[0];if(f)pfp(f);}function doFile(e){const f=e.target.files[0];if(f)pfp(f);}function pfp(f){if(!f.name.endsWith('.csv')){alert('Hanya .csv');return;}document.getElementById('DZN').textContent=f.name;const r=new FileReader();r.onload=ev=>{cParsed=parseCSV(ev.target.result);rPreview(cParsed,'BCSUM','BCPRV');const ok=cParsed.filter(r=>!r.errs.length&&!r.dup).length;document.getElementById('BFHINT').textContent=ok?ok+' valid':'';};r.readAsText(f);}
+function dlTpl(e){e.preventDefault();const csv='tanggal,ekspedisi,resi,order,customer,hp,alamat,cs,cod,status,gudang\n03/03/2026,JNE,JNE12345,,Budi,6281234,Jl. Merdeka 1,Sinta,239000,ON PROCESS,';const a=document.createElement('a');a.href='data:text/csv,'+encodeURIComponent(csv);a.download='template.csv';a.click();}
+const KO='<option>JNE</option><option>JT</option><option>SiCepat</option><option>Anteraja</option><option>Pos Indonesia</option><option>Ninja</option>';
+const SO='<option value="ON PROCESS">On Process</option><option value="DELIVERED">Delivered</option><option value="RTS">RTS</option><option value="UNDELIVERED">Undelivered</option>';
+function addMRow(){const id='mr_'+(mrc++);const d=document.createElement('div');d.className='mrow';d.id=id;d.innerHTML=`<input placeholder="No. Resi"/><input placeholder="Customer"/><select>${KO}</select><input placeholder="Nama CS"/><select>${SO}</select><button class="mrow-del" onclick="this.closest('[id^=mr_]').remove()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>`;document.getElementById('MROWS').appendChild(d);}
+function colManual(){const rows=[];document.querySelectorAll('.mrow').forEach(r=>{const ai=r.querySelectorAll('input'),as=r.querySelectorAll('select');const resi=ai[0].value.trim(),cust=ai[1].value.trim(),exp=as[0].value,cs=ai[2]?ai[2].value.trim():'',stat=as[1]?as[1].value:'ON PROCESS';if(!resi&&!cust)return;const errs=[];if(!resi)errs.push('Resi kosong');if(!cust)errs.push('Customer kosong');if(!cs)errs.push('CS kosong');const dup=allOrders.find(o=>o.resi&&o.resi.toLowerCase()===resi.toLowerCase());rows.push({tanggal:new Date().toLocaleDateString('id-ID'),exp,resi,order:'',customer:cust,hp:'',alamat:'',cs,cod:0,status:stat,gudang:'',errs,dup:!!dup});});return rows;}
+async function saveBulk(){
+  let src=bulkTab==='paste'?pParsed:bulkTab==='csv'?cParsed:colManual();
   const valid=src.filter(r=>!r.errs.length&&!r.dup);
-  if(!valid.length){alert('Tidak ada data valid. Cek preview.');return;}
-  const now=new Date().toLocaleDateString('id-ID',{day:'2-digit',month:'2-digit',year:'numeric'});
-  valid.forEach(r=>{
-    ensureCS(r.csName);
-    orders.unshift({id:nid++,cs:r.csName,tgl:r.tgl||now,ekspedisi:r.ekspedisi,resi:r.resi,
-      orderId:r.orderId,produk:r.produk,customer:r.customer,hp:r.hp,alamat:r.alamat,
-      status:r.status,statusFinance:r.statusFinance,ket:''});
-  });
-  CB();US();RT();buildCSFilter();
-  TT(valid.length+' pesanan berhasil diimport');
+  if(!valid.length){alert('Tidak ada data valid.');return;}
+  const tgt=parseInt(document.getElementById('bTARGET').value);
+  closeBulk(); showL(`Menyimpan ${valid.length} pesanan ke ${files[tgt].label}...`);
+  try{
+    const d=await api(tgt,{action:'bulkSave',orders:valid});
+    if(d.ok){toast(`${d.added} ditambahkan ke ${files[tgt].label}${d.dupes?' ('+d.dupes+' duplikat dilewati)':''}`);await syncAll();}
+    else toast('Gagal: '+(d.msg||'error'),'warn');
+  }catch(e){toast('Gagal terhubung','warn');}
+  hideL();
 }
 
-function DLT(e){
-  e.preventDefault();
-  const csv='Tanggal\tEkspedisi\tNomer Resi\tOrders\tProduk I\tCustomer\tNo HP\tAlamat Penerima\t CS \tStatus CRM\tStatus Finance\n'+
-    '03/03/2026\tJNE\t1219572600142122\t2603035TF9IH\tNTS\tTRISNA PANEO\t6282292475122\tJL. PANGERAN HIDAYAT NO. 165\tSinta\tON PROCESS\tBELUM CAIR\n'+
-    '03/03/2026\tJT\tJO0321592938\t260303JU0O7H\tNTS\tH. SYARIFUDDIN\t6282165026706\tJL. KITA BUKIT, GG. H. II\tAndini\tDELIVERED\tSUDAH CAIR';
-  const a=document.createElement('a');a.href='data:text/csv;charset=utf-8,'+encodeURIComponent(csv);a.download='template_pesanan.csv';a.click();
-}
+// ══ UTILS ══
+function show(id){document.getElementById(id).style.display='';}
+function hide(id){document.getElementById(id).style.display='none';}
+function showL(t){document.getElementById('LTXT').textContent=t||'Memuat...';document.getElementById('LOV').style.display='flex';}
+function hideL(){document.getElementById('LOV').style.display='none';}
+function toast(m,type){const t=document.getElementById('TOAST');document.getElementById('TM').textContent=m;t.className='toast '+(type==='warn'?'warn ':type==='del'||type===true?'del ':'')+' on';setTimeout(()=>t.className='toast'+(type==='warn'?' warn':type==='del'||type===true?' del':''),2800);}
+function renderDate(){document.getElementById('DC').textContent=new Date().toLocaleDateString('id-ID',{day:'numeric',month:'long',year:'numeric'});}
 
-function TT(m,d){
-  const t=document.getElementById('TOAST');
-  document.getElementById('TM').textContent=m;
-  t.className='toast'+(d?' del':'')+' on';
-  setTimeout(()=>t.className='toast'+(d?' del':''),2800);
-}
-function SD(){document.getElementById('DC').textContent=new Date().toLocaleDateString('id-ID',{weekday:'long',day:'numeric',month:'long',year:'numeric'});}
-SD();
+init(); renderDate();
 </script>
 </body>
 </html>
