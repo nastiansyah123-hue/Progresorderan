@@ -442,21 +442,6 @@ async function loadData() {
       .select('id,no,nama,hp,tanggal,pembayaran,resi,jumlah,cs,kabupaten,update_crm,status_akhir')
       .eq('sumber','validasi')
       .order('tanggal', { ascending: false });
-    // Date filter
-    const activeChip = document.querySelector('.tgl-chip.active, .tgl-btn.active');
-    const preset = activeChip ? activeChip.id.replace('btn-tgl-','').replace('chip-','') : 'all';
-    const todayStr     = new Date().toISOString().slice(0,10);
-    const yesterdayStr = new Date(Date.now()-86400000).toISOString().slice(0,10);
-    if (preset === 'today') {
-      query = query.gte('tanggal', todayStr).lte('tanggal', todayStr + 'T23:59:59');
-    } else if (preset === 'yesterday') {
-      query = query.gte('tanggal', yesterdayStr).lte('tanggal', yesterdayStr + 'T23:59:59');
-    } else if (preset === 'custom') {
-      const customVal = document.getElementById('filter-tgl-custom')?.value;
-      if (customVal) {
-        query = query.gte('tanggal', customVal).lte('tanggal', customVal + 'T23:59:59');
-      }
-    }
 
     // CS hanya lihat data miliknya
     if (userRole !== 'admin' && userRole !== 'spv' && userCSName) {
