@@ -468,6 +468,24 @@ async function loadData() {
     if (data.length < 1000) break;
     from += 1000;
   }
+  // Client-side date filter
+  const activeChip = document.querySelector('.tgl-chip.active, .tgl-btn.active');
+  const preset = activeChip ? activeChip.id.replace('btn-tgl-','').replace('chip-','') : 'all';
+  const todayStr     = new Date().toLocaleDateString('en-US');
+  const yesterdayStr = new Date(Date.now()-86400000).toLocaleDateString('en-US');
+  const customVal    = document.getElementById('filter-tgl-custom')?.value;
+
+  if (preset === 'today') {
+    all = all.filter(r => (r.tanggal||'').startsWith(todayStr.split('/')[0].padStart(2,'0')+'/'+todayStr.split('/')[1].padStart(2,'0')+'/'+todayStr.split('/')[2]));
+  } else if (preset === 'yesterday') {
+    all = all.filter(r => (r.tanggal||'').startsWith(yesterdayStr.split('/')[0].padStart(2,'0')+'/'+yesterdayStr.split('/')[1].padStart(2,'0')+'/'+yesterdayStr.split('/')[2]));
+  } else if (preset === 'custom' && customVal) {
+    // customVal is YYYY-MM-DD, tanggal is MM/DD/YYYY
+    const [cy,cm,cd] = customVal.split('-');
+    const prefix = cm+'/'+cd+'/'+cy;
+    all = all.filter(r => (r.tanggal||'').startsWith(prefix));
+  }
+
   allData = all;
   updateSummary();
   updateCSFilter();
