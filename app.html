@@ -247,11 +247,9 @@ th .resizer:hover, th .resizer.active { background:var(--accent); opacity:0.5; }
         <button id="btn-tgl-all" class="tgl-btn active" onclick="setTglPreset('all')">Semua</button>
         <button id="btn-tgl-today" class="tgl-btn" onclick="setTglPreset('today')">Hari Ini</button>
         <button id="btn-tgl-yesterday" class="tgl-btn" onclick="setTglPreset('yesterday')">Kemarin</button>
-        <label class="tgl-btn" id="btn-tgl-custom" style="cursor:pointer;position:relative;overflow:hidden">
-  📅 Pilih
-  <input type="date" id="filter-tgl-custom" onchange="onCustomDate()"
-    style="position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%" />
-</label>
+        <button class="tgl-btn" id="btn-tgl-custom" onclick="setTglPreset('custom')">📅 Pilih</button>
+        <input type="date" id="filter-tgl-custom" onchange="onCustomDate()"
+          style="display:none;border:1px solid var(--accent);border-radius:10px;padding:6px 10px;background:var(--bg);color:var(--text);font-size:12px" />
         
         <input type="hidden" id="filter-tgl-preset" value="all" />
       </div>
@@ -1041,7 +1039,12 @@ function setTglPreset(val) { setTglChip(val); }
 function setTglChip(val) {
   document.querySelectorAll('.tgl-chip,.tgl-btn').forEach(c => c.classList.remove('active'));
   (document.getElementById('chip-'+val)||document.getElementById('btn-tgl-'+val))?.classList.add('active');
-  if (val !== 'custom') {
+  const customInp = document.getElementById('filter-tgl-custom');
+  if (val === 'custom') {
+    customInp.style.display = 'inline-block';
+    customInp.focus();
+  } else {
+    customInp.style.display = 'none';
     loadData();
   }
 }
