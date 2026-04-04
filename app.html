@@ -13,6 +13,18 @@
   --success:#22c55e; --danger:#ef4444; --warn:#f59e0b;
   --success-bg:#052e16; --danger-bg:#450a0a; --warn-bg:#431407;
 }
+[data-theme="light"] {
+  --bg:#f8fafc; --bg2:#ffffff; --border:#e2e8f0; --border2:#cbd5e1;
+  --text:#0f172a; --muted:#64748b; --accent:#6366f1; --accent2:#4f46e5;
+  --success:#16a34a; --danger:#dc2626; --warn:#d97706;
+  --success-bg:#f0fdf4; --danger-bg:#fef2f2; --warn-bg:#fffbeb;
+}
+[data-theme="light"] {
+  --bg:#f8fafc; --bg2:#ffffff; --border:#e2e8f0; --border2:#cbd5e1;
+  --text:#0f172a; --muted:#64748b; --accent:#6366f1; --accent2:#4f46e5;
+  --success:#16a34a; --danger:#dc2626; --warn:#d97706;
+  --success-bg:#f0fdf4; --danger-bg:#fef2f2; --warn-bg:#fffbeb;
+}
 * { margin:0; padding:0; box-sizing:border-box; }
 body { font-family:'Inter',system-ui,sans-serif; background:var(--bg); color:var(--text); min-height:100vh; display:flex; flex-direction:column; }
 
@@ -128,6 +140,8 @@ tr:hover td { background:rgba(99,102,241,0.05); }
   <div class="logo">Progres<span>Orderan</span></div>
   <div class="user-info">
     <span id="user-email"></span>
+    <button id="theme-btn" onclick="toggleTheme()" style="background:none;border:1px solid var(--border);color:var(--muted);padding:5px 10px;border-radius:8px;cursor:pointer;font-size:16px" title="Ganti tema">🌙</button>
+    <button onclick="toggleTheme()" id="theme-btn" style="background:none;border:1px solid var(--border);color:var(--muted);padding:5px 10px;border-radius:8px;cursor:pointer;font-size:14px" title="Toggle tema">🌙</button>
     <button class="btn-logout" onclick="logout()">Keluar</button>
   </div>
 </div>
@@ -185,10 +199,14 @@ tr:hover td { background:rgba(99,102,241,0.05); }
         <option value="IDX">IDX</option>
         <option value="ANTERAJA">Anteraja</option>
       </select>
+      <select class="filter-select" id="filter-cs" onchange="renderTable()">
+        <option value="all">Semua CS</option>
+      </select>
       <input class="search-input" id="search-box" type="text" placeholder="Cari nama / HP / resi..." oninput="renderTable()" />
       <span class="spacer"></span>
       <button class="btn-primary" onclick="updateOtomatis()" id="btn-update">🔄 Update Semua</button>
       <button class="btn-secondary" onclick="loadData()" style="font-size:12px">↻ Refresh</button>
+
       <span class="loading-badge" id="loading-update">mengecek...</span>
       <span id="count-info" style="font-size:11px;color:var(--muted);font-family:monospace"></span>
     </div>
@@ -204,12 +222,12 @@ tr:hover td { background:rgba(99,102,241,0.05); }
         <table>
           <thead>
             <tr>
-              <th>Tanggal</th><th>No</th><th>Nama</th><th>HP</th>
+              <th><input type="checkbox" id="chk-all" onchange="toggleAllChk(this)"></th><th style="width:36px"><input type="checkbox" id="chk-all" onchange="toggleAll(this)"></th><th>Tanggal</th><th>No</th><th>Nama</th><th>HP</th>
               <th>Ekspedisi</th><th>Resi</th><th>Jumlah</th><th>Kabupaten</th><th>CS</th>
               <th>Update CRM</th><th>Status Akhir</th>
             </tr>
           </thead>
-          <tbody id="status-tbody"><tr><td colspan="11" class="empty-state">Klik Refresh untuk memuat data</td></tr></tbody>
+          <tbody id="status-tbody"><tr><td colspan="12" class="empty-state">Klik Refresh untuk memuat data</td></tr></tbody>
         </table>
       </div>
       <div class="pagination">
@@ -345,6 +363,7 @@ async function loadData() {
   }
   allData = all;
   updateSummary();
+  updateCSFilter();
   applyFilter(document.getElementById('filter-status').value);
 }
 
@@ -377,7 +396,9 @@ function renderTable() {
   const eks = document.getElementById('filter-eks').value;
   const q   = document.getElementById('search-box').value.toLowerCase();
 
+  const cs = document.getElementById('filter-cs')?.value || 'all';
   filteredData = allData.filter(r => {
+    if (cs !== 'all' && (r.cs||'').trim() !== cs) return false;
     const crm = (r.update_crm||'').toUpperCase();
     if (f !== 'all') {
       if (f === 'ON PROSES' && (crm === 'DELIVERED' || crm === 'RETUR' || crm.startsWith('UNDELL'))) return false;
@@ -389,6 +410,8 @@ function renderTable() {
       const e = extractEks(r.pembayaran||'').toUpperCase();
       if (!e.includes(eks.toUpperCase())) return false;
     }
+    const cs = document.getElementById('filter-cs')?.value || 'all';
+    if (cs !== 'all' && (r.cs||'').trim() !== cs) return false;
     if (q) {
       const s = (r.nama||'')+(r.hp||'')+(r.resi||'');
       if (!s.toLowerCase().includes(q)) return false;
@@ -407,7 +430,7 @@ function doRenderTable() {
   document.getElementById('count-info').textContent = filteredData.length.toLocaleString() + ' baris';
 
   if (!rows.length) {
-    tbody.innerHTML = '<tr><td colspan="11" class="empty-state">Tidak ada data</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="12" class="empty-state">Tidak ada data</td></tr>';
   } else {
     tbody.innerHTML = rows.map(r => {
       const crm = r.update_crm||'';
@@ -416,6 +439,7 @@ function doRenderTable() {
       const sl  = statusLabel(crm);
       const crmDetail = crm.includes('(') ? crm.slice(crm.indexOf('(')+1, crm.lastIndexOf(')')) : '';
       return `<tr>
+        <td><input type="checkbox" class="row-chk" data-idx="${filteredData.indexOf(r)}"></td>
         <td style="font-size:11px;font-family:monospace;color:var(--muted)">${r.tanggal||''}</td>
         <td style="font-size:11px;font-family:monospace">${r.no||''}</td>
         <td style="font-size:12px">${r.nama||''}</td>
@@ -731,6 +755,139 @@ async function saveResi() {
     result.style.color = 'var(--danger)';
   }
   badge.classList.remove('show');
+}
+
+
+// ── THEME ─────────────────────────────────────────────────────────────────────
+function toggleTheme() {
+  const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+  document.documentElement.setAttribute('data-theme', isLight ? 'dark' : 'light');
+  document.getElementById('theme-btn').textContent = isLight ? '🌙' : '☀️';
+  localStorage.setItem('po_theme', isLight ? 'dark' : 'light');
+}
+(function() {
+  const t = localStorage.getItem('po_theme') || 'dark';
+  if (t === 'light') {
+    document.documentElement.setAttribute('data-theme', 'light');
+    document.addEventListener('DOMContentLoaded', () => {
+      const btn = document.getElementById('theme-btn');
+      if (btn) btn.textContent = '☀️';
+    });
+  }
+})();
+
+// ── CHECKBOX + EXPORT ─────────────────────────────────────────────────────────
+function toggleAllChk(chkAll) {
+  document.querySelectorAll('.row-chk').forEach(c => c.checked = chkAll.checked);
+}
+
+function getSelectedData() {
+  const checked = [...document.querySelectorAll('.row-chk:checked')];
+  if (!checked.length) return filteredData; // export all if none selected
+  return checked.map(c => filteredData[parseInt(c.dataset.idx)]).filter(Boolean);
+}
+
+function exportData(fmt) {
+  const data = getSelectedData();
+  if (!data.length) return showToast('Tidak ada data');
+
+  const rows = data.map(r => ({
+    Tanggal: r.tanggal||'',
+    No: r.no||'',
+    Nama: r.nama||'',
+    HP: r.hp||'',
+    Ekspedisi: extractEks(r.pembayaran||''),
+    Resi: r.resi||'',
+    Jumlah: r.jumlah||'',
+    Kabupaten: r.kabupaten||'',
+    CS: r.cs||'',
+    'Update CRM': r.update_crm||'',
+    'Status Akhir': r.status_akhir||''
+  }));
+
+  if (fmt === 'csv') {
+    const headers = Object.keys(rows[0]);
+    const csv = [headers.join(','), ...rows.map(r => headers.map(h => '"'+(r[h]||'').toString().replace(/"/g,'""')+'"').join(','))].join('\n');
+    const blob = new Blob([csv], { type:'text/csv;charset=utf-8;' });
+    const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+    a.download = 'progres-orderan-' + new Date().toISOString().slice(0,10) + '.csv';
+    a.click();
+  } else {
+    const ws = XLSX.utils.json_to_sheet(rows);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Progres');
+    XLSX.writeFile(wb, 'progres-orderan-' + new Date().toISOString().slice(0,10) + '.xlsx');
+  }
+}
+
+function showToast(msg) {
+  const t = document.createElement('div');
+  t.style.cssText = 'position:fixed;bottom:1rem;right:1rem;background:var(--accent);color:#fff;padding:10px 16px;border-radius:10px;font-size:13px;z-index:999';
+  t.textContent = msg;
+  document.body.appendChild(t);
+  setTimeout(() => t.remove(), 2500);
+}
+
+// ── CS FILTER ─────────────────────────────────────────────────────────────────
+function updateCSFilter() {
+  const sel = document.getElementById('filter-cs');
+  if (!sel) return;
+  const current = sel.value;
+  const csList = [...new Set(allData.map(r=>(r.cs||'').trim()).filter(Boolean))].sort();
+  sel.innerHTML = '<option value="all">Semua CS</option>' + csList.map(c=>`<option value="${c}">${c}</option>`).join('');
+  if (csList.includes(current)) sel.value = current;
+}
+
+// ── THEME ────────────────────────────────────────────────────────────────────
+function toggleTheme() {
+  const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+  document.documentElement.setAttribute('data-theme', isLight ? 'dark' : 'light');
+  document.getElementById('theme-btn').textContent = isLight ? '🌙' : '☀️';
+  localStorage.setItem('po_theme', isLight ? 'dark' : 'light');
+}
+const savedTheme = localStorage.getItem('po_theme') || 'dark';
+if (savedTheme === 'light') { document.documentElement.setAttribute('data-theme','light'); document.getElementById('theme-btn').textContent = '☀️'; }
+
+// ── CHECKBOX ──────────────────────────────────────────────────────────────────
+function toggleAll(chk) {
+  document.querySelectorAll('.row-chk').forEach(c => c.checked = chk.checked);
+}
+
+function getSelectedIds() {
+  return [...document.querySelectorAll('.row-chk:checked')].map(c => parseInt(c.dataset.id));
+}
+
+// ── EXPORT ───────────────────────────────────────────────────────────────────
+function exportData() {
+  const selectedIds = getSelectedIds();
+  const rows = selectedIds.length > 0
+    ? filteredData.filter(r => selectedIds.includes(r.id))
+    : filteredData;
+
+  if (!rows.length) { alert('Tidak ada data untuk diexport'); return; }
+
+  const cols = ['tanggal','no','nama','hp','pembayaran','resi','jumlah','kabupaten','cs','update_crm','status_akhir'];
+  const headers = ['Tanggal','No','Nama','HP','Ekspedisi','Resi','Jumlah','Kabupaten','CS','Update CRM','Status Akhir'];
+  const exportRows = rows.map(r => {
+    const obj = {};
+    cols.forEach((c,i) => { obj[headers[i]] = c === 'pembayaran' ? extractEks(r[c]||'') : (r[c]||''); });
+    return obj;
+  });
+
+  const ws = XLSX.utils.json_to_sheet(exportRows);
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, 'Progres');
+  XLSX.writeFile(wb, 'progres-orderan-' + new Date().toISOString().slice(0,10) + '.xlsx');
+}
+
+// ── CS FILTER ─────────────────────────────────────────────────────────────────
+function updateCSFilter() {
+  const sel = document.getElementById('filter-cs');
+  if (!sel) return;
+  const csList = [...new Set(allData.map(r=>(r.cs||'').trim()).filter(Boolean))].sort();
+  const cur = sel.value;
+  sel.innerHTML = '<option value="all">Semua CS</option>' + csList.map(c=>`<option value="${c}">${c}</option>`).join('');
+  if (cur && csList.includes(cur)) sel.value = cur;
 }
 
 // Restore last tab
