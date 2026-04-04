@@ -49,8 +49,9 @@
       <input type="text" id="reg-username" placeholder="contoh: budi" />
     </div>
     <div class="field">
-      <label>Nama Lengkap (sesuai data CS)</label>
-      <input type="text" id="reg-nama" placeholder="contoh: Budi Santoso" />
+      <label>Nama CS</label>
+      <input type="text" id="reg-nama" placeholder="contoh: Ambar" />
+      <div style="font-size:11px;color:#64748b;margin-top:4px">Sistem otomatis tambahkan "Pengirim " di depan nama</div>
     </div>
     <div class="field">
       <label>Password</label>
@@ -100,7 +101,9 @@ function toggleForm() {
 
 async function register() {
   const username = document.getElementById('reg-username').value.trim().toLowerCase();
-  const nama     = document.getElementById('reg-nama').value.trim();
+  const namaRaw  = document.getElementById('reg-nama').value.trim();
+  const capitalize = s => s.replace(/\b\w/g, c => c.toUpperCase());
+  const nama     = namaRaw.toLowerCase().startsWith('pengirim ') ? capitalize(namaRaw) : 'Pengirim ' + capitalize(namaRaw);
   const pass     = document.getElementById('reg-password').value;
   const pass2    = document.getElementById('reg-password2').value;
   const errEl    = document.getElementById('reg-error');
