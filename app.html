@@ -131,9 +131,9 @@ th .resizer:hover, th .resizer.active { background:var(--accent); opacity:0.5; }
 .page.active { display:block; }
 
 /* Date chips */
-.tgl-chip { background:var(--bg); border:1px solid var(--border); color:var(--muted); padding:5px 14px; border-radius:20px; font-size:12px; font-weight:500; cursor:pointer; transition:all 0.15s; white-space:nowrap; }
-.tgl-chip:hover { border-color:var(--accent); color:var(--accent); }
-.tgl-chip.active { background:var(--accent); border-color:var(--accent); color:#fff; }
+.tgl-chip, .tgl-btn { background:var(--bg); border:1px solid var(--border); color:var(--muted); padding:5px 14px; border-radius:20px; font-size:12px; font-weight:500; cursor:pointer; transition:all 0.15s; white-space:nowrap; }
+.tgl-chip:hover, .tgl-btn:hover { border-color:var(--accent); color:var(--accent); }
+.tgl-chip.active, .tgl-btn.active { background:var(--accent); border-color:var(--accent); color:#fff; }
 
 /* Lacak result */
 .track-card { background:var(--bg2); border:1px solid var(--border); border-radius:16px; padding:1.5rem; margin-bottom:1rem; }
@@ -437,7 +437,7 @@ async function loadData() {
       .eq('sumber','validasi')
       .order('tanggal', { ascending: false });
     // Date filter
-    const activeChip = document.querySelector('.tgl-chip.active');
+    const activeChip = document.querySelector('.tgl-chip.active, .tgl-btn.active');
     const preset = activeChip ? activeChip.id.replace('chip-','') : 'all';
     const todayStr     = new Date().toISOString().slice(0,10);
     const yesterdayStr = new Date(Date.now()-86400000).toISOString().slice(0,10);
@@ -1032,15 +1032,17 @@ function setTglPreset(preset) {
   if (preset !== 'custom') loadData();
 }
 
+function setTglPreset(val) { setTglChip(val); }
+
 function setTglChip(val) {
-  document.querySelectorAll('.tgl-chip').forEach(c => c.classList.remove('active'));
-  document.getElementById('chip-'+val).classList.add('active');
+  document.querySelectorAll('.tgl-chip,.tgl-btn').forEach(c => c.classList.remove('active'));
+  (document.getElementById('chip-'+val)||document.getElementById('btn-tgl-'+val))?.classList.add('active');
   if (val === 'custom') {
     // Open native date picker
     const inp = document.getElementById('filter-tgl-custom');
-    inp.style.pointerEvents = 'auto';
-    inp.showPicker ? inp.showPicker() : inp.click();
-    inp.style.pointerEvents = 'none';
+    inp.style.display='block';
+    try { inp.showPicker ? inp.showPicker() : inp.click(); } catch(e) { inp.click(); }
+    setTimeout(()=>{ inp.style.display='none'; },100);
   } else {
     loadData();
   }
@@ -1052,7 +1054,7 @@ function onCustomDate() {
     // Update chip label
     const d = new Date(val);
     const label = d.toLocaleDateString('id-ID',{day:'numeric',month:'short'});
-    document.getElementById('chip-custom').textContent = '📅 ' + label;
+    (document.getElementById('chip-custom')||document.getElementById('btn-tgl-custom')).textContent = '📅 ' + label;
     loadData();
   }
 }
