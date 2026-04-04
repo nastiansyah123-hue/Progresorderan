@@ -205,11 +205,11 @@ tr:hover td { background:rgba(99,102,241,0.05); }
           <thead>
             <tr>
               <th>Tanggal</th><th>No</th><th>Nama</th><th>HP</th>
-              <th>Ekspedisi</th><th>Resi</th><th>Kabupaten</th>
+              <th>Ekspedisi</th><th>Resi</th><th>Jumlah</th><th>Kabupaten</th><th>CS</th>
               <th>Update CRM</th><th>Status Akhir</th>
             </tr>
           </thead>
-          <tbody id="status-tbody"><tr><td colspan="9" class="empty-state">Klik Refresh untuk memuat data</td></tr></tbody>
+          <tbody id="status-tbody"><tr><td colspan="11" class="empty-state">Klik Refresh untuk memuat data</td></tr></tbody>
         </table>
       </div>
       <div class="pagination">
@@ -334,7 +334,7 @@ async function loadData() {
   let all = [], from = 0;
   while (true) {
     const { data, error } = await sb.from('all_orderan')
-      .select('id,no,nama,hp,tanggal,pembayaran,resi,kabupaten,update_crm,status_akhir')
+      .select('id,no,nama,hp,tanggal,pembayaran,resi,jumlah,cs,kabupaten,update_crm,status_akhir')
       .eq('sumber','validasi')
       .order('tanggal', { ascending: false })
       .range(from, from+999);
@@ -407,7 +407,7 @@ function doRenderTable() {
   document.getElementById('count-info').textContent = filteredData.length.toLocaleString() + ' baris';
 
   if (!rows.length) {
-    tbody.innerHTML = '<tr><td colspan="9" class="empty-state">Tidak ada data</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="11" class="empty-state">Tidak ada data</td></tr>';
   } else {
     tbody.innerHTML = rows.map(r => {
       const crm = r.update_crm||'';
@@ -422,7 +422,9 @@ function doRenderTable() {
         <td style="font-family:monospace;font-size:12px">${r.hp||''}</td>
         <td style="font-family:monospace;font-size:12px;font-weight:600">${eks||'—'}</td>
         <td style="font-family:monospace;font-size:11px">${r.resi||'<span style="color:var(--muted);font-size:10px">belum ada</span>'}</td>
+        <td style="font-size:11px;color:var(--muted)">${(r.jumlah||'').slice(0,25)}</td>
         <td style="font-size:11px">${r.kabupaten||''}</td>
+        <td style="font-size:11px;color:var(--muted)">${r.cs||''}</td>
         <td>
           <span class="status-badge ${sc}">${sl}</span>
           ${crmDetail ? `<div style="font-size:10px;color:var(--muted);margin-top:3px;max-width:200px">${crmDetail.slice(0,80)}${crmDetail.length>80?'...':''}</div>` : ''}
