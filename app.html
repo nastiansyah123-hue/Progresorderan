@@ -130,6 +130,13 @@ th .resizer:hover, th .resizer.active { background:var(--accent); opacity:0.5; }
 .page { display:none; }
 .page.active { display:block; }
 
+/* Alert banners */
+.alert-bar { padding:10px 16px; border-radius:12px; font-size:13px; display:flex; align-items:center; gap:10px; margin-bottom:10px; cursor:pointer; }
+.alert-bar.warn { background:#431407; border:1px solid #f97316; color:#fdba74; }
+.alert-bar.danger { background:#450a0a; border:1px solid #ef4444; color:#fca5a5; }
+.alert-bar .alert-count { font-weight:800; font-size:16px; margin-right:4px; }
+.alert-bar .alert-close { margin-left:auto; opacity:0.6; font-size:16px; }
+
 /* Date chips */
 .tgl-chip, .tgl-btn { background:var(--bg); border:1px solid var(--border); color:var(--muted); padding:5px 14px; border-radius:20px; font-size:12px; font-weight:500; cursor:pointer; transition:all 0.15s; white-space:nowrap; }
 .tgl-chip:hover, .tgl-btn:hover { border-color:var(--accent); color:var(--accent); }
@@ -209,6 +216,26 @@ th .resizer:hover, th .resizer.active { background:var(--accent); opacity:0.5; }
   </div>
 </div>
 
+<!-- Alert Banner -->
+<div id="alert-banner" style="display:none;background:#7c3aed;color:#fff;padding:10px 16px;font-size:13px;display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+  <span style="font-size:16px">⚠️</span>
+  <span id="alert-banner-text" style="flex:1"></span>
+  <button onclick="document.getElementById('alert-banner').style.display='none'" style="background:rgba(255,255,255,0.2);border:none;color:#fff;padding:4px 10px;border-radius:6px;cursor:pointer;font-size:12px">✕ Tutup</button>
+  <button onclick="showAlertDetail()" style="background:#fff;color:#7c3aed;border:none;padding:4px 12px;border-radius:6px;cursor:pointer;font-size:12px;font-weight:600">Lihat Detail</button>
+</div>
+
+<!-- Alert Modal -->
+<div id="alert-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:999;align-items:center;justify-content:center">
+  <div style="background:var(--bg2);border-radius:20px;padding:1.5rem;max-width:500px;width:90%;max-height:80vh;overflow-y:auto">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
+      <div style="font-size:16px;font-weight:700">⚠️ Perlu Perhatian</div>
+      <button onclick="document.getElementById('alert-modal').style.display='none'" style="background:none;border:none;font-size:20px;cursor:pointer;color:var(--muted)">✕</button>
+    </div>
+    <div id="alert-modal-body"></div>
+    <button onclick="document.getElementById('alert-modal').style.display='none'" class="btn-primary" style="width:100%;margin-top:1rem;justify-content:center">Mengerti</button>
+  </div>
+</div>
+
 <div class="nav-tabs">
   <div class="nav-tab active" id="tab-status" onclick="switchTab('status')">📦 Status Pengiriman</div>
   <div class="nav-tab" id="tab-lacak" onclick="switchTab('lacak')">🔍 Lacak Manual</div>
@@ -219,6 +246,7 @@ th .resizer:hover, th .resizer.active { background:var(--accent); opacity:0.5; }
 
   <!-- STATUS PENGIRIMAN -->
   <div class="page active" id="page-status">
+    <div id="alert-section" style="margin-bottom:10px"></div>
     <div class="summary-grid">
       <div class="sum-card c-total" onclick="applyFilter('all')">
         <div class="sum-label">Total Kiriman</div>
@@ -473,8 +501,59 @@ async function loadData() {
 
   allData = all;
   updateSummary();
+  showAlerts();
   updateCSFilter();
   applyFilter(document.getElementById('filter-status').value);
+  checkAlerts();
+}
+
+function showAlerts() {
+  const section = document.getElementById('alert-section');
+  if (!section) return;
+
+  const alerts = [];
+
+  // Undell - perlu tindakan
+  const undell = allData.filter(r => (r.update_crm||'').toUpperCase().startsWith('UNDELL'));
+  if (undell.length) {
+    alerts.push({
+      type: 'danger',
+      icon: '🚨',
+      count: undell.length,
+      msg: 'orderan UNDELL — gagal diantar, segera hubungi penerima!',
+      filter: 'UNDELL'
+    });
+  }
+
+  // ON PROSES tapi sudah > 7 hari
+  const now = Date.now();
+  const oldOnProses = allData.filter(r => {
+    if ((r.update_crm||'').toUpperCase() !== 'ON PROSES' && !(r.update_crm||'').startsWith('ON PROSES (')) return false;
+    const tgl = r.tanggal;
+    if (!tgl) return false;
+    const parts = tgl.split(/[\/ :]/);
+    // MM/DD/YYYY or similar
+    const d = new Date(parts[2], parts[0]-1, parts[1]);
+    return (now - d.getTime()) > 7 * 86400000;
+  });
+  if (oldOnProses.length) {
+    alerts.push({
+      type: 'warn',
+      icon: '⚠️',
+      count: oldOnProses.length,
+      msg: 'orderan ON PROSES lebih dari 7 hari — cek status pengiriman!',
+      filter: 'ON PROSES'
+    });
+  }
+
+  if (!alerts.length) { section.innerHTML = ''; return; }
+
+  section.innerHTML = alerts.map((a,i) => `
+    <div class="alert-bar ${a.type}" onclick="applyFilter('${a.filter}')" id="alert-${i}">
+      <span>${a.icon}</span>
+      <span><span class="alert-count">${a.count}</span> ${a.msg}</span>
+      <span class="alert-close" onclick="event.stopPropagation();document.getElementById('alert-${i}').remove()">✕</span>
+    </div>`).join('');
 }
 
 function updateSummary() {
@@ -1073,6 +1152,131 @@ function onTglPreset() {} // kept for compatibility
 function clearDateFilter() {
   setTglPreset('all');
 }
+
+
+// ── ALERT SYSTEM ─────────────────────────────────────────────────────────────
+let alertItems = [];
+
+async function checkAlerts() {
+  alertItems = [];
+
+  // Fetch data untuk cek
+  const { data } = await sb.from('all_orderan')
+    .select('id,nama,hp,resi,update_crm,kabupaten,cs,pembayaran')
+    .eq('sumber','validasi');
+
+  if (!data?.length) return;
+
+  // Filter by CS if not admin/spv
+  const myData = (userRole === 'admin' || userRole === 'spv')
+    ? data
+    : data.filter(r => (r.cs||'').toLowerCase() === (userCSName||'').toLowerCase());
+
+  // 1. Undell
+  const undell = myData.filter(r => (r.update_crm||'').startsWith('UNDELL'));
+  if (undell.length) {
+    alertItems.push({
+      icon: '🔴',
+      title: undell.length + ' Orderan UNDELL (Gagal Antar)',
+      desc: 'Paket gagal diantarkan dan perlu tindak lanjut segera.',
+      color: 'var(--danger)',
+      items: undell.map(r => ({
+        nama: r.nama,
+        hp: r.hp,
+        kabupaten: r.kabupaten,
+        detail: (r.update_crm||'').replace('UNDELL','').replace(/[()]/g,'').trim()
+      }))
+    });
+  }
+
+  // 2. Gagal kirim (1st, 2nd, dst) - dari update_crm detail
+  const FAIL_KEYWORDS = ['REFUSED','TIDAK DITEMPAT','CANNOT BE CONTACTED','NOT HOME',
+    'RESCHEDULE','ANTAR ULANG','ATTEMPT','GAGAL','NOT FOUND','NO RESPONSE',
+    'UNREACHABLE','REJECT','TOLAK','TIDAK BISA DIHUBUNGI'];
+
+  const fail1st = myData.filter(r => {
+    const crm = (r.update_crm||'').toUpperCase();
+    return crm.startsWith('ON PROSES') && FAIL_KEYWORDS.some(k => crm.includes(k));
+  });
+
+  const fail2nd = myData.filter(r => {
+    const crm = (r.update_crm||'').toUpperCase();
+    // 2nd attempt biasanya ada "2ND" atau "SECOND" atau percobaan ke-2
+    return crm.startsWith('ON PROSES') && (crm.includes('2ND') || crm.includes('SECOND') || crm.includes('KE-2') || crm.includes('KE 2') || crm.includes('ATTEMPT 2'));
+  });
+
+  // Remove 2nd attempt from 1st list to avoid double count
+  const fail1Only = fail1st.filter(r => !fail2nd.includes(r));
+
+  if (fail1Only.length) {
+    alertItems.push({
+      icon: '🟠',
+      title: fail1Only.length + ' Orderan Gagal Kirim Pertama',
+      desc: 'Penerima tidak ada / menolak di percobaan pertama. Segera konfirmasi ulang.',
+      color: '#f97316',
+      items: fail1Only.map(r => ({
+        nama: r.nama, hp: r.hp, kabupaten: r.kabupaten,
+        detail: (r.update_crm||'').replace('ON PROSES','').replace(/[()]/g,'').trim().slice(0,80)
+      }))
+    });
+  }
+
+  if (fail2nd.length) {
+    alertItems.push({
+      icon: '🔺',
+      title: fail2nd.length + ' Orderan Gagal Kirim ke-2+',
+      desc: 'Sudah percobaan ke-2 atau lebih. Risiko retur tinggi — hubungi penerima sekarang!',
+      color: '#dc2626',
+      items: fail2nd.map(r => ({
+        nama: r.nama, hp: r.hp, kabupaten: r.kabupaten,
+        detail: (r.update_crm||'').replace('ON PROSES','').replace(/[()]/g,'').trim().slice(0,80)
+      }))
+    });
+  }
+
+  if (!alertItems.length) return;
+
+  // Show banner
+  const total = alertItems.reduce((s,a) => s+a.items.length, 0);
+  const banner = document.getElementById('alert-banner');
+  const bannerText = document.getElementById('alert-banner-text');
+  bannerText.textContent = total + ' orderan perlu perhatian: ' + alertItems.map(a=>a.title).join(' · ');
+  banner.style.display = 'flex';
+
+  // Show popup modal on load (only once per session)
+  const shownKey = 'po_alert_shown_' + new Date().toDateString();
+  if (!sessionStorage.getItem(shownKey)) {
+    sessionStorage.setItem(shownKey, '1');
+    showAlertDetail();
+  }
+}
+
+function showAlertDetail() {
+  const modal = document.getElementById('alert-modal');
+  const body  = document.getElementById('alert-modal-body');
+
+  body.innerHTML = alertItems.map(a => `
+    <div style="margin-bottom:1.25rem">
+      <div style="font-size:14px;font-weight:700;color:${a.color};margin-bottom:4px">${a.icon} ${a.title}</div>
+      <div style="font-size:12px;color:var(--muted);margin-bottom:8px">${a.desc}</div>
+      <div style="display:flex;flex-direction:column;gap:6px;max-height:160px;overflow-y:auto">
+        ${a.items.slice(0,10).map(item => `
+          <div style="background:var(--bg);padding:8px 12px;border-radius:8px;font-size:12px">
+            <span style="font-weight:600">${item.nama||'—'}</span>
+            <span style="color:var(--muted);margin-left:8px">${item.hp||''}</span>
+            ${item.detail ? `<div style="color:var(--muted);font-size:11px;margin-top:2px">${item.detail}</div>` : ''}
+          </div>`).join('')}
+        ${a.items.length > 10 ? `<div style="text-align:center;font-size:11px;color:var(--muted);padding:4px">...dan ${a.items.length-10} lainnya</div>` : ''}
+      </div>
+    </div>`).join('');
+
+  modal.style.display = 'flex';
+}
+
+// Close modal on backdrop click
+document.getElementById('alert-modal').addEventListener('click', function(e) {
+  if (e.target === this) this.style.display = 'none';
+});
 
 // Restore last tab
 const lastTab = sessionStorage.getItem('po_tab');
