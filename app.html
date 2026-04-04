@@ -373,7 +373,7 @@ async function loadData() {
       .order('tanggal', { ascending: false });
     // CS hanya lihat data miliknya
     if (userRole !== 'admin' && userRole !== 'spv' && userCSName) {
-      query = query.eq('cs', userCSName);
+      query = query.ilike('cs', userCSName);
     }
     const { data, error } = await query.range(from, from+999);
     if (error || !data?.length) break;
