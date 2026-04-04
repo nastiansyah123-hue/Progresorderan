@@ -439,15 +439,17 @@ async function loadData() {
     // Date filter
     const activeChip = document.querySelector('.tgl-chip.active');
     const preset = activeChip ? activeChip.id.replace('chip-','') : 'all';
-    const today  = new Date().toISOString().slice(0,10);
-    const yesterday = new Date(Date.now()-86400000).toISOString().slice(0,10);
+    const todayStr     = new Date().toISOString().slice(0,10);
+    const yesterdayStr = new Date(Date.now()-86400000).toISOString().slice(0,10);
     if (preset === 'today') {
-      query = query.gte('tanggal', today).lte('tanggal', today + 'T23:59:59');
+      query = query.gte('tanggal', todayStr).lte('tanggal', todayStr + 'T23:59:59');
     } else if (preset === 'yesterday') {
-      query = query.gte('tanggal', yesterday).lte('tanggal', yesterday + 'T23:59:59');
+      query = query.gte('tanggal', yesterdayStr).lte('tanggal', yesterdayStr + 'T23:59:59');
     } else if (preset === 'custom') {
-      const custom = document.getElementById('filter-tgl-custom')?.value;
-      if (custom) query = query.gte('tanggal', custom).lte('tanggal', custom + 'T23:59:59');
+      const customVal = document.getElementById('filter-tgl-custom')?.value;
+      if (customVal) {
+        query = query.gte('tanggal', customVal).lte('tanggal', customVal + 'T23:59:59');
+      }
     }
 
     // CS hanya lihat data miliknya
@@ -1033,11 +1035,26 @@ function setTglPreset(preset) {
 function setTglChip(val) {
   document.querySelectorAll('.tgl-chip').forEach(c => c.classList.remove('active'));
   document.getElementById('chip-'+val).classList.add('active');
-  const customEl = document.getElementById('filter-tgl-custom');
-  customEl.style.display = val === 'custom' ? 'block' : 'none';
-  // Store current value
-  document.getElementById('filter-tgl-custom').dataset.preset = val;
-  if (val !== 'custom') loadData();
+  if (val === 'custom') {
+    // Open native date picker
+    const inp = document.getElementById('filter-tgl-custom');
+    inp.style.pointerEvents = 'auto';
+    inp.showPicker ? inp.showPicker() : inp.click();
+    inp.style.pointerEvents = 'none';
+  } else {
+    loadData();
+  }
+}
+
+function onCustomDate() {
+  const val = document.getElementById('filter-tgl-custom').value;
+  if (val) {
+    // Update chip label
+    const d = new Date(val);
+    const label = d.toLocaleDateString('id-ID',{day:'numeric',month:'short'});
+    document.getElementById('chip-custom').textContent = '📅 ' + label;
+    loadData();
+  }
 }
 
 // Keep for compatibility
