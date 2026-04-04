@@ -25,18 +25,20 @@
 <div class="login-card">
   <div class="logo">Progres<span>Orderan</span></div>
   <div class="sub">Monitor status pengiriman orderan</div>
-  <div class="field">
-    <label>Username</label>
-    <input type="text" id="username" placeholder="contoh: ani" autocomplete="username" />
-  </div>
-  <div class="field">
-    <label>Password</label>
-    <input type="password" id="password" placeholder="••••••••" onkeydown="if(event.key==='Enter')login()" />
-  </div>
-  <div class="error" id="error-msg"></div>
-  <button class="btn" onclick="login()">Masuk</button>
-  <div style="text-align:center;margin-top:1rem;font-size:12px;color:#64748b">
-    Belum punya akun? <span onclick="toggleForm()" style="color:#6366f1;cursor:pointer;font-weight:600">Daftar di sini</span>
+  <div id="login-section">
+    <div class="field">
+      <label>Username</label>
+      <input type="text" id="username" placeholder="contoh: ani" autocomplete="username" />
+    </div>
+    <div class="field">
+      <label>Password</label>
+      <input type="password" id="password" placeholder="••••••••" onkeydown="if(event.key==='Enter')login()" />
+    </div>
+    <div class="error" id="error-msg"></div>
+    <button class="btn" onclick="login()">Masuk</button>
+    <div style="text-align:center;margin-top:1rem;font-size:12px;color:#64748b">
+      Belum punya akun? <span onclick="toggleForm()" style="color:#6366f1;cursor:pointer;font-weight:600">Daftar di sini</span>
+    </div>
   </div>
 
   <!-- Register form -->
@@ -70,7 +72,7 @@ const sb = supabase.createClient(
   'https://lqpcnzdssvvcayqvdjxs.supabase.co',
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxxcGNuemRzc3Z2Y2F5cXZkanhzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUwMTgxMDIsImV4cCI6MjA5MDU5NDEwMn0.4M4okAfJWhBD6AbL71utafrFL-ZgbVxcz3ANLnG_jH4'
 );
-const DOMAIN = '@progresorderan.internal';
+const DOMAIN = '@progresorderan.com';
 
 async function login() {
   const username = document.getElementById('username').value.trim().toLowerCase();
@@ -89,8 +91,11 @@ sb.auth.getSession().then(({ data }) => {
 });
 
 function toggleForm() {
-  const reg = document.getElementById('register-form');
-  reg.style.display = reg.style.display === 'none' ? 'block' : 'none';
+  const reg      = document.getElementById('register-form');
+  const loginSec = document.getElementById('login-section');
+  const isReg    = reg.style.display === 'none';
+  reg.style.display       = isReg ? 'block' : 'none';
+  loginSec.style.display  = isReg ? 'none' : 'block';
 }
 
 async function register() {
