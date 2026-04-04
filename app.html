@@ -376,6 +376,10 @@ sb.auth.getSession().then(({ data }) => {
   if (userRole === 'admin' || userRole === 'spv') {
     document.getElementById('btn-update').style.display = 'inline-flex';
   }
+  // Reset to 'all' filter on load
+  document.querySelectorAll('.tgl-btn').forEach(b => b.classList.remove('active'));
+  const allBtn = document.getElementById('btn-tgl-all');
+  if (allBtn) allBtn.classList.add('active');
   loadData();
 });
 async function logout() { await sb.auth.signOut(); window.location.href = '/'; }
