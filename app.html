@@ -116,6 +116,11 @@ tr:hover td { background:rgba(99,102,241,0.05); }
 .s-undell { background:var(--warn-bg); color:var(--warn); }
 .s-onproses { background:#1c1917; color:#a8a29e; }
 
+/* Resizable columns */
+th { position:relative; }
+th .resizer { position:absolute; right:0; top:0; height:100%; width:5px; cursor:col-resize; user-select:none; z-index:1; }
+th .resizer:hover, th .resizer.active { background:var(--accent); opacity:0.5; }
+
 /* Page sections */
 .page { display:none; }
 .page.active { display:block; }
@@ -222,7 +227,7 @@ tr:hover td { background:rgba(99,102,241,0.05); }
         <table>
           <thead>
             <tr>
-              <th><input type="checkbox" id="chk-all" onchange="toggleAllChk(this)"></th><th style="width:36px"><input type="checkbox" id="chk-all" onchange="toggleAll(this)"></th><th>Tanggal</th><th>No</th><th>Nama</th><th>HP</th>
+              <th><input type="checkbox" id="chk-all" onchange="toggleAll(this)"></th><th>Tanggal</th><th>No</th><th>Nama</th><th>HP</th>
               <th>Ekspedisi</th><th>Resi</th><th>Jumlah</th><th>Kabupaten</th><th>CS</th>
               <th>Update CRM</th><th>Status Akhir</th>
             </tr>
@@ -462,6 +467,7 @@ function doRenderTable() {
   const totalPages = Math.ceil(total/PAGE_SIZE);
   const start2 = (currentPage-1)*PAGE_SIZE;
   document.getElementById('page-info').textContent = total ? `${Math.min(start2+1,total)}–${Math.min(start2+PAGE_SIZE,total)} dari ${total.toLocaleString()}` : '0';
+  initResizableCols();
   const btns = document.getElementById('page-btns');
   btns.innerHTML = '';
   const mb = (lbl,fn,dis) => { const b=document.createElement('button'); b.className='page-btn'; b.textContent=lbl; b.disabled=dis; b.onclick=fn; return b; };
@@ -777,7 +783,7 @@ function toggleTheme() {
 })();
 
 // ── CHECKBOX + EXPORT ─────────────────────────────────────────────────────────
-function toggleAllChk(chkAll) {
+function toggleAll(chkAll) {
   document.querySelectorAll('.row-chk').forEach(c => c.checked = chkAll.checked);
 }
 
@@ -888,6 +894,30 @@ function updateCSFilter() {
   const cur = sel.value;
   sel.innerHTML = '<option value="all">Semua CS</option>' + csList.map(c=>`<option value="${c}">${c}</option>`).join('');
   if (cur && csList.includes(cur)) sel.value = cur;
+}
+
+// ── RESIZABLE COLUMNS ────────────────────────────────────────────────────────
+function initResizableCols() {
+  const table = document.querySelector('table');
+  if (!table) return;
+  const cols = table.querySelectorAll('th');
+  cols.forEach(th => {
+    if (th.querySelector('.resizer')) return;
+    const resizer = document.createElement('div');
+    resizer.className = 'resizer';
+    th.appendChild(resizer);
+    let startX, startW;
+    resizer.addEventListener('mousedown', e => {
+      startX = e.pageX;
+      startW = th.offsetWidth;
+      resizer.classList.add('active');
+      document.addEventListener('mousemove', onMove);
+      document.addEventListener('mouseup', onUp);
+      e.preventDefault();
+    });
+    function onMove(e) { th.style.width = Math.max(40, startW + e.pageX - startX) + 'px'; th.style.minWidth = th.style.width; }
+    function onUp() { resizer.classList.remove('active'); document.removeEventListener('mousemove', onMove); document.removeEventListener('mouseup', onUp); }
+  });
 }
 
 // Restore last tab
