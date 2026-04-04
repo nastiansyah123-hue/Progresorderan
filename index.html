@@ -35,6 +35,35 @@
   </div>
   <div class="error" id="error-msg"></div>
   <button class="btn" onclick="login()">Masuk</button>
+  <div style="text-align:center;margin-top:1rem;font-size:12px;color:#64748b">
+    Belum punya akun? <span onclick="toggleForm()" style="color:#6366f1;cursor:pointer;font-weight:600">Daftar di sini</span>
+  </div>
+
+  <!-- Register form -->
+  <div id="register-form" style="display:none;margin-top:1.5rem;border-top:1px solid #334155;padding-top:1.5rem">
+    <div style="font-size:14px;font-weight:700;color:#fff;margin-bottom:1rem">Daftar Akun Baru</div>
+    <div class="field">
+      <label>Username</label>
+      <input type="text" id="reg-username" placeholder="contoh: budi" />
+    </div>
+    <div class="field">
+      <label>Nama Lengkap (sesuai data CS)</label>
+      <input type="text" id="reg-nama" placeholder="contoh: Budi Santoso" />
+    </div>
+    <div class="field">
+      <label>Password</label>
+      <input type="password" id="reg-password" placeholder="min 6 karakter" />
+    </div>
+    <div class="field">
+      <label>Konfirmasi Password</label>
+      <input type="password" id="reg-password2" placeholder="ulangi password" onkeydown="if(event.key==='Enter')register()" />
+    </div>
+    <div class="error" id="reg-error"></div>
+    <button class="btn" onclick="register()">Daftar</button>
+    <div style="text-align:center;margin-top:0.75rem;font-size:12px;color:#64748b">
+      Sudah punya akun? <span onclick="toggleForm()" style="color:#6366f1;cursor:pointer;font-weight:600">Masuk</span>
+    </div>
+  </div>
 </div>
 <script>
 const sb = supabase.createClient(
@@ -58,6 +87,47 @@ async function login() {
 sb.auth.getSession().then(({ data }) => {
   if (data.session) window.location.href = '/app.html';
 });
+
+function toggleForm() {
+  const reg = document.getElementById('register-form');
+  reg.style.display = reg.style.display === 'none' ? 'block' : 'none';
+}
+
+async function register() {
+  const username = document.getElementById('reg-username').value.trim().toLowerCase();
+  const nama     = document.getElementById('reg-nama').value.trim();
+  const pass     = document.getElementById('reg-password').value;
+  const pass2    = document.getElementById('reg-password2').value;
+  const errEl    = document.getElementById('reg-error');
+  errEl.style.display = 'none';
+
+  if (!username) { errEl.textContent = 'Username wajib diisi'; errEl.style.display='block'; return; }
+  if (!nama) { errEl.textContent = 'Nama lengkap wajib diisi'; errEl.style.display='block'; return; }
+  if (pass.length < 6) { errEl.textContent = 'Password minimal 6 karakter'; errEl.style.display='block'; return; }
+  if (pass !== pass2) { errEl.textContent = 'Password tidak sama'; errEl.style.display='block'; return; }
+
+  const email = username + DOMAIN;
+  const { data, error } = await sb.auth.signUp({
+    email,
+    password: pass,
+    options: {
+      data: { role: 'cs', cs_name: nama, username }
+    }
+  });
+
+  if (error) { errEl.textContent = error.message; errEl.style.display='block'; return; }
+  
+  // Auto login after register
+  const { error: loginErr } = await sb.auth.signInWithPassword({ email, password: pass });
+  if (loginErr) {
+    errEl.textContent = 'Akun dibuat! Silakan login.';
+    errEl.style.color = '#22c55e';
+    errEl.style.display = 'block';
+    toggleForm();
+  } else {
+    window.location.href = '/app.html';
+  }
+}
 </script>
 </body>
 </html>
