@@ -26,8 +26,8 @@
   <div class="logo">Progres<span>Orderan</span></div>
   <div class="sub">Monitor status pengiriman orderan</div>
   <div class="field">
-    <label>Email</label>
-    <input type="email" id="email" placeholder="email@domain.com" />
+    <label>Username</label>
+    <input type="text" id="username" placeholder="contoh: ani" autocomplete="username" />
   </div>
   <div class="field">
     <label>Password</label>
@@ -41,13 +41,18 @@ const sb = supabase.createClient(
   'https://lqpcnzdssvvcayqvdjxs.supabase.co',
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxxcGNuemRzc3Z2Y2F5cXZkanhzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUwMTgxMDIsImV4cCI6MjA5MDU5NDEwMn0.4M4okAfJWhBD6AbL71utafrFL-ZgbVxcz3ANLnG_jH4'
 );
+const DOMAIN = '@progresorderan.internal';
+
 async function login() {
-  const email = document.getElementById('email').value.trim();
-  const pass  = document.getElementById('password').value;
-  const errEl = document.getElementById('error-msg');
+  const username = document.getElementById('username').value.trim().toLowerCase();
+  const pass     = document.getElementById('password').value;
+  const errEl    = document.getElementById('error-msg');
   errEl.style.display = 'none';
+  if (!username) { errEl.textContent = 'Username tidak boleh kosong'; errEl.style.display='block'; return; }
+  // Convert username to internal email
+  const email = username.includes('@') ? username : username + DOMAIN;
   const { error } = await sb.auth.signInWithPassword({ email, password: pass });
-  if (error) { errEl.textContent = error.message; errEl.style.display = 'block'; return; }
+  if (error) { errEl.textContent = 'Username atau password salah'; errEl.style.display = 'block'; return; }
   window.location.href = '/app.html';
 }
 sb.auth.getSession().then(({ data }) => {
