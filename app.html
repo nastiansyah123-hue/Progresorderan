@@ -410,8 +410,8 @@ function renderTable() {
       const e = extractEks(r.pembayaran||'').toUpperCase();
       if (!e.includes(eks.toUpperCase())) return false;
     }
-    const cs = document.getElementById('filter-cs')?.value || 'all';
-    if (cs !== 'all' && (r.cs||'').trim() !== cs) return false;
+    const csFilter = document.getElementById('filter-cs')?.value || 'all';
+    if (csFilter !== 'all' && (r.cs||'').trim() !== csFilter) return false;
     if (q) {
       const s = (r.nama||'')+(r.hp||'')+(r.resi||'');
       if (!s.toLowerCase().includes(q)) return false;
