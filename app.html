@@ -248,7 +248,7 @@ th .resizer:hover, th .resizer.active { background:var(--accent); opacity:0.5; }
         <button id="btn-tgl-today" class="tgl-btn" onclick="setTglPreset('today')">Hari Ini</button>
         <button id="btn-tgl-yesterday" class="tgl-btn" onclick="setTglPreset('yesterday')">Kemarin</button>
         <button id="btn-tgl-custom" class="tgl-btn" onclick="setTglPreset('custom')">📅 Pilih</button>
-        <input type="date" id="filter-tgl-custom" class="filter-select" onchange="loadData()" style="display:none;width:140px;font-size:12px" />
+        <input type="date" id="filter-tgl-custom" onchange="onCustomDate()" style="position:absolute;opacity:0;width:0;height:0;display:none;width:140px;font-size:12px" />
         <input type="hidden" id="filter-tgl-preset" value="all" />
       </div>
       <select class="filter-select" id="filter-status" onchange="renderTable()">
@@ -1040,9 +1040,7 @@ function setTglChip(val) {
   if (val === 'custom') {
     // Open native date picker
     const inp = document.getElementById('filter-tgl-custom');
-    inp.style.display='block';
-    try { inp.showPicker ? inp.showPicker() : inp.click(); } catch(e) { inp.click(); }
-    setTimeout(()=>{ inp.style.display='none'; },100);
+    try { inp.showPicker(); } catch(e) { inp.click(); }
   } else {
     loadData();
   }
