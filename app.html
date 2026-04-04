@@ -136,7 +136,33 @@ th .resizer:hover, th .resizer.active { background:var(--accent); opacity:0.5; }
 .track-desc { font-size:13px; margin-top:3px; }
 .track-reason { font-size:11px; color:var(--danger); margin-top:3px; }
 
-@media(max-width:640px) { .summary-grid { grid-template-columns:repeat(2,1fr); } }
+@media(max-width:768px) {
+  .summary-grid { grid-template-columns:repeat(2,1fr); gap:8px; }
+  .sum-value { font-size:20px; }
+  .toolbar { gap:6px; }
+  .toolbar .filter-select, .toolbar .search-input { font-size:12px; padding:7px 10px; }
+  .main { padding:1rem; }
+  .nav-tabs { overflow-x:auto; padding:0 1rem; gap:0; }
+  .nav-tab { padding:10px 12px; font-size:12px; flex-shrink:0; }
+  .header { padding:0 1rem; }
+  .logo { font-size:16px; }
+  /* Hide less important columns on mobile */
+  .col-no, .col-jumlah { display:none; }
+  /* Stack toolbar */
+  .toolbar { flex-wrap:wrap; }
+  .spacer { display:none; }
+  /* Table font smaller */
+  td, th { padding:8px 10px; font-size:11px; }
+  /* Progress orderan mobile */
+  .track-card { padding:1rem; }
+  .card { padding:1rem; }
+}
+
+@media(max-width:480px) {
+  .summary-grid { grid-template-columns:repeat(2,1fr); }
+  .col-hp, .col-resi { display:none; }
+  .header .user-info span:not(#user-role-badge) { display:none; }
+}
 </style>
 </head>
 <body>
@@ -186,6 +212,13 @@ th .resizer:hover, th .resizer.active { background:var(--accent); opacity:0.5; }
     </div>
 
     <div class="toolbar">
+      <select class="filter-select" id="filter-tgl-preset" onchange="onTglPreset()" style="width:130px">
+        <option value="all">Semua Tanggal</option>
+        <option value="today">Hari Ini</option>
+        <option value="yesterday">Kemarin</option>
+        <option value="custom">Pilih Tanggal...</option>
+      </select>
+      <input type="date" id="filter-tgl-custom" class="filter-select" onchange="loadData()" style="width:145px;display:none" />
       <select class="filter-select" id="filter-status" onchange="renderTable()">
         <option value="all">Semua Status</option>
         <option value="ON PROSES">On Proses</option>
@@ -228,8 +261,8 @@ th .resizer:hover, th .resizer.active { background:var(--accent); opacity:0.5; }
         <table>
           <thead>
             <tr>
-              <th><input type="checkbox" id="chk-all" onchange="toggleAll(this)"></th><th>Tanggal</th><th>No</th><th>Nama</th><th>HP</th>
-              <th>Ekspedisi</th><th>Resi</th><th>Jumlah</th><th>Kabupaten</th><th>CS</th>
+              <th><input type="checkbox" id="chk-all" onchange="toggleAll(this)"></th><th>Tanggal</th><th class="col-no">No</th><th>Nama</th><th class="col-hp">HP</th>
+              <th>Ekspedisi</th><th class="col-resi">Resi</th><th class="col-jumlah">Jumlah</th><th>Kabupaten</th><th>CS</th>
               <th>Update CRM</th><th>Status Akhir</th>
             </tr>
           </thead>
@@ -371,6 +404,19 @@ async function loadData() {
       .select('id,no,nama,hp,tanggal,pembayaran,resi,jumlah,cs,kabupaten,update_crm,status_akhir')
       .eq('sumber','validasi')
       .order('tanggal', { ascending: false });
+    // Date filter
+    const preset = document.getElementById('filter-tgl-preset')?.value || 'all';
+    const today  = new Date().toISOString().slice(0,10);
+    const yesterday = new Date(Date.now()-86400000).toISOString().slice(0,10);
+    if (preset === 'today') {
+      query = query.gte('tanggal', today).lte('tanggal', today + 'T23:59:59');
+    } else if (preset === 'yesterday') {
+      query = query.gte('tanggal', yesterday).lte('tanggal', yesterday + 'T23:59:59');
+    } else if (preset === 'custom') {
+      const custom = document.getElementById('filter-tgl-custom')?.value;
+      if (custom) query = query.gte('tanggal', custom).lte('tanggal', custom + 'T23:59:59');
+    }
+
     // CS hanya lihat data miliknya
     if (userRole !== 'admin' && userRole !== 'spv' && userCSName) {
       query = query.ilike('cs', userCSName);
@@ -461,12 +507,12 @@ function doRenderTable() {
       return `<tr>
         <td><input type="checkbox" class="row-chk" data-idx="${filteredData.indexOf(r)}"></td>
         <td style="font-size:11px;font-family:monospace;color:var(--muted)">${r.tanggal||''}</td>
-        <td style="font-size:11px;font-family:monospace">${r.no||''}</td>
+        <td class="col-no" style="font-size:11px;font-family:monospace">${r.no||''}</td>
         <td style="font-size:12px">${r.nama||''}</td>
-        <td style="font-family:monospace;font-size:12px">${r.hp||''}</td>
+        <td class="col-hp" style="font-family:monospace;font-size:12px">${r.hp||''}</td>
         <td style="font-family:monospace;font-size:12px;font-weight:600">${eks||'—'}</td>
-        <td style="font-family:monospace;font-size:11px">${r.resi||'<span style="color:var(--muted);font-size:10px">belum ada</span>'}</td>
-        <td style="font-size:11px;color:var(--muted)">${(r.jumlah||'').slice(0,25)}</td>
+        <td class="col-resi" style="font-family:monospace;font-size:11px">${r.resi||'<span style="color:var(--muted);font-size:10px">belum ada</span>'}</td>
+        <td class="col-jumlah" style="font-size:11px;color:var(--muted)">${(r.jumlah||'').slice(0,25)}</td>
         <td style="font-size:11px">${r.kabupaten||''}</td>
         <td style="font-size:11px;color:var(--muted)">${r.cs||''}</td>
         <td>
@@ -937,6 +983,19 @@ function initResizableCols() {
     function onMove(e) { th.style.width = Math.max(40, startW + e.pageX - startX) + 'px'; th.style.minWidth = th.style.width; }
     function onUp() { resizer.classList.remove('active'); document.removeEventListener('mousemove', onMove); document.removeEventListener('mouseup', onUp); }
   });
+}
+
+function onTglPreset() {
+  const preset  = document.getElementById('filter-tgl-preset').value;
+  const customEl = document.getElementById('filter-tgl-custom');
+  customEl.style.display = preset === 'custom' ? 'block' : 'none';
+  if (preset !== 'custom') loadData();
+}
+
+function clearDateFilter() {
+  document.getElementById('filter-tgl-preset').value = 'all';
+  document.getElementById('filter-tgl-custom').style.display = 'none';
+  loadData();
 }
 
 // Restore last tab
