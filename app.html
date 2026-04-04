@@ -121,9 +121,19 @@ th { position:relative; }
 th .resizer { position:absolute; right:0; top:0; height:100%; width:5px; cursor:col-resize; user-select:none; z-index:1; }
 th .resizer:hover, th .resizer.active { background:var(--accent); opacity:0.5; }
 
+/* Date filter buttons */
+.tgl-btn { background:var(--bg); border:1px solid var(--border); color:var(--muted); padding:6px 12px; border-radius:20px; font-size:12px; cursor:pointer; white-space:nowrap; transition:all 0.15s; }
+.tgl-btn:hover { border-color:var(--accent); color:var(--text); }
+.tgl-btn.active { background:var(--accent); border-color:var(--accent); color:#fff; font-weight:600; }
+
 /* Page sections */
 .page { display:none; }
 .page.active { display:block; }
+
+/* Date chips */
+.tgl-chip { background:var(--bg); border:1px solid var(--border); color:var(--muted); padding:5px 14px; border-radius:20px; font-size:12px; font-weight:500; cursor:pointer; transition:all 0.15s; white-space:nowrap; }
+.tgl-chip:hover { border-color:var(--accent); color:var(--accent); }
+.tgl-chip.active { background:var(--accent); border-color:var(--accent); color:#fff; }
 
 /* Lacak result */
 .track-card { background:var(--bg2); border:1px solid var(--border); border-radius:16px; padding:1.5rem; margin-bottom:1rem; }
@@ -233,13 +243,14 @@ th .resizer:hover, th .resizer.active { background:var(--accent); opacity:0.5; }
     </div>
 
     <div class="toolbar">
-      <select class="filter-select" id="filter-tgl-preset" onchange="onTglPreset()" style="width:130px">
-        <option value="all">Semua Tanggal</option>
-        <option value="today">Hari Ini</option>
-        <option value="yesterday">Kemarin</option>
-        <option value="custom">Pilih Tanggal...</option>
-      </select>
-      <input type="date" id="filter-tgl-custom" class="filter-select" onchange="loadData()" style="width:145px;display:none" />
+      <div style="display:flex;gap:4px;align-items:center;flex-wrap:wrap">
+        <button id="btn-tgl-all" class="tgl-btn active" onclick="setTglPreset('all')">Semua</button>
+        <button id="btn-tgl-today" class="tgl-btn" onclick="setTglPreset('today')">Hari Ini</button>
+        <button id="btn-tgl-yesterday" class="tgl-btn" onclick="setTglPreset('yesterday')">Kemarin</button>
+        <button id="btn-tgl-custom" class="tgl-btn" onclick="setTglPreset('custom')">📅 Pilih</button>
+        <input type="date" id="filter-tgl-custom" class="filter-select" onchange="loadData()" style="display:none;width:140px;font-size:12px" />
+        <input type="hidden" id="filter-tgl-preset" value="all" />
+      </div>
       <select class="filter-select" id="filter-status" onchange="renderTable()">
         <option value="all">Semua Status</option>
         <option value="ON PROSES">On Proses</option>
@@ -426,7 +437,8 @@ async function loadData() {
       .eq('sumber','validasi')
       .order('tanggal', { ascending: false });
     // Date filter
-    const preset = document.getElementById('filter-tgl-preset')?.value || 'all';
+    const activeChip = document.querySelector('.tgl-chip.active');
+    const preset = activeChip ? activeChip.id.replace('chip-','') : 'all';
     const today  = new Date().toISOString().slice(0,10);
     const yesterday = new Date(Date.now()-86400000).toISOString().slice(0,10);
     if (preset === 'today') {
@@ -1006,17 +1018,33 @@ function initResizableCols() {
   });
 }
 
-function onTglPreset() {
-  const preset  = document.getElementById('filter-tgl-preset').value;
+function setTglPreset(preset) {
+  document.getElementById('filter-tgl-preset').value = preset;
+  // Update active button
+  ['all','today','yesterday','custom'].forEach(p => {
+    const btn = document.getElementById('btn-tgl-'+p);
+    if (btn) btn.classList.toggle('active', p === preset);
+  });
   const customEl = document.getElementById('filter-tgl-custom');
-  customEl.style.display = preset === 'custom' ? 'block' : 'none';
+  customEl.style.display = preset === 'custom' ? 'inline-block' : 'none';
   if (preset !== 'custom') loadData();
 }
 
+function setTglChip(val) {
+  document.querySelectorAll('.tgl-chip').forEach(c => c.classList.remove('active'));
+  document.getElementById('chip-'+val).classList.add('active');
+  const customEl = document.getElementById('filter-tgl-custom');
+  customEl.style.display = val === 'custom' ? 'block' : 'none';
+  // Store current value
+  document.getElementById('filter-tgl-custom').dataset.preset = val;
+  if (val !== 'custom') loadData();
+}
+
+// Keep for compatibility
+function onTglPreset() {} // kept for compatibility
+
 function clearDateFilter() {
-  document.getElementById('filter-tgl-preset').value = 'all';
-  document.getElementById('filter-tgl-custom').style.display = 'none';
-  loadData();
+  setTglPreset('all');
 }
 
 // Restore last tab
