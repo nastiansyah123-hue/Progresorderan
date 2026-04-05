@@ -246,6 +246,25 @@ if (_t === 'light') document.documentElement.setAttribute('data-theme','light');
     <button onclick="toggleTheme()" id="theme-btn" style="background:none;border:1px solid var(--border);color:var(--muted);padding:5px 10px;border-radius:8px;cursor:pointer;font-size:14px" title="Toggle tema">🌙</button>
     <button class="btn-logout" onclick="logout()">Keluar</button>
   </div>
+  <!-- INPUT RESI PAGE -->
+  <div class="page" id="page-resi">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;max-width:800px">
+      <div class="card">
+        <div class="card-title" style="margin-bottom:0.5rem">Upload File Resi</div>
+        <div class="card-desc" style="margin-bottom:0.75rem">Kolom: HP + Resi (.csv / .xlsx)</div>
+        <div class="drop-zone" id="dz-resi" onclick="document.getElementById('file-resi').click()">
+          <input type="file" id="file-resi" accept=".csv,.xlsx,.xls" onchange="parseResiFile(this.files[0])" />
+          <div class="drop-zone-icon">📋</div>
+          <div class="drop-zone-text">Upload file resi<br><span>HP + Resi</span></div>
+        </div>
+        <div id="resi-status" class="drop-status"></div>
+        <button class="btn-primary" id="btn-save-resi" disabled onclick="saveResi()" style="margin-top:0.75rem;width:100%">💾 Simpan Resi</button>
+        <span class="loading-badge" id="loading-resi">menyimpan...</span>
+        <div id="resi-result" style="font-size:12px;margin-top:8px;font-family:monospace"></div>
+      </div>
+    </div>
+  </div>
+
 </div>
 
 <!-- Alert Banner -->
@@ -515,22 +534,31 @@ async function loadData() {
     if (data.length < 1000) break;
     from += 1000;
   }
-  // Client-side date filter
-  const activeChip = document.querySelector('.tgl-chip.active, .tgl-btn.active');
-  const preset = activeChip ? activeChip.id.replace('btn-tgl-','').replace('chip-','') : 'all';
-  const todayStr     = new Date().toLocaleDateString('en-US');
-  const yesterdayStr = new Date(Date.now()-86400000).toLocaleDateString('en-US');
-  const customVal    = document.getElementById('filter-tgl-custom')?.value;
+  // Client-side date filter - format tanggal: MM/DD/YYYY
+  const tglFrom = document.getElementById('filter-tgl-from')?.value;
+  const tglTo   = document.getElementById('filter-tgl-to')?.value;
 
-  if (preset === 'today') {
-    all = all.filter(r => (r.tanggal||'').startsWith(todayStr.split('/')[0].padStart(2,'0')+'/'+todayStr.split('/')[1].padStart(2,'0')+'/'+todayStr.split('/')[2]));
-  } else if (preset === 'yesterday') {
-    all = all.filter(r => (r.tanggal||'').startsWith(yesterdayStr.split('/')[0].padStart(2,'0')+'/'+yesterdayStr.split('/')[1].padStart(2,'0')+'/'+yesterdayStr.split('/')[2]));
-  } else if (preset === 'custom' && customVal) {
-    // customVal is YYYY-MM-DD, tanggal is MM/DD/YYYY
-    const [cy,cm,cd] = customVal.split('-');
-    const prefix = cm+'/'+cd+'/'+cy;
-    all = all.filter(r => (r.tanggal||'').startsWith(prefix));
+  function toDate(tglStr) {
+    if (!tglStr) return null;
+    const [m,d,y] = tglStr.split('/');
+    return new Date(y, m-1, d);
+  }
+  function toTs(yyyymmdd) {
+    if (!yyyymmdd) return null;
+    const [y,m,d] = yyyymmdd.split('-');
+    return new Date(y, m-1, d);
+  }
+
+  if (tglFrom || tglTo) {
+    const fromDate = toTs(tglFrom);
+    const toDate2  = toTs(tglTo);
+    all = all.filter(r => {
+      const d = toDate(r.tanggal?.split(' ')[0]);
+      if (!d) return true;
+      if (fromDate && d < fromDate) return false;
+      if (toDate2 && d > toDate2) return false;
+      return true;
+    });
   }
 
   allData = all;
@@ -1169,30 +1197,23 @@ function setTglPreset(preset) {
   if (preset !== 'custom') loadData();
 }
 
-function setTglPreset(val) { setTglChip(val); }
+function setTglPreset(val) { setQuickDate(val); }
+function setTglChip(val) { setQuickDate(val); }
 
-function setTglChip(val) {
-  document.querySelectorAll('.tgl-chip,.tgl-btn').forEach(c => c.classList.remove('active'));
-  (document.getElementById('chip-'+val)||document.getElementById('btn-tgl-'+val))?.classList.add('active');
-  const customInp = document.getElementById('filter-tgl-custom');
-  if (val === 'custom') {
-    customInp.style.display = 'inline-block';
-    customInp.focus();
+function setQuickDate(val) {
+  const inp = document.getElementById('filter-tgl-custom');
+  if (val === 'today') {
+    inp.value = new Date().toISOString().slice(0,10);
+  } else if (val === 'yesterday') {
+    inp.value = new Date(Date.now()-86400000).toISOString().slice(0,10);
   } else {
-    customInp.style.display = 'none';
+    inp.value = '';
     loadData();
   }
 }
 
 function onCustomDate() {
-  const val = document.getElementById('filter-tgl-custom').value;
-  if (val) {
-    // Update chip label
-    const d = new Date(val);
-    const label = d.toLocaleDateString('id-ID',{day:'numeric',month:'short'});
-    (document.getElementById('chip-custom')||document.getElementById('btn-tgl-custom')).textContent = '📅 ' + label;
-    loadData();
-  }
+  loadData();
 }
 
 // Keep for compatibility
