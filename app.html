@@ -670,7 +670,7 @@ function doRenderTable() {
         <td style="font-size:12px">${r.nama||''}</td>
         <td class="col-hp" style="font-family:monospace;font-size:12px">${r.hp||''}</td>
         <td style="font-family:monospace;font-size:12px;font-weight:600">${eks||'—'}</td>
-        <td class="col-resi" style="font-family:monospace;font-size:11px">${r.resi||'<span style="color:var(--muted);font-size:10px">belum ada</span>'}</td>
+        <td class="col-resi" style="font-family:monospace;font-size:11px">${r.resi ? `<span onclick="openTrackModal('${r.resi}','${extractEks(r.pembayaran||'')}')" style="cursor:pointer;color:var(--accent);text-decoration:underline">${r.resi}</span>` : '<span style="color:var(--muted);font-size:10px">belum ada</span>'}</td>
         <td class="col-jumlah" style="font-size:11px;color:var(--muted)">${(r.jumlah||'').slice(0,25)}</td>
         <td style="font-size:11px">${r.kabupaten||''}</td>
         <td style="font-size:11px;color:var(--muted)">${r.cs||''}</td>
