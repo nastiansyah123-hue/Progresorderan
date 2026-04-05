@@ -56,24 +56,17 @@ body { font-family:'Inter',system-ui,sans-serif; background:var(--bg); color:var
 .sum-card:hover { border-color:var(--accent); }
 .sum-label { font-size:11px; color:var(--muted); font-family:monospace; text-transform:uppercase; margin-bottom:6px; }
 .sum-value { font-size:24px; font-weight:800; }
-.sum-card { border:none !important; }
-.sum-card.c-total     { background:linear-gradient(135deg,#312e81,#1e1b4b); }
-.sum-card.c-onproses  { background:linear-gradient(135deg,#0c4a6e,#082f49); }
-.sum-card.c-undell    { background:linear-gradient(135deg,#7c2d12,#431407); }
-.sum-card.c-delivered { background:linear-gradient(135deg,#14532d,#052e16); }
-.sum-card.c-retur     { background:linear-gradient(135deg,#7f1d1d,#450a0a); }
+.sum-card { border:none !important; border-radius:14px !important; }
 
-.sum-card.c-total     .sum-label,
-.sum-card.c-onproses  .sum-label,
-.sum-card.c-undell    .sum-label,
-.sum-card.c-delivered .sum-label,
-.sum-card.c-retur     .sum-label { color:rgba(255,255,255,0.6); }
+.sum-card.c-total     { background:linear-gradient(135deg,#4338ca 0%,#312e81 100%); }
+.sum-card.c-onproses  { background:linear-gradient(135deg,#0284c7 0%,#0c4a6e 100%); }
+.sum-card.c-undell    { background:linear-gradient(135deg,#ea580c 0%,#7c2d12 100%); }
+.sum-card.c-delivered { background:linear-gradient(135deg,#16a34a 0%,#14532d 100%); }
+.sum-card.c-retur     { background:linear-gradient(135deg,#dc2626 0%,#7f1d1d 100%); }
 
-.sum-card.c-total     .sum-value { color:#a5b4fc; }
-.sum-card.c-onproses  .sum-value { color:#7dd3fc; }
-.sum-card.c-undell    .sum-value { color:#fdba74; }
-.sum-card.c-delivered .sum-value { color:#86efac; }
-.sum-card.c-retur     .sum-value { color:#fca5a5; }
+.sum-card .sum-label { color:rgba(255,255,255,0.75) !important; font-size:11px; font-weight:500; letter-spacing:0.5px; text-transform:uppercase; }
+.sum-card .sum-value { color:#fff !important; font-size:26px; font-weight:800; text-shadow:0 1px 4px rgba(0,0,0,0.3); margin-top:4px; }
+.sum-card:hover { opacity:0.9; transform:translateY(-1px); transition:all 0.15s; }
 
 /* Buttons */
 .btn-primary { background:var(--accent); color:#fff; border:none; padding:8px 16px; border-radius:10px; font-size:13px; font-weight:600; cursor:pointer; display:inline-flex; align-items:center; gap:6px; }
@@ -215,6 +208,27 @@ th .resizer:hover, th .resizer.active { background:var(--accent); opacity:0.5; }
   .sum-value { font-size:18px; }
 }
 </style>
+<!-- Tracking Detail Modal -->
+<div id="track-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:1000;align-items:center;justify-content:center;padding:1rem">
+  <div style="background:var(--bg2);border-radius:20px;padding:1.5rem;max-width:560px;width:100%;max-height:85vh;overflow-y:auto;position:relative">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1rem">
+      <div>
+        <div style="font-size:15px;font-weight:700" id="tm-resi"></div>
+        <div style="font-size:12px;color:var(--muted);margin-top:2px" id="tm-receiver"></div>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px">
+        <span id="tm-status-badge" class="status-badge"></span>
+        <button onclick="document.getElementById('track-modal').style.display='none'" style="background:none;border:none;font-size:20px;cursor:pointer;color:var(--muted);line-height:1">✕</button>
+      </div>
+    </div>
+    <div id="tm-alerts" style="margin-bottom:1rem"></div>
+    <div id="tm-info" style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:1rem"></div>
+    <div id="tm-body">
+      <div style="text-align:center;padding:2rem;color:var(--muted)">Memuat...</div>
+    </div>
+  </div>
+</div>
+
 <script>
 // Apply theme before render to prevent flash
 const _t = localStorage.getItem('po_theme') || 'dark';
@@ -1189,6 +1203,136 @@ function clearDateFilter() {
 
 
 
+
+// ── TRACKING DETAIL MODAL ────────────────────────────────────────────────────
+async function openTrackModal(resi, eks) {
+  const modal  = document.getElementById('track-modal');
+  const body   = document.getElementById('tm-body');
+  const resiEl = document.getElementById('tm-resi');
+  const recvEl = document.getElementById('tm-receiver');
+  const badge  = document.getElementById('tm-status-badge');
+  const info   = document.getElementById('tm-info');
+  const alerts = document.getElementById('tm-alerts');
+
+  resiEl.textContent = resi + ' (' + eks + ')';
+  recvEl.textContent = '';
+  badge.textContent  = '';
+  badge.className    = 'status-badge';
+  info.innerHTML     = '';
+  alerts.innerHTML   = '';
+  body.innerHTML     = '<div style="text-align:center;padding:2rem;color:var(--muted)">Memuat...</div>';
+  modal.style.display = 'flex';
+
+  try {
+    let history = [], statusText = '', receiverName = '', city = '', codAmt = '', goodsDesc = '';
+
+    if (eks === 'POS') {
+      const r    = await fetch('/api/pos-tracking?resi='+encodeURIComponent(resi));
+      const json = await r.json();
+      if (!json.success || !json.data) { body.innerHTML = '<p style="color:var(--muted);text-align:center">Resi tidak ditemukan.</p>'; return; }
+      const d = json.data;
+      statusText   = d.connote_state || '—';
+      receiverName = d.connote_receiver_name || '';
+      goodsDesc    = '';
+      codAmt       = d.connote_customfield?.cod_value ? 'Rp'+Number(d.connote_customfield.cod_value).toLocaleString('id-ID') : '';
+      history = (d.connote_history||[]).filter(h=>h.content).map(h => ({
+        date : h.date||'',
+        loc  : h.location_name||'',
+        desc : h.content||'',
+        reason: h.reason_delivery||''
+      })).reverse();
+    } else {
+      const courierKey = COURIER_MAP[eks]||eks;
+      const r    = await fetch('/api/tracking?tracking_number='+encodeURIComponent(resi)+'&courier='+encodeURIComponent(courierKey));
+      const json = await r.json();
+      if (!json.success || !json.data) { body.innerHTML = '<p style="color:var(--muted);text-align:center">Resi tidak ditemukan.</p>'; return; }
+      const d = json.data;
+      statusText   = d.statusCategory || d.status || '—';
+      receiverName = d.RECEIVER_NAME || '';
+      city         = d.RECEIVER_REGION || d.RECEIVER_CITY || '';
+      codAmt       = d.COD_AMOUNT ? 'Rp'+Number(d.COD_AMOUNT).toLocaleString('id-ID') : '';
+      goodsDesc    = d.GOODS_DESC || '';
+      history = (d.history||[]).filter(h=>h.desc).map(h => ({
+        date : h.date||'',
+        loc  : '',
+        desc : h.desc||'',
+        reason: ''
+      })).reverse();
+    }
+
+    // Status badge
+    const sc = statusClass(statusText);
+    badge.className   = 'status-badge ' + sc;
+    badge.textContent = statusText;
+    recvEl.textContent = receiverName + (city ? ' — ' + city : '');
+
+    // Info grid
+    info.innerHTML = [
+      ['Produk', goodsDesc||'—'],
+      ['COD', codAmt||'—'],
+      ['Total History', history.length + ' update'],
+    ].map(([k,v]) => `<div style="background:var(--bg);padding:10px;border-radius:8px">
+      <div style="font-size:10px;color:var(--muted);font-family:monospace;text-transform:uppercase">${k}</div>
+      <div style="font-size:13px;font-weight:600;margin-top:2px">${v}</div>
+    </div>`).join('');
+
+    // Detect fail attempts
+    const failAttempts = history.filter(h => {
+      const d = h.desc.toUpperCase();
+      return d.includes('UNDELIVERED') || d.includes('DEX') || d.includes('GAGAL') ||
+             d.includes('TIDAK DITEMPAT') || d.includes('REFUSED') || d.includes('ATTEMPT') ||
+             d.includes('TIDAK BISA') || d.includes('NOT HOME') || d.includes('ANTAR ULANG') ||
+             h.reason;
+    });
+
+    // Detect near destination
+    const nearDest = history.some(h => {
+      const d = h.desc.toUpperCase();
+      return d.includes('DELIVERY COURIER') || d.includes('OUT FOR DELIVERY') ||
+             d.includes('DIANTAR') || d.includes('KURIR') || d.includes('RUNSHEET') ||
+             d.includes('WITH DELIVERY');
+    });
+
+    // Alert banners
+    let alertHTML = '';
+    if (nearDest && statusText !== 'DELIVERED' && statusText !== 'POD') {
+      alertHTML += `<div style="background:#1e3a2f;border:1px solid #22c55e;border-radius:10px;padding:10px 14px;font-size:12px;color:#86efac;margin-bottom:8px">
+        🚚 <b>Paket sedang dalam proses pengiriman ke penerima</b> — Hubungi customer untuk siap-siap menerima paket & menyiapkan uang COD!
+      </div>`;
+    }
+    if (failAttempts.length >= 2) {
+      alertHTML += `<div style="background:#450a0a;border:1px solid #ef4444;border-radius:10px;padding:10px 14px;font-size:12px;color:#fca5a5;margin-bottom:8px">
+        ⚠️ <b>Gagal diantar ${failAttempts.length}x</b> — Segera hubungi customer! Risiko retur tinggi.
+      </div>`;
+    } else if (failAttempts.length === 1) {
+      alertHTML += `<div style="background:#431407;border:1px solid #f97316;border-radius:10px;padding:10px 14px;font-size:12px;color:#fdba74;margin-bottom:8px">
+        ⚠️ <b>Gagal diantar 1x</b> — Konfirmasi ulang alamat dan hubungi customer.
+      </div>`;
+    }
+    alerts.innerHTML = alertHTML;
+
+    // History timeline
+    body.innerHTML = `
+      <div style="font-size:11px;font-weight:700;color:var(--muted);font-family:monospace;text-transform:uppercase;margin-bottom:8px">History Pengiriman</div>
+      ${history.map((h,i) => {
+        const isFail = h.reason || h.desc.toUpperCase().includes('UNDELIVERED') || h.desc.toUpperCase().includes('DEX') || h.desc.toUpperCase().includes('GAGAL') || h.desc.toUpperCase().includes('TIDAK DITEMPAT');
+        const dotColor = i===0 ? (isFail?'#f87171':'#4ade80') : 'var(--border2)';
+        return `<div style="display:flex;gap:12px;padding:8px 0;border-bottom:0.5px solid var(--border);align-items:flex-start">
+          <div style="width:8px;height:8px;border-radius:50%;background:${dotColor};margin-top:5px;flex-shrink:0"></div>
+          <div style="flex:1">
+            <div style="font-size:11px;color:var(--muted);font-family:monospace">${h.date}</div>
+            ${h.loc ? `<div style="font-size:11px;color:var(--muted);font-weight:600">${h.loc}</div>` : ''}
+            <div style="font-size:12px;${i===0?'font-weight:600':''}margin-top:2px">${h.desc}</div>
+            ${h.reason ? `<div style="font-size:11px;color:#f87171;margin-top:2px">⚠ ${h.reason}</div>` : ''}
+          </div>
+        </div>`;
+      }).join('')}`;
+
+  } catch(e) {
+    body.innerHTML = `<p style="color:var(--danger)">Error: ${e.message}</p>`;
+  }
+}
+
 // ── UPDATE STATUS MANUAL ──────────────────────────────────────────────────────
 let updateStatusRowIdx = -1;
 
@@ -1252,6 +1396,136 @@ document.addEventListener('click', function(e) {
   if (e.target?.id === 'alert-modal') e.target.style.display = 'none';
 });
 
+
+
+// ── TRACKING DETAIL MODAL ────────────────────────────────────────────────────
+async function openTrackModal(resi, eks) {
+  const modal  = document.getElementById('track-modal');
+  const body   = document.getElementById('tm-body');
+  const resiEl = document.getElementById('tm-resi');
+  const recvEl = document.getElementById('tm-receiver');
+  const badge  = document.getElementById('tm-status-badge');
+  const info   = document.getElementById('tm-info');
+  const alerts = document.getElementById('tm-alerts');
+
+  resiEl.textContent = resi + ' (' + eks + ')';
+  recvEl.textContent = '';
+  badge.textContent  = '';
+  badge.className    = 'status-badge';
+  info.innerHTML     = '';
+  alerts.innerHTML   = '';
+  body.innerHTML     = '<div style="text-align:center;padding:2rem;color:var(--muted)">Memuat...</div>';
+  modal.style.display = 'flex';
+
+  try {
+    let history = [], statusText = '', receiverName = '', city = '', codAmt = '', goodsDesc = '';
+
+    if (eks === 'POS') {
+      const r    = await fetch('/api/pos-tracking?resi='+encodeURIComponent(resi));
+      const json = await r.json();
+      if (!json.success || !json.data) { body.innerHTML = '<p style="color:var(--muted);text-align:center">Resi tidak ditemukan.</p>'; return; }
+      const d = json.data;
+      statusText   = d.connote_state || '—';
+      receiverName = d.connote_receiver_name || '';
+      goodsDesc    = '';
+      codAmt       = d.connote_customfield?.cod_value ? 'Rp'+Number(d.connote_customfield.cod_value).toLocaleString('id-ID') : '';
+      history = (d.connote_history||[]).filter(h=>h.content).map(h => ({
+        date : h.date||'',
+        loc  : h.location_name||'',
+        desc : h.content||'',
+        reason: h.reason_delivery||''
+      })).reverse();
+    } else {
+      const courierKey = COURIER_MAP[eks]||eks;
+      const r    = await fetch('/api/tracking?tracking_number='+encodeURIComponent(resi)+'&courier='+encodeURIComponent(courierKey));
+      const json = await r.json();
+      if (!json.success || !json.data) { body.innerHTML = '<p style="color:var(--muted);text-align:center">Resi tidak ditemukan.</p>'; return; }
+      const d = json.data;
+      statusText   = d.statusCategory || d.status || '—';
+      receiverName = d.RECEIVER_NAME || '';
+      city         = d.RECEIVER_REGION || d.RECEIVER_CITY || '';
+      codAmt       = d.COD_AMOUNT ? 'Rp'+Number(d.COD_AMOUNT).toLocaleString('id-ID') : '';
+      goodsDesc    = d.GOODS_DESC || '';
+      history = (d.history||[]).filter(h=>h.desc).map(h => ({
+        date : h.date||'',
+        loc  : '',
+        desc : h.desc||'',
+        reason: ''
+      })).reverse();
+    }
+
+    // Status badge
+    const sc = statusClass(statusText);
+    badge.className   = 'status-badge ' + sc;
+    badge.textContent = statusText;
+    recvEl.textContent = receiverName + (city ? ' — ' + city : '');
+
+    // Info grid
+    info.innerHTML = [
+      ['Produk', goodsDesc||'—'],
+      ['COD', codAmt||'—'],
+      ['Total History', history.length + ' update'],
+    ].map(([k,v]) => `<div style="background:var(--bg);padding:10px;border-radius:8px">
+      <div style="font-size:10px;color:var(--muted);font-family:monospace;text-transform:uppercase">${k}</div>
+      <div style="font-size:13px;font-weight:600;margin-top:2px">${v}</div>
+    </div>`).join('');
+
+    // Detect fail attempts
+    const failAttempts = history.filter(h => {
+      const d = h.desc.toUpperCase();
+      return d.includes('UNDELIVERED') || d.includes('DEX') || d.includes('GAGAL') ||
+             d.includes('TIDAK DITEMPAT') || d.includes('REFUSED') || d.includes('ATTEMPT') ||
+             d.includes('TIDAK BISA') || d.includes('NOT HOME') || d.includes('ANTAR ULANG') ||
+             h.reason;
+    });
+
+    // Detect near destination
+    const nearDest = history.some(h => {
+      const d = h.desc.toUpperCase();
+      return d.includes('DELIVERY COURIER') || d.includes('OUT FOR DELIVERY') ||
+             d.includes('DIANTAR') || d.includes('KURIR') || d.includes('RUNSHEET') ||
+             d.includes('WITH DELIVERY');
+    });
+
+    // Alert banners
+    let alertHTML = '';
+    if (nearDest && statusText !== 'DELIVERED' && statusText !== 'POD') {
+      alertHTML += `<div style="background:#1e3a2f;border:1px solid #22c55e;border-radius:10px;padding:10px 14px;font-size:12px;color:#86efac;margin-bottom:8px">
+        🚚 <b>Paket sedang dalam proses pengiriman ke penerima</b> — Hubungi customer untuk siap-siap menerima paket & menyiapkan uang COD!
+      </div>`;
+    }
+    if (failAttempts.length >= 2) {
+      alertHTML += `<div style="background:#450a0a;border:1px solid #ef4444;border-radius:10px;padding:10px 14px;font-size:12px;color:#fca5a5;margin-bottom:8px">
+        ⚠️ <b>Gagal diantar ${failAttempts.length}x</b> — Segera hubungi customer! Risiko retur tinggi.
+      </div>`;
+    } else if (failAttempts.length === 1) {
+      alertHTML += `<div style="background:#431407;border:1px solid #f97316;border-radius:10px;padding:10px 14px;font-size:12px;color:#fdba74;margin-bottom:8px">
+        ⚠️ <b>Gagal diantar 1x</b> — Konfirmasi ulang alamat dan hubungi customer.
+      </div>`;
+    }
+    alerts.innerHTML = alertHTML;
+
+    // History timeline
+    body.innerHTML = `
+      <div style="font-size:11px;font-weight:700;color:var(--muted);font-family:monospace;text-transform:uppercase;margin-bottom:8px">History Pengiriman</div>
+      ${history.map((h,i) => {
+        const isFail = h.reason || h.desc.toUpperCase().includes('UNDELIVERED') || h.desc.toUpperCase().includes('DEX') || h.desc.toUpperCase().includes('GAGAL') || h.desc.toUpperCase().includes('TIDAK DITEMPAT');
+        const dotColor = i===0 ? (isFail?'#f87171':'#4ade80') : 'var(--border2)';
+        return `<div style="display:flex;gap:12px;padding:8px 0;border-bottom:0.5px solid var(--border);align-items:flex-start">
+          <div style="width:8px;height:8px;border-radius:50%;background:${dotColor};margin-top:5px;flex-shrink:0"></div>
+          <div style="flex:1">
+            <div style="font-size:11px;color:var(--muted);font-family:monospace">${h.date}</div>
+            ${h.loc ? `<div style="font-size:11px;color:var(--muted);font-weight:600">${h.loc}</div>` : ''}
+            <div style="font-size:12px;${i===0?'font-weight:600':''}margin-top:2px">${h.desc}</div>
+            ${h.reason ? `<div style="font-size:11px;color:#f87171;margin-top:2px">⚠ ${h.reason}</div>` : ''}
+          </div>
+        </div>`;
+      }).join('')}`;
+
+  } catch(e) {
+    body.innerHTML = `<p style="color:var(--danger)">Error: ${e.message}</p>`;
+  }
+}
 
 // ── UPDATE STATUS MANUAL ──────────────────────────────────────────────────────
 let updateStatusRowId = null;
