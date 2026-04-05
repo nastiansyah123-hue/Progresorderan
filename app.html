@@ -309,8 +309,8 @@ if (_t === 'light') document.documentElement.setAttribute('data-theme','light');
       </select>
       <input class="search-input" id="search-box" type="text" placeholder="Cari nama / HP / resi..." oninput="renderTable()" />
       <span class="spacer"></span>
-      <button class="btn-primary" onclick="updateOtomatis()" id="btn-update" style="display:none">🔄 Update Semua</button>
-      <button class="btn-secondary" onclick="loadData()" style="font-size:12px">↻ Refresh</button>
+      <button class="btn-primary" onclick="updateOtomatis()" id="btn-update">🔄 Update Semua</button>
+      <button class="btn-secondary" onclick="loadData()" style="font-size:12px" id="btn-refresh">↻ Refresh</button>
 
       <span class="loading-badge" id="loading-update">mengecek...</span>
       <span id="count-info" style="font-size:11px;color:var(--muted);font-family:monospace"></span>
@@ -406,7 +406,6 @@ sb.auth.getSession().then(({ data }) => {
   document.getElementById('user-email').textContent = data.session.user.email;
   document.getElementById('user-role-badge').textContent = userRole === 'admin' || userRole === 'spv' ? '👑 ' + userRole.toUpperCase() : '👤 CS: ' + (userCSName||data.session.user.email);
   if (userRole === 'admin' || userRole === 'spv') {
-    document.getElementById('btn-update').style.display = 'inline-flex';
     document.getElementById('tab-resi').style.display = 'block';
   }
   // Reset to 'all' filter on load
@@ -681,10 +680,6 @@ async function updateOtomatis() {
   const text   = document.getElementById('update-text');
   const result = document.getElementById('update-result');
 
-  if (userRole !== 'admin' && userRole !== 'spv') {
-    alert('Hanya SPV/Admin yang bisa menjalankan update otomatis.');
-    return;
-  }
   btn.disabled = true;
   prog.classList.add('show');
   result.innerHTML = '';
