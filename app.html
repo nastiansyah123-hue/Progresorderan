@@ -202,6 +202,11 @@ th .resizer:hover, th .resizer.active { background:var(--accent); opacity:0.5; }
   .sum-value { font-size:18px; }
 }
 </style>
+<script>
+// Apply theme before render to prevent flash
+const _t = localStorage.getItem('po_theme') || 'dark';
+if (_t === 'light') document.documentElement.setAttribute('data-theme','light');
+</script>
 </head>
 <body>
 
@@ -327,7 +332,7 @@ th .resizer:hover, th .resizer.active { background:var(--accent); opacity:0.5; }
               <th>Update CRM</th><th>Status Akhir</th><th></th>
             </tr>
           </thead>
-          <tbody id="status-tbody"><tr><td colspan="13" class="empty-state">Klik Refresh untuk memuat data</td></tr></tbody>
+          <tbody id="status-tbody"><tr><td colspan="12" class="empty-state">Klik Refresh untuk memuat data</td></tr></tbody>
         </table>
       </div>
       <div class="pagination">
@@ -620,7 +625,7 @@ function doRenderTable() {
   document.getElementById('count-info').textContent = filteredData.length.toLocaleString() + ' baris';
 
   if (!rows.length) {
-    tbody.innerHTML = '<tr><td colspan="13" class="empty-state">Tidak ada data</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="12" class="empty-state">Tidak ada data</td></tr>';
   } else {
     tbody.innerHTML = rows.map(r => {
       const crm = r.update_crm||'';
@@ -883,9 +888,11 @@ let resiParsed = [];
 
 // Drag & drop
 const dzResi = document.getElementById('dz-resi');
-dzResi.addEventListener('dragover', e => { e.preventDefault(); dzResi.classList.add('drag-over'); });
-dzResi.addEventListener('dragleave', () => dzResi.classList.remove('drag-over'));
-dzResi.addEventListener('drop', e => { e.preventDefault(); dzResi.classList.remove('drag-over'); if(e.dataTransfer.files[0]) parseResiFile(e.dataTransfer.files[0]); });
+if (dzResi) {
+  dzResi.addEventListener('dragover', e => { e.preventDefault(); dzResi.classList.add('drag-over'); });
+  dzResi.addEventListener('dragleave', () => dzResi.classList.remove('drag-over'));
+  dzResi.addEventListener('drop', e => { e.preventDefault(); dzResi.classList.remove('drag-over'); if(e.dataTransfer.files[0]) parseResiFile(e.dataTransfer.files[0]); });
+}
 
 function parseResiFile(file) {
   const reader = new FileReader();
@@ -1047,7 +1054,11 @@ function toggleTheme() {
   localStorage.setItem('po_theme', isLight ? 'dark' : 'light');
 }
 const savedTheme = localStorage.getItem('po_theme') || 'dark';
-if (savedTheme === 'light') { document.documentElement.setAttribute('data-theme','light'); document.getElementById('theme-btn').textContent = '☀️'; }
+if (savedTheme === 'light') {
+  document.documentElement.setAttribute('data-theme','light');
+  const btn = document.getElementById('theme-btn');
+  if (btn) btn.textContent = '☀️';
+}
 
 // ── CHECKBOX ──────────────────────────────────────────────────────────────────
 function toggleAll(chk) {
