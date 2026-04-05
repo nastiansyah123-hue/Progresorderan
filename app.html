@@ -56,11 +56,17 @@ body { font-family:'Inter',system-ui,sans-serif; background:var(--bg); color:var
 .sum-card:hover { border-color:var(--accent); }
 .sum-label { font-size:11px; color:var(--muted); font-family:monospace; text-transform:uppercase; margin-bottom:6px; }
 .sum-value { font-size:24px; font-weight:800; }
-.sum-card.c-total { border-left:3px solid var(--accent); }
-.sum-card.c-onproses { border-left:3px solid var(--warn); }
-.sum-card.c-undell { border-left:3px solid #f97316; }
-.sum-card.c-delivered { border-left:3px solid var(--success); }
-.sum-card.c-retur { border-left:3px solid var(--danger); }
+.sum-card.c-total    { border-left:3px solid #818cf8; }
+.sum-card.c-onproses { border-left:3px solid #38bdf8; }
+.sum-card.c-undell   { border-left:3px solid #fb923c; }
+.sum-card.c-delivered{ border-left:3px solid #4ade80; }
+.sum-card.c-retur    { border-left:3px solid #f87171; }
+
+.sum-card.c-total    .sum-value { color:#818cf8; }
+.sum-card.c-onproses .sum-value { color:#38bdf8; }
+.sum-card.c-undell   .sum-value { color:#fb923c; }
+.sum-card.c-delivered .sum-value { color:#4ade80; }
+.sum-card.c-retur    .sum-value { color:#f87171; }
 
 /* Buttons */
 .btn-primary { background:var(--accent); color:#fff; border:none; padding:8px 16px; border-radius:10px; font-size:13px; font-weight:600; cursor:pointer; display:inline-flex; align-items:center; gap:6px; }
@@ -258,19 +264,19 @@ if (_t === 'light') document.documentElement.setAttribute('data-theme','light');
       </div>
       <div class="sum-card c-onproses" onclick="applyFilter('ON PROSES')">
         <div class="sum-label">On Proses</div>
-        <div class="sum-value" id="st-onproses" style="color:var(--warn)">—</div>
+        <div class="sum-value" id="st-onproses">—</div>
       </div>
       <div class="sum-card c-undell" onclick="applyFilter('UNDELL')">
         <div class="sum-label">Undell</div>
-        <div class="sum-value" id="st-undell" style="color:#f97316">—</div>
+        <div class="sum-value" id="st-undell">—</div>
       </div>
       <div class="sum-card c-delivered" onclick="applyFilter('DELIVERED')">
         <div class="sum-label">Delivered</div>
-        <div class="sum-value" id="st-delivered" style="color:var(--success)">—</div>
+        <div class="sum-value" id="st-delivered">—</div>
       </div>
       <div class="sum-card c-retur" onclick="applyFilter('RETUR')">
         <div class="sum-label">Retur</div>
-        <div class="sum-value" id="st-retur" style="color:var(--danger)">—</div>
+        <div class="sum-value" id="st-retur">—</div>
       </div>
     </div>
 
