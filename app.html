@@ -1306,17 +1306,22 @@ document.addEventListener('click', function(e) {
 async function checkAlerts() {
   alertItems = [];
 
-  // Fetch data untuk cek
-  const { data } = await sb.from('all_orderan')
+  // Fetch data untuk cek - same filter as main table
+  const csFilterVal = document.getElementById('filter-cs')?.value || 'all';
+  let alertQuery = sb.from('all_orderan')
     .select('id,nama,hp,resi,update_crm,kabupaten,cs,pembayaran')
     .eq('sumber','validasi');
 
-  if (!data?.length) return;
+  // CS filter
+  if (userRole !== 'admin' && userRole !== 'spv' && userCSName) {
+    alertQuery = alertQuery.ilike('cs', userCSName);
+  } else if (csFilterVal !== 'all') {
+    alertQuery = alertQuery.eq('cs', csFilterVal);
+  }
 
-  // Filter by CS if not admin/spv
-  const myData = (userRole === 'admin' || userRole === 'spv')
-    ? data
-    : data.filter(r => (r.cs||'').toLowerCase() === (userCSName||'').toLowerCase());
+  const { data } = await alertQuery;
+  if (!data?.length) return;
+  const myData = data;
 
   // 1. Undell
   const undell = myData.filter(r => (r.update_crm||'').startsWith('UNDELL'));
