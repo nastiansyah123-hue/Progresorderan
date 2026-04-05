@@ -423,6 +423,7 @@ function switchTab(tab) {
 
 // ── DATA ──────────────────────────────────────────────────────────────────────
 let allData = [], filteredData = [], currentPage = 1;
+let alertItems = [];
 const PAGE_SIZE = 100;
 
 const COURIER_MAP = {
@@ -644,7 +645,7 @@ function doRenderTable() {
         </td>
         <td style="font-size:11px;color:var(--muted)">${r.status_akhir||''}</td>
         <td>
-          <button onclick="openUpdateStatus(${filteredData.indexOf(r)})" 
+          <button onclick="showUpdateStatus(${filteredData.indexOf(r)})" 
             style="background:var(--bg);border:1px solid var(--border);color:var(--muted);padding:3px 8px;border-radius:6px;cursor:pointer;font-size:11px">
             ✏️
           </button>
@@ -1164,7 +1165,7 @@ function clearDateFilter() {
 // ── UPDATE STATUS MANUAL ──────────────────────────────────────────────────────
 let updateStatusRowIdx = -1;
 
-function openUpdateStatus(idx) {
+function showUpdateStatus(idx) {
   const row = filteredData[idx];
   if (!row) return;
   updateStatusRowIdx = idx;
@@ -1291,8 +1292,6 @@ document.addEventListener('click', function(e) {
 });
 
 // ── ALERT SYSTEM ─────────────────────────────────────────────────────────────
-let alertItems = [];
-
 async function checkAlerts() {
   alertItems = [];
 
