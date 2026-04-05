@@ -247,7 +247,10 @@ if (_t === 'light') document.documentElement.setAttribute('data-theme','light');
     <span id="user-email" style="display:none"></span>
     <span id="user-role-badge" style="font-size:12px;color:var(--text)"></span>
     <button id="theme-btn" onclick="toggleTheme()" style="background:none;border:1px solid var(--border);color:var(--muted);padding:5px 10px;border-radius:8px;cursor:pointer;font-size:16px" title="Ganti tema">🌙</button>
-    <button onclick="toggleTheme()" id="theme-btn" style="background:none;border:1px solid var(--border);color:var(--muted);padding:5px 10px;border-radius:8px;cursor:pointer;font-size:14px" title="Toggle tema">🌙</button>
+    <div onclick="toggleTheme()" id="theme-toggle" style="display:flex;align-items:center;gap:6px;cursor:pointer;background:var(--bg);border:1px solid var(--border);border-radius:99px;padding:4px 10px;font-size:12px;user-select:none">
+      <span id="theme-icon">🌙</span>
+      <span id="theme-label" style="color:var(--muted)">Gelap</span>
+    </div>
     <button class="btn-logout" onclick="logout()">Keluar</button>
   </div>
 
@@ -329,15 +332,12 @@ if (_t === 'light') document.documentElement.setAttribute('data-theme','light');
     </div>
 
     <div class="toolbar">
-      <div style="display:flex;gap:4px;align-items:center;flex-wrap:wrap">
-        <button id="btn-tgl-all" class="tgl-btn active" onclick="setTglPreset('all')">Semua</button>
-        <button id="btn-tgl-today" class="tgl-btn" onclick="setTglPreset('today')">Hari Ini</button>
-        <button id="btn-tgl-yesterday" class="tgl-btn" onclick="setTglPreset('yesterday')">Kemarin</button>
-        <button class="tgl-btn" id="btn-tgl-custom" onclick="setTglPreset('custom')">📅 Pilih</button>
-        <input type="date" id="filter-tgl-custom" onchange="onCustomDate()"
-          style="display:none;border:1px solid var(--accent);border-radius:10px;padding:6px 10px;background:var(--bg);color:var(--text);font-size:12px" />
-        
-        <input type="hidden" id="filter-tgl-preset" value="all" />
+      <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">
+        <input type="date" id="filter-tgl-custom" onchange="loadData()"
+          style="border:1px solid var(--border);border-radius:10px;padding:7px 12px;background:var(--bg);color:var(--text);font-size:12px;outline:none" />
+        <button class="btn-secondary" onclick="document.getElementById('filter-tgl-custom').value=new Date().toISOString().slice(0,10);loadData();" style="font-size:12px">Hari Ini</button>
+        <button class="btn-secondary" onclick="document.getElementById('filter-tgl-custom').value=new Date(Date.now()-86400000).toISOString().slice(0,10);loadData();" style="font-size:12px">Kemarin</button>
+        <button class="btn-secondary" onclick="document.getElementById('filter-tgl-custom').value='';loadData();" style="font-size:12px">Semua</button>
       </div>
       <select class="filter-select" id="filter-status" onchange="renderTable()">
         <option value="all">Semua Status</option>
@@ -1115,15 +1115,21 @@ function updateCSFilter() {
 // ── THEME ────────────────────────────────────────────────────────────────────
 function toggleTheme() {
   const isLight = document.documentElement.getAttribute('data-theme') === 'light';
-  document.documentElement.setAttribute('data-theme', isLight ? 'dark' : 'light');
-  document.getElementById('theme-btn').textContent = isLight ? '🌙' : '☀️';
-  localStorage.setItem('po_theme', isLight ? 'dark' : 'light');
+  const newTheme = isLight ? 'dark' : 'light';
+  document.documentElement.setAttribute('data-theme', newTheme);
+  document.getElementById('theme-icon').textContent = newTheme === 'light' ? '☀️' : '🌙';
+  document.getElementById('theme-label').textContent = newTheme === 'light' ? 'Terang' : 'Gelap';
+  localStorage.setItem('po_theme', newTheme);
 }
 const savedTheme = localStorage.getItem('po_theme') || 'dark';
 if (savedTheme === 'light') {
   document.documentElement.setAttribute('data-theme','light');
-  const btn = document.getElementById('theme-btn');
-  if (btn) btn.textContent = '☀️';
+  setTimeout(() => {
+    const icon = document.getElementById('theme-icon');
+    const label = document.getElementById('theme-label');
+    if (icon) icon.textContent = '☀️';
+    if (label) label.textContent = 'Terang';
+  }, 0);
 }
 
 // ── CHECKBOX ──────────────────────────────────────────────────────────────────
