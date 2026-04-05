@@ -406,7 +406,8 @@ sb.auth.getSession().then(({ data }) => {
   document.getElementById('user-email').textContent = data.session.user.email;
   document.getElementById('user-role-badge').textContent = userRole === 'admin' || userRole === 'spv' ? '👑 ' + userRole.toUpperCase() : '👤 CS: ' + (userCSName||data.session.user.email);
   if (userRole === 'admin' || userRole === 'spv') {
-    document.getElementById('tab-resi').style.display = 'block';
+    const tabResi = document.getElementById('tab-resi');
+    if (tabResi) tabResi.style.display = 'block';
   }
   // Reset to 'all' filter on load
   document.querySelectorAll('.tgl-btn').forEach(b => b.classList.remove('active'));
