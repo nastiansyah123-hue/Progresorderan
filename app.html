@@ -239,7 +239,6 @@ th .resizer:hover, th .resizer.active { background:var(--accent); opacity:0.5; }
 <div class="nav-tabs">
   <div class="nav-tab active" id="tab-status" onclick="switchTab('status')">📦 Status Pengiriman</div>
   <div class="nav-tab" id="tab-lacak" onclick="switchTab('lacak')">🔍 Lacak Manual</div>
-  <div class="nav-tab" id="tab-resi" onclick="switchTab('resi')">📋 Input Resi</div>
 </div>
 
 <div class="main">
@@ -325,10 +324,10 @@ th .resizer:hover, th .resizer.active { background:var(--accent); opacity:0.5; }
             <tr>
               <th><input type="checkbox" id="chk-all" onchange="toggleAll(this)"></th><th>Tanggal</th><th class="col-no">No</th><th>Nama</th><th class="col-hp">HP</th>
               <th>Ekspedisi</th><th class="col-resi">Resi</th><th class="col-jumlah">Jumlah</th><th>Kabupaten</th><th>CS</th>
-              <th>Update CRM</th><th>Status Akhir</th>
+              <th>Update CRM</th><th>Status Akhir</th><th></th>
             </tr>
           </thead>
-          <tbody id="status-tbody"><tr><td colspan="12" class="empty-state">Klik Refresh untuk memuat data</td></tr></tbody>
+          <tbody id="status-tbody"><tr><td colspan="13" class="empty-state">Klik Refresh untuk memuat data</td></tr></tbody>
         </table>
       </div>
       <div class="pagination">
@@ -364,25 +363,25 @@ th .resizer:hover, th .resizer.active { background:var(--accent); opacity:0.5; }
     <div id="lacak-empty" style="display:none;text-align:center;padding:3rem;color:var(--muted)">Resi tidak ditemukan.</div>
   </div>
 
-  <!-- INPUT RESI -->
-  <div class="page" id="page-resi">
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;max-width:800px">
-      <div class="card">
-        <div class="card-title" style="margin-bottom:0.5rem">Upload File Resi</div>
-        <div class="card-desc" style="margin-bottom:0.75rem">Kolom: HP + Resi (.csv / .xlsx)</div>
-        <div class="drop-zone" id="dz-resi" onclick="document.getElementById('file-resi').click()">
-          <input type="file" id="file-resi" accept=".csv,.xlsx,.xls" onchange="parseResiFile(this.files[0])" />
-          <div class="drop-zone-icon">📋</div>
-          <div class="drop-zone-text">Upload file resi<br><span>HP + Resi</span></div>
-        </div>
-        <div id="resi-status" class="drop-status"></div>
-        <button class="btn-primary" id="btn-save-resi" disabled onclick="saveResi()" style="margin-top:0.75rem;width:100%">💾 Simpan Resi</button>
-        <span class="loading-badge" id="loading-resi">menyimpan...</span>
-        <div id="resi-result" style="font-size:12px;margin-top:8px;font-family:monospace"></div>
-      </div>
-    </div>
-  </div>
+</div>
 
+<!-- Update Status Modal -->
+<div id="update-status-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:1000;align-items:center;justify-content:center">
+  <div style="background:var(--bg2);border-radius:20px;padding:1.5rem;max-width:400px;width:90%">
+    <div style="font-size:15px;font-weight:700;margin-bottom:4px">Update Status Orderan</div>
+    <div id="us-nama" style="font-size:12px;color:var(--muted);margin-bottom:1rem"></div>
+    <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:1.25rem">
+      <button class="us-btn" onclick="selectStatus('ON PROSES')" style="padding:10px;border-radius:10px;border:1px solid var(--border);background:var(--bg);color:var(--text);cursor:pointer;text-align:left;font-size:13px">⏳ ON PROSES — Masih dalam perjalanan</button>
+      <button class="us-btn" onclick="selectStatus('UNDELL')" style="padding:10px;border-radius:10px;border:1px solid var(--border);background:var(--bg);color:var(--text);cursor:pointer;text-align:left;font-size:13px">⚠️ UNDELL — Gagal diantar</button>
+      <button class="us-btn" onclick="selectStatus('DELIVERED')" style="padding:10px;border-radius:10px;border:1px solid var(--border);background:var(--bg);color:var(--text);cursor:pointer;text-align:left;font-size:13px">✅ DELIVERED — Sudah diterima</button>
+      <button class="us-btn" onclick="selectStatus('RETUR')" style="padding:10px;border-radius:10px;border:1px solid var(--border);background:var(--bg);color:var(--text);cursor:pointer;text-align:left;font-size:13px">🔴 RETUR — Dikembalikan</button>
+    </div>
+    <div style="display:flex;gap:8px">
+      <button onclick="document.getElementById('update-status-modal').style.display='none'" class="btn-secondary" style="flex:1">Batal</button>
+      <button onclick="saveUpdateStatus()" class="btn-primary" id="btn-save-status" disabled style="flex:1;justify-content:center">Simpan</button>
+    </div>
+    <span class="loading-badge" id="loading-us">menyimpan...</span>
+  </div>
 </div>
 
 <script>
@@ -403,6 +402,7 @@ sb.auth.getSession().then(({ data }) => {
   document.getElementById('user-role-badge').textContent = userRole === 'admin' || userRole === 'spv' ? '👑 ' + userRole.toUpperCase() : '👤 CS: ' + (userCSName||data.session.user.email);
   if (userRole === 'admin' || userRole === 'spv') {
     document.getElementById('btn-update').style.display = 'inline-flex';
+    document.getElementById('tab-resi').style.display = 'block';
   }
   // Reset to 'all' filter on load
   document.querySelectorAll('.tgl-btn').forEach(b => b.classList.remove('active'));
@@ -619,7 +619,7 @@ function doRenderTable() {
   document.getElementById('count-info').textContent = filteredData.length.toLocaleString() + ' baris';
 
   if (!rows.length) {
-    tbody.innerHTML = '<tr><td colspan="12" class="empty-state">Tidak ada data</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="13" class="empty-state">Tidak ada data</td></tr>';
   } else {
     tbody.innerHTML = rows.map(r => {
       const crm = r.update_crm||'';
@@ -643,6 +643,12 @@ function doRenderTable() {
           ${crmDetail ? `<div style="font-size:10px;color:var(--muted);margin-top:3px;max-width:200px">${crmDetail.slice(0,80)}${crmDetail.length>80?'...':''}</div>` : ''}
         </td>
         <td style="font-size:11px;color:var(--muted)">${r.status_akhir||''}</td>
+        <td>
+          <button onclick="openUpdateStatus(${filteredData.indexOf(r)})" 
+            style="background:var(--bg);border:1px solid var(--border);color:var(--muted);padding:3px 8px;border-radius:6px;cursor:pointer;font-size:11px">
+            ✏️
+          </button>
+        </td>
       </tr>`;
     }).join('');
   }
@@ -1154,6 +1160,136 @@ function clearDateFilter() {
 }
 
 
+
+// ── UPDATE STATUS MANUAL ──────────────────────────────────────────────────────
+let updateStatusRowIdx = -1;
+
+function openUpdateStatus(idx) {
+  const row = filteredData[idx];
+  if (!row) return;
+  updateStatusRowIdx = idx;
+  const crm = row.update_crm||'ON PROSES';
+  document.getElementById('us-nama').textContent = row.nama + ' — ' + (row.hp||'') + ' — ' + (row.kabupaten||'');
+  // Set current status
+  const sel = document.getElementById('us-status');
+  const statusBase = crm.startsWith('UNDELL')?'UNDELL':crm.startsWith('ON PROSES')?'ON PROSES':crm;
+  sel.value = ['ON PROSES','UNDELL','DELIVERED','RETUR'].includes(statusBase) ? statusBase : 'ON PROSES';
+  document.getElementById('us-catatan').value = '';
+  document.getElementById('update-status-modal').style.display = 'flex';
+}
+
+async function saveUpdateStatus() {
+  const row = filteredData[updateStatusRowIdx];
+  if (!row) return;
+  const badge    = document.getElementById('loading-us');
+  const status   = document.getElementById('us-status').value;
+  const catatan  = document.getElementById('us-catatan').value.trim();
+  badge.classList.add('show');
+
+  const newCRM    = catatan ? status + ' (' + catatan + ')' : status;
+  const newStatus = status === 'DELIVERED' ? 'DELIVERED' : status === 'RETUR' ? 'RETUR' : null;
+
+  try {
+    const upd = { update_crm: newCRM };
+    if (newStatus) upd.status_akhir = newStatus;
+    const { error } = await sb.from('all_orderan').update(upd).eq('id', row.id);
+    if (error) throw error;
+    showToast('Status berhasil diupdate!');
+    document.getElementById('update-status-modal').style.display = 'none';
+    await loadData();
+  } catch(e) {
+    showToast('Error: ' + e.message, true);
+  }
+  badge.classList.remove('show');
+}
+
+function showToast(msg, isError) {
+  let toast = document.getElementById('toast-msg');
+  if (!toast) {
+    toast = document.createElement('div');
+    toast.id = 'toast-msg';
+    toast.style.cssText = 'position:fixed;bottom:20px;left:50%;transform:translateX(-50%);padding:10px 20px;border-radius:10px;font-size:13px;font-weight:600;z-index:9999;transition:opacity 0.3s';
+    document.body.appendChild(toast);
+  }
+  toast.textContent = msg;
+  toast.style.background = isError ? 'var(--danger)' : 'var(--success)';
+  toast.style.color = '#fff';
+  toast.style.opacity = '1';
+  setTimeout(() => toast.style.opacity = '0', 2500);
+}
+
+// Close modals on backdrop click
+document.addEventListener('click', function(e) {
+  if (e.target?.id === 'update-status-modal') e.target.style.display = 'none';
+  if (e.target?.id === 'alert-modal') e.target.style.display = 'none';
+});
+
+
+// ── UPDATE STATUS MANUAL ──────────────────────────────────────────────────────
+let updateStatusRowId = null;
+let selectedNewStatus = null;
+
+function showUpdateStatus(idx) {
+  const row = filteredData[idx];
+  if (!row) return;
+  updateStatusRowId = row.id;
+  selectedNewStatus = null;
+  document.getElementById('us-nama').textContent = row.nama + ' — ' + (row.kabupaten||'') + ' | Status: ' + (row.update_crm||'—');
+  document.querySelectorAll('.us-btn').forEach(b => b.style.borderColor = 'var(--border)');
+  document.getElementById('btn-save-status').disabled = true;
+  document.getElementById('update-status-modal').style.display = 'flex';
+}
+
+function selectStatus(status) {
+  selectedNewStatus = status;
+  document.querySelectorAll('.us-btn').forEach(b => b.style.borderColor = 'var(--border)');
+  event.target.closest('.us-btn').style.borderColor = 'var(--accent)';
+  document.getElementById('btn-save-status').disabled = false;
+}
+
+async function saveUpdateStatus() {
+  if (!updateStatusRowId || !selectedNewStatus) return;
+  const badge = document.getElementById('loading-us');
+  badge.classList.add('show');
+  document.getElementById('btn-save-status').disabled = true;
+
+  try {
+    const upd = { update_crm: selectedNewStatus };
+    if (selectedNewStatus === 'DELIVERED') upd.status_akhir = 'DELIVERED';
+    if (selectedNewStatus === 'RETUR') upd.status_akhir = 'RETUR';
+
+    const { error } = await sb.from('all_orderan').update(upd).eq('id', updateStatusRowId);
+    if (error) throw error;
+
+    showToast('Status berhasil diupdate!');
+    document.getElementById('update-status-modal').style.display = 'none';
+    await loadData();
+  } catch(e) {
+    alert('Error: ' + e.message);
+  }
+  badge.classList.remove('show');
+}
+
+// Simple toast
+function showToast(msg) {
+  let toast = document.getElementById('simple-toast');
+  if (!toast) {
+    toast = document.createElement('div');
+    toast.id = 'simple-toast';
+    toast.style.cssText = 'position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#22c55e;color:#fff;padding:10px 20px;border-radius:20px;font-size:13px;z-index:9999;font-weight:600';
+    document.body.appendChild(toast);
+  }
+  toast.textContent = msg;
+  toast.style.display = 'block';
+  setTimeout(() => toast.style.display = 'none', 2500);
+}
+
+// Close modals on backdrop click
+document.addEventListener('click', function(e) {
+  if (e.target?.id === 'update-status-modal') e.target.style.display = 'none';
+  if (e.target?.id === 'alert-modal') e.target.style.display = 'none';
+});
+
 // ── ALERT SYSTEM ─────────────────────────────────────────────────────────────
 let alertItems = [];
 
@@ -1273,14 +1409,38 @@ function showAlertDetail() {
   modal.style.display = 'flex';
 }
 
-// Close modal on backdrop click
-document.getElementById('alert-modal').addEventListener('click', function(e) {
-  if (e.target === this) this.style.display = 'none';
-});
+
 
 // Restore last tab
 const lastTab = sessionStorage.getItem('po_tab');
 if (lastTab) switchTab(lastTab);
 </script>
+
+<!-- Update Status Modal -->
+<div id="update-status-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:1000;align-items:center;justify-content:center">
+  <div style="background:var(--bg2);border-radius:20px;padding:1.5rem;max-width:420px;width:90%">
+    <div style="font-size:15px;font-weight:700;margin-bottom:4px">Update Status Manual</div>
+    <div style="font-size:12px;color:var(--muted);margin-bottom:1rem" id="us-nama"></div>
+    <div style="margin-bottom:1rem">
+      <label style="font-size:12px;color:var(--muted);display:block;margin-bottom:6px">Status CRM</label>
+      <select id="us-status" class="filter-select" style="width:100%">
+        <option value="ON PROSES">ON PROSES</option>
+        <option value="UNDELL">UNDELL</option>
+        <option value="DELIVERED">DELIVERED</option>
+        <option value="RETUR">RETUR</option>
+      </select>
+    </div>
+    <div style="margin-bottom:1rem">
+      <label style="font-size:12px;color:var(--muted);display:block;margin-bottom:6px">Catatan (opsional)</label>
+      <input type="text" id="us-catatan" class="search-input" style="width:100%" placeholder="mis: penerima minta reschedule besok" />
+    </div>
+    <div style="display:flex;gap:8px">
+      <button class="btn-primary" onclick="saveUpdateStatus()" style="flex:1;justify-content:center">💾 Simpan</button>
+      <button class="btn-secondary" onclick="document.getElementById('update-status-modal').style.display='none'">Batal</button>
+    </div>
+    <span class="loading-badge" id="loading-us" style="margin-top:8px">menyimpan...</span>
+  </div>
+</div>
+
 </body>
 </html>
