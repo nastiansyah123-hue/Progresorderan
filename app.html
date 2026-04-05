@@ -132,6 +132,10 @@ th .resizer:hover, th .resizer.active { background:var(--accent); opacity:0.5; }
 .tgl-btn:hover { border-color:var(--accent); color:var(--text); }
 .tgl-btn.active { background:var(--accent); border-color:var(--accent); color:#fff; font-weight:600; }
 
+/* Force page-resi to correct position */
+#page-resi { position:fixed !important; top:50% !important; left:50% !important; transform:translate(-50%,-50%) !important; z-index:500; background:var(--bg); width:90%; max-width:480px; border-radius:16px; padding:1.5rem; box-shadow:0 20px 60px rgba(0,0,0,0.5); }
+#page-resi.active { display:block !important; }
+
 /* Page sections */
 .page { display:none; }
 .page.active { display:block; }
