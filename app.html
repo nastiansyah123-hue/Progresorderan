@@ -1008,9 +1008,12 @@ async function saveResi() {
 
   try {
     const hpList = [...new Set(resiParsed.map(r => r.hp.replace(/^0/,'')).filter(Boolean))];
-    const { data: orders } = await sb.from('all_orderan').select('id,hp').eq('sumber','validasi').in('hp', hpList);
     const hpIdx = {};
-    (orders||[]).forEach(r => { hpIdx[r.hp.replace(/^0/,'')] = r.id; });
+    const BATCH_HP = 100;
+    for (let i = 0; i < hpList.length; i += BATCH_HP) {
+      const { data: orders } = await sb.from('all_orderan').select('id,hp').eq('sumber','validasi').in('hp', hpList.slice(i, i+BATCH_HP));
+      (orders||[]).forEach(r => { hpIdx[r.hp.replace(/^0/,'')] = r.id; });
+    }
 
     const updates = resiParsed.map(r => ({ id: hpIdx[r.hp.replace(/^0/,'')], resi: r.resi })).filter(u => u.id);
     let saved = 0;
